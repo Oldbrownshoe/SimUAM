@@ -35,6 +35,17 @@
       z-index: 1;
     }
 
+    #modalPisoContent button {
+      background-color: #4682B4 !important;
+      border: 2.5px solid #1a4a7a !important;
+      color: #fff !important;
+    }
+
+    #modalPisoContent button:hover {
+      background-color: #315f7d !important;
+    }
+
+
     #encabezado {
       background: rgba(70, 130, 180, 0.8);
       color: white;
@@ -196,7 +207,8 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      object-fit: contain; /* Cambiado de cover a contain para evitar recortes y mantener la orientación */
+      object-fit: contain;
+      /* Cambiado de cover a contain para evitar recortes y mantener la orientación */
       z-index: 0;
       /* Eliminamos transform: none; para evitar forzar orientación */
     }
@@ -582,6 +594,13 @@
           Usar cámara trasera
         </button>
       </div>
+      <div id="vrToggleContainer" style="margin-bottom: 10px;">
+        <h2 style="margin:0; font-size:1.1rem;">Modo Realidad Virtual</h2>
+        <button id="vrToggleBtn"
+          style="background:#e0e0e0; color:#222; border:2.5px solid #4682B4; border-radius:10px; padding:8px 18px; font-size:15px;">
+          Sin VR
+        </button>
+      </div>
       <button id="botonReanudarPausa" onclick="cerrarMenuPausa()">Cerrar</button>
     </div>
   </div>
@@ -622,7 +641,26 @@
     </div>
   </div>
 
-  <video id="video" autoplay></video>
+  <video id="video" autoplay style="z-index:0;"></video>
+  <!-- Contenedor para modo VR (mismo nivel que el video normal, z-index:0) -->
+  <div id="vrVideoContainer"
+    style="display:none; position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:0;">
+    <div style="display:flex; width:100vw; height:100vh;">
+      <video id="videoLeft" autoplay style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
+      <video id="videoRight" autoplay style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
+    </div>
+  </div>
+
+  <div id="vrVideoContainer" style="display:none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0;">
+  <div style="display: flex; width: 100vw; height: 100vh;">
+    <video id="videoLeft" autoplay muted playsinline
+           style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
+    <video id="videoRight" autoplay muted playsinline
+           style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
+  </div>
+</div>
+
+
   <div id="simulador">
     <h2 id="encabezado" class="caja-texto">Simulador de Sismos: SimUAM</h2>
     <div id="mensaje" class="caja-texto"></div>
@@ -1436,7 +1474,7 @@
           Array.from(botonesPiso.getElementsByTagName('button')).forEach(btn => {
             btn.disabled = true;
             btn.style.opacity = '0.5';
-            btn.style.pointerEvents = 'none'; 
+            btn.style.pointerEvents = 'none';
           });
         }
         mostrarNotificacionTrofeo("¡Modo de Prueba activado! Piso, intensidad y tiempo serán aleatorios.");
@@ -1460,11 +1498,10 @@
       await inicializarCamara();
     };
 
-    let camaraActual = 'environment'; // 'user' o 'environment'
+    let camaraActual = 'environment';
     let dispositivosVideo = [];
     let streamActual = null;
 
-    // Función para obtener dispositivos de video
     async function obtenerDispositivosVideo() {
       try {
         const dispositivos = await navigator.mediaDevices.enumerateDevices();
@@ -1474,7 +1511,6 @@
       }
     }
 
-    // Función para cambiar la cámara
     async function cambiarCamara(nuevaCamara) {
       await obtenerDispositivosVideo();
       if (dispositivosVideo.length < 2) {
@@ -1491,9 +1527,13 @@
         };
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         streamActual = stream;
-        const video = document.getElementById('video');
         video.srcObject = stream;
         video.style.transform = '';
+
+        if (modoVR) {
+          videoLeft.srcObject = stream;
+          videoRight.srcObject = stream;
+        }
         mostrarNotificacionTrofeo(
           nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
         );
@@ -1502,7 +1542,6 @@
       }
     }
 
-    // Inicialización de cámara al cargar
     async function inicializarCamara() {
       await obtenerDispositivosVideo();
       let facingMode = camaraActual;
@@ -1511,20 +1550,22 @@
       }
       try {
         const constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        streamActual = stream;
-        const video = document.getElementById('video');
-        video.srcObject = stream;
-        video.style.transform = '';
+const stream = await navigator.mediaDevices.getUserMedia(constraints);
+streamActual = stream;
+video.srcObject = stream;
+
+if (modoVR) {
+  duplicarStreamVR();
+}
+
       } catch (error) {
         console.error('Error al acceder a la cámara: ', error);
         document.getElementById('mensaje').textContent = 'Error al acceder a la cámara. Por favor, verifica los permisos.';
       }
     }
 
-    // Evento para el botón toggle de cámara
     document.addEventListener("DOMContentLoaded", function () {
-      // ...existing code...
+
       const toggleCamaraBtn = document.getElementById('toggleCamaraBtn');
       if (toggleCamaraBtn) {
         toggleCamaraBtn.onclick = async function () {
@@ -1546,7 +1587,6 @@
       }
     });
 
-    // Sobrescribe la inicialización de cámara
     window.onload = async function () {
       selectedFloor = "B1";
       localStorage.setItem('simuladorPiso', "B1");
@@ -1563,20 +1603,6 @@
       await inicializarCamara();
     };
 
-    // Elimina la inicialización previa de cámara
-    // navigator.mediaDevices.getUserMedia({ video: true })
-    //   .then(stream => { 
-    //     video.srcObject = stream; 
-    //     // Eliminamos cualquier transformación previa
-    //     video.style.transform = '';
-    //   })
-    //   .catch(error => {
-    //     console.error('Error al acceder a la cámara: ', error);
-    //     document.getElementById('mensaje').textContent = 'Error al acceder a la cámara. Por favor, verifica los permisos.';
-    //   });
-
-    // ...existing code...
-    // --- REHABILITACIÓN DE MODAL PARTE PISO ---
     function mostrarModalPartePiso(piso) {
       partePisoSeleccionada = null;
       const modal = document.getElementById('modalPartePiso');
@@ -1590,7 +1616,6 @@
 
     function seleccionarPartePiso(parte) {
       partePisoSeleccionada = parte;
-      // mostrarNotificacionTrofeo('Parte seleccionada: ' + parte);
       cerrarModalPartePiso();
       mostrarMapaPiso(selectedFloor);
     }
@@ -1599,6 +1624,140 @@
       const modal = document.getElementById('modalPartePiso');
       if (modal) modal.style.display = 'none';
     }
+
+    let modoVR = false;
+
+    // NUEVO: Referencias a los elementos VR
+    const vrToggleBtn = document.getElementById('vrToggleBtn');
+    const vrVideoContainer = document.getElementById('vrVideoContainer');
+    const video = document.getElementById('video');
+    const videoLeft = document.getElementById('videoLeft');
+    const videoRight = document.getElementById('videoRight');
+
+    // Duplicar el stream en ambos videos VR
+function duplicarStreamVR() {
+  if (!streamActual) return;
+
+  // Left: asigna todo el stream
+  videoLeft.srcObject = streamActual;
+  videoLeft.play().catch(() => { /* evita errores de autoplay */ });
+
+  // Right: solo pistas de video para evitar choque de audio
+  const videoOnly = new MediaStream(streamActual.getVideoTracks());
+  videoRight.srcObject = videoOnly;
+  videoRight.play().catch(() => { /* evita errores de autoplay */ });
+}
+
+
+    function setModoVR(activo) {
+      modoVR = activo;
+      if (modoVR) {
+        video.style.display = 'none';
+        vrVideoContainer.style.display = 'block';
+        duplicarStreamVR();
+        vrToggleBtn.textContent = "Con VR";
+        vrToggleBtn.style.background = "#4682B4";
+        vrToggleBtn.style.color = "#fff";
+      } else {
+        video.style.display = '';
+        vrVideoContainer.style.display = 'none';
+        videoLeft.srcObject = null;
+        videoRight.srcObject = null;
+        vrToggleBtn.textContent = "Sin VR";
+        vrToggleBtn.style.background = "#e0e0e0";
+        vrToggleBtn.style.color = "#222";
+      }
+    }
+
+    if (vrToggleBtn) {
+      vrToggleBtn.onclick = function () {
+        setModoVR(!modoVR);
+      };
+    }
+
+    // Al cambiar de cámara, actualiza los videos VR si está activo
+    async function cambiarCamara(nuevaCamara) {
+  await obtenerDispositivosVideo();
+  if (dispositivosVideo.length < 2) {
+    mostrarNotificacionTrofeo("Solo se detecta una cámara en el dispositivo.");
+    return;
+  }
+
+  camaraActual = nuevaCamara;
+  if (streamActual) {
+    streamActual.getTracks().forEach(track => track.stop());
+  }
+
+  try {
+    const constraints = {
+      video: { facingMode: { exact: nuevaCamara } }
+    };
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    streamActual = stream;
+
+    // Asignar y forzar reproducción en el video principal
+    video.srcObject = stream;
+    video.play().catch(() => { /* evita errores de autoplay */ });
+    video.style.transform = '';
+
+    // Si estamos en modo VR, duplicamos el stream
+    if (modoVR) {
+      duplicarStreamVR();
+    }
+
+    mostrarNotificacionTrofeo(
+      nuevaCamara === 'user'
+        ? "Cámara frontal activada."
+        : "Cámara trasera activada."
+    );
+  } catch (e) {
+    mostrarNotificacionTrofeo("No se pudo cambiar la cámara.");
+  }
+}
+
+
+async function inicializarCamara() {
+  await obtenerDispositivosVideo();
+  let facingMode = camaraActual;
+  if (dispositivosVideo.length === 1) facingMode = undefined;
+
+  try {
+    const constraints = facingMode
+      ? { video: { facingMode: { exact: facingMode } } }
+      : { video: true };
+
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    streamActual = stream;
+    video.srcObject = stream;
+    video.play().catch(() => {});
+
+    if (modoVR) {
+      duplicarStreamVR();
+    }
+  } catch (error) {
+    console.error('Error al acceder a la cámara: ', error);
+    document.getElementById('mensaje').textContent =
+      'Error al acceder a la cámara. Por favor, verifica los permisos.';
+  }
+}
+
+
+    // Al cargar la página, asegúrate de que el modo VR esté desactivado por defecto
+    window.onload = async function () {
+      selectedFloor = "B1";
+      localStorage.setItem('simuladorPiso', "B1");
+      document.getElementById('pisoSeleccionadoValor').textContent = "B1";
+      showTutorialStep();
+      mostrarGifCronometro(false);
+      actualizarIntensidadTexto();
+      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Simulación');
+      mostrarMapaPiso(selectedFloor);
+
+      alertaActiva = false;
+      actualizarEstadoAlerta();
+      actualizarBotonAlertaPorModo();
+      await inicializarCamara();
+    };
 
   </script>
 </body>
