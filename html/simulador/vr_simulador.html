@@ -576,6 +576,13 @@
           Desactivada
         </button>
       </div>
+      <div id="camaraContainer" style="margin-bottom: 10px;">
+        <h2 style="margin:0; font-size:1.1rem;">Cámara</h2>
+        <button id="toggleCamaraBtn"
+          style="background:#e0e0e0; color:#222; border:2.5px solid #4682B4; border-radius:10px; padding:8px 18px; font-size:15px;">
+          Usar cámara trasera
+        </button>
+      </div>
       <button id="botonReanudarPausa" onclick="cerrarMenuPausa()">Cerrar</button>
     </div>
   </div>
@@ -1438,7 +1445,7 @@
       };
     }
 
-    window.onload = function () {
+    window.onload = async function () {
       selectedFloor = "B1";
       localStorage.setItem('simuladorPiso', "B1");
       document.getElementById('pisoSeleccionadoValor').textContent = "B1";
@@ -1451,85 +1458,125 @@
       alertaActiva = false;
       actualizarEstadoAlerta();
       actualizarBotonAlertaPorModo();
+      await inicializarCamara();
     };
 
-    const video = document.getElementById('video');
-    // Solicitamos la cámara sin restricciones de facingMode ni tamaño
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => { 
-        video.srcObject = stream; 
-        // Eliminamos cualquier transformación previa
+    let camaraActual = 'environment'; // 'user' o 'environment'
+    let dispositivosVideo = [];
+    let streamActual = null;
+
+    // Función para obtener dispositivos de video
+    async function obtenerDispositivosVideo() {
+      try {
+        const dispositivos = await navigator.mediaDevices.enumerateDevices();
+        dispositivosVideo = dispositivos.filter(d => d.kind === 'videoinput');
+      } catch (e) {
+        dispositivosVideo = [];
+      }
+    }
+
+    // Función para cambiar la cámara
+    async function cambiarCamara(nuevaCamara) {
+      await obtenerDispositivosVideo();
+      if (dispositivosVideo.length < 2) {
+        mostrarNotificacionTrofeo("Solo se detecta una cámara en el dispositivo.");
+        return;
+      }
+      camaraActual = nuevaCamara;
+      if (streamActual) {
+        streamActual.getTracks().forEach(track => track.stop());
+      }
+      try {
+        const constraints = {
+          video: { facingMode: { exact: nuevaCamara } }
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamActual = stream;
+        const video = document.getElementById('video');
+        video.srcObject = stream;
         video.style.transform = '';
-      })
-      .catch(error => {
+        mostrarNotificacionTrofeo(
+          nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
+        );
+      } catch (e) {
+        mostrarNotificacionTrofeo("No se pudo cambiar la cámara.");
+      }
+    }
+
+    // Inicialización de cámara al cargar
+    async function inicializarCamara() {
+      await obtenerDispositivosVideo();
+      let facingMode = camaraActual;
+      if (dispositivosVideo.length === 1) {
+        facingMode = undefined;
+      }
+      try {
+        const constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamActual = stream;
+        const video = document.getElementById('video');
+        video.srcObject = stream;
+        video.style.transform = '';
+      } catch (error) {
         console.error('Error al acceder a la cámara: ', error);
         document.getElementById('mensaje').textContent = 'Error al acceder a la cámara. Por favor, verifica los permisos.';
-      });
-    if ('Gyroscope' in window) {
-      try {
-        const gyroscope = new Gyroscope({ frequency: 60 });
-        gyroscope.addEventListener('reading', () => {
-          let rotation = gyroscope.z;
-          document.getElementById("directionIndicator").style.transform = "translateY(-50%) rotate(" + rotation + "deg)";
-        });
-        gyroscope.start();
-      } catch (error) {
-        console.error("Error iniciando el sensor del giroscopio:", error);
       }
-    } else if (window.DeviceOrientationEvent) {
-      window.addEventListener("deviceorientation", function (event) {
-        let alpha = event.alpha || 0;
-        document.getElementById("directionIndicator").style.transform = "translateY(-50%) rotate(" + alpha + "deg)";
-      });
-    } else {
-      let simulatedAngle = 0;
-      setInterval(() => {
-        simulatedAngle = (simulatedAngle + 5) % 360;
-        document.getElementById("directionIndicator").style.transform = "translateY(-50%) rotate(" + simulatedAngle + "deg)";
-      }, 200);
     }
 
-    function mostrarRecorrido() {
-      currentStep = 0;
+    // Evento para el botón toggle de cámara
+    document.addEventListener("DOMContentLoaded", function () {
+      // ...existing code...
+      const toggleCamaraBtn = document.getElementById('toggleCamaraBtn');
+      if (toggleCamaraBtn) {
+        toggleCamaraBtn.onclick = async function () {
+          await obtenerDispositivosVideo();
+          if (dispositivosVideo.length < 2) {
+            mostrarNotificacionTrofeo("Solo se detecta una cámara en el dispositivo.");
+            return;
+          }
+          if (camaraActual === 'environment') {
+            camaraActual = 'user';
+            toggleCamaraBtn.textContent = "Usar cámara trasera";
+            await cambiarCamara('user');
+          } else {
+            camaraActual = 'environment';
+            toggleCamaraBtn.textContent = "Usar cámara frontal";
+            await cambiarCamara('environment');
+          }
+        };
+      }
+    });
+
+    // Sobrescribe la inicialización de cámara
+    window.onload = async function () {
+      selectedFloor = "B1";
+      localStorage.setItem('simuladorPiso', "B1");
+      document.getElementById('pisoSeleccionadoValor').textContent = "B1";
       showTutorialStep();
-      document.getElementById("modalTutorial").style.display = "flex";
-    }
+      mostrarGifCronometro(false);
+      actualizarIntensidadTexto();
+      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Simulación');
+      mostrarMapaPiso(selectedFloor);
 
-    function cerrarModalVR() {
-      document.getElementById("modalVR").style.display = "none";
-      document.getElementById("botonesVR").style.display = "block";
-      document.getElementById("contadorVR").textContent = "Tiempo restante: 0 seg.";
-    }
+      alertaActiva = false;
+      actualizarEstadoAlerta();
+      actualizarBotonAlertaPorModo();
+      await inicializarCamara();
+    };
 
-    function mostrarModalPartePiso(piso) {
-      document.getElementById("modalPartePiso").style.display = "flex";
-      const img = document.getElementById("imagenPisoParte");
-      img.src = "mapas/png/" + piso + ".png";
-      img.alt = "Plano general del piso " + piso;
-      img.setAttribute("data-piso", piso);
-    }
+    // Elimina la inicialización previa de cámara
+    // navigator.mediaDevices.getUserMedia({ video: true })
+    //   .then(stream => { 
+    //     video.srcObject = stream; 
+    //     // Eliminamos cualquier transformación previa
+    //     video.style.transform = '';
+    //   })
+    //   .catch(error => {
+    //     console.error('Error al acceder a la cámara: ', error);
+    //     document.getElementById('mensaje').textContent = 'Error al acceder a la cámara. Por favor, verifica los permisos.';
+    //   });
 
-    function cerrarModalPartePiso() {
-      document.getElementById("modalPartePiso").style.display = "none";
-    }
-
-    function seleccionarPartePiso(parte) {
-      const img = document.getElementById("imagenPisoParte");
-      const piso = img.getAttribute("data-piso");
-      const archivoFinal = piso + "_" + parte + ".png";
-
-      const contenedor = document.getElementById("mapaPisoContainer");
-      const imgMapa = document.getElementById("mapaPisoImg");
-      imgMapa.src = "mapas/png/" + archivoFinal;
-      imgMapa.alt = "Mapa de " + piso + " " + parte;
-      contenedor.style.display = "block";
-
-      partePisoSeleccionada = parte;
-
-      cerrarModalPartePiso();
-      cerrarMenuPausa();
-    }
-
+    // ...existing code...
   </script>
 </body>
 
