@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimUAM: Señalizaciones Éticas</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            padding: 40px;
+            box-sizing: border-box;
+            text-align: center;
+            background-color: #fff;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease;
+            opacity: 0;
+
+            transform: scale(0.8);
+            transform-origin: center center;
+        }
+
+        .slide.active {
+            display: block;
+            opacity: 1;
+
+            /* Escala normal al estar activa */
+            transform: scale(1);
+        }
+
+
+        /* Animación para las imágenes */
+        .slide img {
+            max-width: 80%;
+            height: auto;
+            margin: 20px 0;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        /* Keyframes para el efecto fadeInUp */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 40px, 0);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        /* Animación para el texto */
+        .slide h1,
+        .slide h2,
+        .slide p {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section class="slide active" id="slide1">
+        <h1>Señalizaciones Éticas</h1>
+        <img src="señaletica/360_logo.png" alt="Imagen de señalización">
+        <p>Explora la importancia de las señales éticas y su impacto en diversas áreas en la UAM Cuajimalpa.</p>
+    </section>
+
+    <section class="slide" id="slide2">
+        <h2>Señal de Extintores</h2>
+        <img src="señaletica/señal_extintor.jpg" alt="Conceptos básicos">
+        <p>Marcador que informa sobre la presencia de un extintor cercano.</p>
+    </section>
+
+    <section class="slide" id="slide3">
+        <h2>Extintores</h2>
+        <img src="señaletica/extintor.jpg" alt="Conceptos básicos">
+        <p>Ubicación de un extintor para combatir incendios de manera rápida.</p>
+    </section>
+
+    <section class="slide" id="slide4">
+        <h2>Zonas de Menor Riesgo</h2>
+        <img src="señaletica/zona_menor.jpg" alt="Conceptos básicos">
+        <p>Señal que delimita un área con menor riesgo o acceso restringido.</p>
+    </section>
+
+    <section class="slide" id="slide5">
+        <h2>En caso de incendio...</h2>
+        <img src="señaletica/caso_incendio.jpg" alt="Conceptos básicos">
+        <p>Kit de herramientas a utilizar en caso de incendio, contiene un extintor, y manguera para apagar el fuego.</p>
+    </section>
+
+    <section class="slide" id="slide6">
+        <h2>Ruta de Evacuacion</h2>
+        <img src="señaletica/ruta_evacuacion.jpg" alt="Conceptos básicos">
+        <p>Indica el camino seguro para evacuar en caso de emergencia.</p>
+    </section>
+
+        <section class="slide" id="slide7">
+        <h2>Espacio libre de humo de tabaco</h2>
+        <img src="señaletica/humo_tabaco.jpg" alt="Conceptos básicos">
+        <p>Restricción o advertencia sobre zonas donde está prohibido fumar.</p>
+    </section>
+
+    <section class="slide" id="slide8">
+        <h2>Plafones</h2>
+        <img src="señaletica/plafones.jpg" alt="Conceptos básicos">
+        <p>Los espacios de la UAM Cuajimalpa estan mayormente compuestos por plafones en los techos, estos no presentan un riesgo en caso de siniestro, sin embargo, es mejor prevenir un accidente en caso de caida de uno.</p>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            let currentIndex = 0;
+
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    if (i === index) {
+                        slide.classList.add('active');
+                    } else {
+                        slide.classList.remove('active');
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    currentIndex = (currentIndex + 1) % slides.length;
+                    showSlide(currentIndex);
+                }
+                if (e.key === 'ArrowLeft') {
+                    currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                    showSlide(currentIndex);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

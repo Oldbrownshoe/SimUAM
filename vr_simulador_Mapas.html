@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #222;
+        }
+
+        #mapa-container {
+            position: relative;
+            margin: 0 auto;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* El tamaño se ajustará dinámicamente */
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
+        }
+
+        #svg-mapa {
+            display: block;
+            max-width: 100vw;
+            max-height: 100vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        #usuario {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            cursor: grab;
+            transition: transform 0.1s linear;
+            z-index: 2;
+        }
+
+        #rotador {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            background: #fff8;
+            padding: 10px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #0003;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #rotador input[type=range] {
+            width: 180px;
+        }
+
+        #rotador .flecha {
+            width: 32px;
+            height: 32px;
+            display: inline-block;
+            background: url('./mapas/usuario.png') no-repeat center/contain;
+            transform: rotate(0deg);
+            transition: transform 0.1s linear;
+        }
+
+        /* Estilos para el canvas de la ruta */
+        #canvas-ruta {
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Estilos para los botones de control de ruta */
+        #controles-ruta {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            margin: 0;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            z-index: 11;
+        }
+
+        #controles-ruta button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #fff8;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #controles-ruta button:hover {
+            background: #fff3;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mapa-container">
+        <div id="selector-piso"
+            style="position:absolute;top:10px;right:400px;z-index:20;background:#fff8;padding:8px 16px;border-radius:8px;box-shadow:0 2px 8px #0003;">
+            <label for="piso-select">Piso:</label>
+            <select id="piso-select">
+                <option value="B1.png">Estacionamiento 1</option>
+                <option value="B2.png">Estacionamiento 2</option>
+                <option value="B3.png">Estacionamiento 3</option>
+                <option value="4.png">Piso 4</option>
+                <option value="6.png">Piso 6</option>
+                <option value="7.png">Piso 7</option>
+                <option value="8.png">Piso 8</option>
+                <option value="G.png">Jardin de Abejas</option>
+            </select>
+        </div>
+        <img id="svg-mapa" src="./mapas/png/B1.png" alt="Mapa PNG">
+        <canvas id="canvas-ruta" style="position:absolute;left:0;top:0;z-index:1;pointer-events:none;"></canvas>
+        <img id="usuario" src="./mapas/usuario/B1.png" alt="Usuario" draggable="false" style="pointer-events:auto;">
+        <div id="mensaje"
+            style="position:absolute;top:10px;left:120%;transform:translateX(-50%);background:#fff;padding:10px 20px;border-radius:8px;z-index:10;font-size:1.1em;box-shadow:0 2px 8px #0003;">
+            Arrastra la flecha a tu ubicación inicial en el mapa</div>
+        <div id="rotador">
+            <span>Rotar flecha:</span>
+            <input id="slider-rotacion" type="range" min="0" max="359" value="0">
+            <span class="flecha" id="flecha-rotacion"></span>
+        </div>
+        <div id="controles-ruta">
+            <button id="btn-marcar-ruta">Marcar ruta</button>
+            <button id="btn-limpiar-ruta">Limpiar ruta</button>
+        </div>
+    </div>
+    <script>
+        // Dimensiones de cada mapa por piso
+        const dimensionesMapas = {
+            "B1.png": { width: 384, height: 577 },
+            "B2.png": { width: 340, height: 418 },
+            "B3.png": { width: 340, height: 692 },
+            "4.png": { width: 384, height: 408 },
+            "5.png": { width: 900, height: 600 },
+            "6.png": { width: 457, height: 496 },
+            "7.png": { width: 357, height: 393 },
+            "8.png": { width: 546, height: 578 },
+            "G.png": { width: 371, height: 431 }
+        };
+
+        const usuario = document.getElementById('usuario');
+        const mapa = document.getElementById('svg-mapa');
+        const container = document.getElementById('mapa-container');
+        const canvasRuta = document.getElementById('canvas-ruta');
+        const ctxRuta = canvasRuta.getContext('2d');
+        const btnMarcarRuta = document.getElementById('btn-marcar-ruta');
+        const btnLimpiarRuta = document.getElementById('btn-limpiar-ruta');
+        const pisoSelect = document.getElementById('piso-select');
+        const mensaje = document.getElementById('mensaje');
+
+        let dragging = false;
+        let offsetX = 0, offsetY = 0;
+        let pisoActual = pisoSelect.value;
+        let posX = dimensionesMapas[pisoActual]?.width ? dimensionesMapas[pisoActual].width / 2 : 200;
+        let posY = dimensionesMapas[pisoActual]?.height ? dimensionesMapas[pisoActual].height / 2 : 200;
+        let escala = 2.5;
+        let direccion = null;
+        let direccionVector = { x: 0, y: -1 };
+        let arrastrado = false;
+        let angulo = 0;
+        let modoMarcarRuta = false;
+        let puntosRuta = [];
+        const sliderRotacion = document.getElementById('slider-rotacion');
+        const flechaRotacion = document.getElementById('flecha-rotacion');
+
+        function clamp(val, min, max) {
+            return Math.max(min, Math.min(max, val));
+        }
+
+        function getUsuarioRadius() {
+            return 16;
+        }
+
+        function clampUsuario(val, min, max) {
+            return val;
+        }
+
+        function actualizarRotacion() {
+            usuario.style.transform = `translate(-50%, -50%) translate(${posX}px, ${posY}px) rotate(${angulo}deg)`;
+            flechaRotacion.style.transform = `rotate(${angulo}deg)`;
+        }
+
+        function actualizarPosicion() {
+            usuario.style.transform = `translate(-50%, -50%) translate(${posX}px, ${posY}px) rotate(${angulo}deg)`;
+            if (modoMarcarRuta && puntosRuta.length > 0) {
+                puntosRuta[0] = { x: posX, y: posY };
+                dibujarRuta();
+            }
+        }
+
+        sliderRotacion.addEventListener('input', function () {
+            angulo = parseInt(this.value);
+            actualizarRotacion();
+        });
+        actualizarRotacion();
+
+        usuario.addEventListener('mousedown', startDrag);
+        usuario.addEventListener('touchstart', startDrag, { passive: false });
+        document.addEventListener('mousemove', onDrag);
+        document.addEventListener('touchmove', onDrag, { passive: false });
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
+
+        function getEventPos(e) {
+            if (e.touches && e.touches.length > 0) {
+                return {
+                    x: e.touches[0].clientX - container.getBoundingClientRect().left,
+                    y: e.touches[0].clientY - container.getBoundingClientRect().top
+                };
+            } else {
+                return {
+                    x: e.clientX - container.getBoundingClientRect().left,
+                    y: e.clientY - container.getBoundingClientRect().top
+                };
+            }
+        }
+
+        function startDrag(e) {
+            e.preventDefault();
+            dragging = true;
+            arrastrado = true;
+            let pos = getEventPos(e);
+            offsetX = pos.x - posX;
+            offsetY = pos.y - posY;
+        }
+
+        function onDrag(e) {
+            if (!dragging) return;
+            let pos = getEventPos(e);
+            posX = pos.x - offsetX;
+            posY = pos.y - offsetY;
+            actualizarPosicion();
+        }
+
+        function endDrag(e) {
+            if (!dragging) return;
+            dragging = false;
+            if (mensaje) mensaje.style.display = 'none';
+        }
+
+        posX = container.offsetWidth / 2;
+        posY = container.offsetHeight / 2;
+        actualizarPosicion();
+
+        window.addEventListener('deviceorientation', function (event) {
+            if (!arrastrado) return;
+            let fuerza = event.beta * escala * 0.05;
+            let rad = angulo * Math.PI / 180;
+            let dx = Math.sin(rad) * fuerza;
+            let dy = -Math.cos(rad) * fuerza;
+            posX = posX + dx;
+            posY = posY + dy;
+            actualizarPosicion();
+        });
+
+        window.addEventListener('keydown', function (e) {
+            if (!arrastrado) return;
+            let paso = 10;
+            let rad = angulo * Math.PI / 180;
+            let dx = Math.sin(rad) * paso;
+            let dy = -Math.cos(rad) * paso;
+            if (e.key === 'ArrowUp') {
+                posX = posX + dx;
+                posY = posY + dy;
+            }
+            if (e.key === 'ArrowDown') {
+                posX = posX - dx;
+                posY = posY - dy;
+            }
+            actualizarPosicion();
+        });
+
+        btnMarcarRuta.addEventListener('click', function () {
+            modoMarcarRuta = !modoMarcarRuta;
+            btnMarcarRuta.textContent = modoMarcarRuta ? 'Terminar marcado' : 'Marcar ruta';
+            if (modoMarcarRuta) {
+                puntosRuta = [{ x: posX, y: posY }];
+                dibujarRuta();
+                canvasRuta.style.pointerEvents = 'auto';
+            } else {
+                canvasRuta.style.pointerEvents = 'none';
+            }
+        });
+
+        btnLimpiarRuta.addEventListener('click', function () {
+            puntosRuta = [];
+            dibujarRuta();
+        });
+
+        canvasRuta.addEventListener('mousedown', function (e) {
+            if (!modoMarcarRuta) return;
+            const rect = canvasRuta.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            puntosRuta.push({ x, y });
+            dibujarRuta();
+        });
+
+        function dibujarRuta() {
+            ctxRuta.clearRect(0, 0, canvasRuta.width, canvasRuta.height);
+            if (puntosRuta.length < 2) return;
+            ctxRuta.strokeStyle = '#00ff00';
+            ctxRuta.lineWidth = 5;
+            ctxRuta.beginPath();
+            ctxRuta.moveTo(puntosRuta[0].x, puntosRuta[0].y);
+            for (let i = 1; i < puntosRuta.length; i++) {
+                ctxRuta.lineTo(puntosRuta[i].x, puntosRuta[i].y);
+            }
+            ctxRuta.stroke();
+            ctxRuta.fillStyle = '#00ff00';
+            for (let p of puntosRuta) {
+                ctxRuta.beginPath();
+                ctxRuta.arc(p.x, p.y, 6, 0, 2 * Math.PI);
+                ctxRuta.fill();
+            }
+        }
+
+        function ajustarCanvasYUsuario(centrar = false) {
+            const dims = dimensionesMapas[pisoActual];
+            if (!dims) return;
+
+            const maxW = window.innerWidth;
+            const maxH = window.innerHeight;
+            const escalaW = maxW / dims.width;
+            const escalaH = maxH / dims.height;
+            const escalaMapa = Math.min(escalaW, escalaH, 1);
+
+            const scaledWidth = dims.width * escalaMapa;
+            const scaledHeight = dims.height * escalaMapa;
+
+            container.style.width = scaledWidth + 'px';
+            container.style.height = scaledHeight + 'px';
+            canvasRuta.width = scaledWidth;
+            canvasRuta.height = scaledHeight;
+
+            mapa.style.width = scaledWidth + 'px';
+            mapa.style.height = scaledHeight + 'px';
+
+            if (centrar) {
+                posX = container.offsetWidth / 2;
+                posY = container.offsetHeight / 2;
+            } else {
+
+            }
+
+            if (puntosRuta.length > 0) {
+                puntosRuta = puntosRuta.map(p => ({
+                    x: clampUsuario(p.x, 0, scaledWidth),
+                    y: clampUsuario(p.y, 0, scaledHeight)
+                }));
+            }
+
+            actualizarPosicion();
+            dibujarRuta();
+        }
+
+        window.addEventListener('resize', function () {
+            ajustarCanvasYUsuario(false);
+        });
+
+        pisoSelect.addEventListener('change', function () {
+            const piso = pisoSelect.value;
+            pisoActual = piso;
+            mapa.src = `./mapas/png/${piso}`;
+            usuario.src = `./mapas/usuario/${piso}`;
+            flechaRotacion.style.backgroundImage = `url('./mapas/usuario/${piso}')`;
+            puntosRuta = [];
+            dibujarRuta();
+            ajustarCanvasYUsuario(false);
+        });
+
+        mapa.addEventListener('load', function () {
+            if (!arrastrado) {
+                ajustarCanvasYUsuario(true);
+            } else {
+                ajustarCanvasYUsuario(false);
+            }
+        });
+
+        flechaRotacion.style.backgroundImage = `url('./mapas/usuario/${pisoSelect.value}')`;
+
+        if (mapa.complete) {
+            ajustarCanvasYUsuario(true);
+        } else {
+            mapa.addEventListener('load', function () { ajustarCanvasYUsuario(true); });
+        }
+    </script>
+</body>
+
+</html>
