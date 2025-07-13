@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 619 598">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: none;
+      }
+
+      .cls-2 {
+        stroke: #adadad;
+        stroke-miterlimit: 10;
+        stroke-width: 3px;
+      }
+
+      .cls-3 {
+        fill: #cecece;
+        opacity: .77;
+      }
+
+      .cls-4 {
+        fill: #adadad;
+      }
+    </style>
+  </defs>
+  <g id="Muros">
+    <g>
+      <polygon class="cls-1" points="298 271 283 271 283 296 280 296 280 271 265 271 265 296 262 296 262 271 210 271 210 290 207 290 207 271 187 271 187 294 209 294 209 297 187 297 184 297 184 271 178 271 178 331 207 331 207 301 210 301 210 331 244 331 244 306 247 306 247 331 262 331 262 306 265 306 265 331 298 331 298 271"/>
+      <rect class="cls-1" x="525" y="464" width="14" height="33"/>
+      <rect class="cls-1" x="148" y="271" width="27" height="60"/>
+      <rect class="cls-1" x="451" y="140" width="24" height="63"/>
+      <rect class="cls-1" x="431" y="98" width="44" height="38"/>
+      <rect class="cls-1" x="543" y="436" width="28" height="22"/>
+      <polygon class="cls-1" points="445 321 422 321 418 321 389 321 385 321 359 321 355 321 325 321 321 321 321 317 321 271 302 271 302 331 445 331 445 321"/>
+      <rect class="cls-1" x="359" y="271" width="26" height="46"/>
+      <rect class="cls-1" x="327" y="335" width="118" height="58"/>
+      <rect class="cls-1" x="278" y="335" width="45" height="58"/>
+      <rect class="cls-1" x="390" y="98" width="37" height="38"/>
+      <rect class="cls-1" x="389" y="271" width="29" height="46"/>
+      <rect class="cls-1" x="325" y="271" width="30" height="46"/>
+      <polygon class="cls-1" points="289 230 286 230 275 230 275 227 286 227 286 207 270 207 270 230 267 230 267 207 253 207 253 227 264 227 264 230 253 230 238 230 238 227 250 227 250 207 234 207 234 230 231 230 231 207 216 207 216 227 227 227 227 230 216 230 215 230 201 230 201 227 213 227 213 207 178 207 178 227 190 227 190 230 178 230 178 246 304 246 304 230 293 230 293 227 304 227 304 207 289 207 289 230"/>
+      <rect class="cls-1" x="307" y="207" width="20" height="39"/>
+      <rect class="cls-1" x="346" y="98" width="40" height="38"/>
+      <rect class="cls-1" x="147" y="140" width="300" height="63"/>
+      <rect class="cls-1" x="331" y="207" width="42" height="39"/>
+      <rect class="cls-1" x="147" y="98" width="42" height="38"/>
+      <rect class="cls-1" x="377" y="207" width="45" height="39"/>
+      <rect class="cls-1" x="426" y="207" width="49" height="39"/>
+      <rect class="cls-1" x="147" y="207" width="27" height="39"/>
+      <rect class="cls-1" x="311" y="98" width="31" height="38"/>
+      <rect class="cls-1" x="278" y="98" width="29" height="38"/>
+      <rect class="cls-1" x="193" y="98" width="37" height="38"/>
+      <rect class="cls-1" x="234" y="98" width="40" height="38"/>
+      <polygon class="cls-4" points="97 136 97 168 97 171 100 171 111 171 114 171 127 171 130 171 130 168 130 136 127 136 127 168 114 168 114 136 111 136 111 168 100 168 100 136 97 136"/>
+      <rect class="cls-4" x="111" y="358" width="4" height="25"/>
+      <path class="cls-4" d="M479,250V94H143v156h336ZM475,203h-24v-63h24v63ZM431,98h44v38h-44v-38ZM390,98h37v38h-37v-38ZM346,98h40v38h-40v-38ZM311,98h31v38h-31v-38ZM278,98h29v38h-29v-38ZM234,98h40v38h-40v-38ZM193,98h37v38h-37v-38ZM147,98h42v38h-42v-38ZM147,140h300v63H147v-63ZM174,246h-27v-39h27v39ZM304,227h-11v3h11v16h-126v-16h12v-3h-12v-20h35v20h-12v3h26v-3h-11v-20h15v23h3v-23h16v20h-12v3h26v-3h-11v-20h14v23h3v-23h16v20h-11v3h14v-23h15v20ZM327,246h-20v-39h20v39ZM373,246h-42v-39h42v39ZM422,246h-45v-39h45v39ZM426,207h49v39h-49v-39Z"/>
+      <rect class="cls-4" x="81" y="219" width="6" height="95"/>
+      <path class="cls-4" d="M571,329h-41v-185h44V43H81v100h6V49h17v24h-11v4h15v-28h17v30h83v-4h-79v-26h96v26h-4v4h11v-4h-3v-26h94v26h-80v4h122v-4h-38v-26h47v26h-4v4h44v-4h-36v-26h42v30h44v-4h-40v-26h49v26h-5v4h44v-4h-35v-26h43v30h4v-30h17v30h4v-30h23v89h-44v191h-26V107h45v-6h-49v228h-23v6h100v58h-103v6h71v23h13v-4h-9v-19h18v23h4v-23h6v33h-32v26h-16v-23h-12v4h8v19h-10v-23h-4v23h-14v-13h9v-4h-22v4h9v13h-12v-17h-4v17h-143v17h-55v-17H87v-59h28v40h-21v4h25v-44h278v22h4v-22h12v18h-8v4h12v-22h12v18h-8v4h12v-22h12v18h-8v4h82v6h4v-10h-74v-135h-4v35h-23v-46h27v-4H144v68h130v58H125v-33h-4v33h-17v-33h-4v33h-19v71h189v14h61v-14h190v35h22v-35h34v-135h-6ZM323,393h-45v-58h45v58ZM445,393h-118v-58h118v58ZM389,271h29v46h-29v-46ZM359,271h26v46h-26v-46ZM325,271h30v46h-30v-46ZM302,271h19v50h124v10h-143v-60ZM175,331h-27v-60h27v60ZM265,331v-25h-3v25h-15v-25h-3v25h-34v-30h-3v30h-29v-60h6v26h25v-3h-22v-23h20v19h3v-19h52v25h3v-25h15v25h3v-25h15v60h-33ZM539,497h-14v-33h14v33ZM571,458h-28v-22h28v22Z"/>
+    </g>
+    <rect class="cls-2" x="104" y="196" width="21" height="145"/>
+  </g>
+  <g id="cuadrantes">
+    <rect id="cuadrante1" class="cls-3" x="82.85" y="44.13" width="238.87" height="210.44"/>
+    <rect id="cuadrante2" class="cls-3" x="319.44" y="44.13" width="249.57" height="210.44"/>
+    <rect id="cuadrante4" class="cls-3" x="319.44" y="251.56" width="249.57" height="210.44"/>
+    <rect id="cuadrante3" class="cls-3" x="82.85" y="251.56" width="238.87" height="210.44"/>
+  </g>
+</svg>
