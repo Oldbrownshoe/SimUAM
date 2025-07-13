@@ -594,6 +594,7 @@
           Usar cámara trasera
         </button>
       </div>
+      <!-- NUEVO: Toggle VR -->
       <div id="vrToggleContainer" style="margin-bottom: 10px;">
         <h2 style="margin:0; font-size:1.1rem;">Modo Realidad Virtual</h2>
         <button id="vrToggleBtn"
@@ -650,16 +651,6 @@
       <video id="videoRight" autoplay style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
     </div>
   </div>
-
-  <div id="vrVideoContainer" style="display:none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0;">
-  <div style="display: flex; width: 100vw; height: 100vh;">
-    <video id="videoLeft" autoplay muted playsinline
-           style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
-    <video id="videoRight" autoplay muted playsinline
-           style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
-  </div>
-</div>
-
 
   <div id="simulador">
     <h2 id="encabezado" class="caja-texto">Simulador de Sismos: SimUAM</h2>
@@ -1531,8 +1522,7 @@
         video.style.transform = '';
 
         if (modoVR) {
-          videoLeft.srcObject = stream;
-          videoRight.srcObject = stream;
+          duplicarStreamVR();
         }
         mostrarNotificacionTrofeo(
           nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
@@ -1544,48 +1534,24 @@
 
     async function inicializarCamara() {
       await obtenerDispositivosVideo();
-      let facingMode = camaraActual;
+      let facingMode = camaraActual; // Esto ya es 'environment' por defecto
       if (dispositivosVideo.length === 1) {
         facingMode = undefined;
       }
       try {
         const constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
-const stream = await navigator.mediaDevices.getUserMedia(constraints);
-streamActual = stream;
-video.srcObject = stream;
-
-if (modoVR) {
-  duplicarStreamVR();
-}
-
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamActual = stream;
+        video.srcObject = stream;
+        video.style.transform = '';
+        if (modoVR) {
+          duplicarStreamVR();
+        }
       } catch (error) {
         console.error('Error al acceder a la cámara: ', error);
         document.getElementById('mensaje').textContent = 'Error al acceder a la cámara. Por favor, verifica los permisos.';
       }
     }
-
-    document.addEventListener("DOMContentLoaded", function () {
-
-      const toggleCamaraBtn = document.getElementById('toggleCamaraBtn');
-      if (toggleCamaraBtn) {
-        toggleCamaraBtn.onclick = async function () {
-          await obtenerDispositivosVideo();
-          if (dispositivosVideo.length < 2) {
-            mostrarNotificacionTrofeo("Solo se detecta una cámara en el dispositivo.");
-            return;
-          }
-          if (camaraActual === 'environment') {
-            camaraActual = 'user';
-            toggleCamaraBtn.textContent = "Usar cámara trasera";
-            await cambiarCamara('user');
-          } else {
-            camaraActual = 'environment';
-            toggleCamaraBtn.textContent = "Usar cámara frontal";
-            await cambiarCamara('environment');
-          }
-        };
-      }
-    });
 
     window.onload = async function () {
       selectedFloor = "B1";
@@ -1635,19 +1601,15 @@ if (modoVR) {
     const videoRight = document.getElementById('videoRight');
 
     // Duplicar el stream en ambos videos VR
-function duplicarStreamVR() {
-  if (!streamActual) return;
-
-  // Left: asigna todo el stream
-  videoLeft.srcObject = streamActual;
-  videoLeft.play().catch(() => { /* evita errores de autoplay */ });
-
-  // Right: solo pistas de video para evitar choque de audio
-  const videoOnly = new MediaStream(streamActual.getVideoTracks());
-  videoRight.srcObject = videoOnly;
-  videoRight.play().catch(() => { /* evita errores de autoplay */ });
-}
-
+    function duplicarStreamVR() {
+      if (streamActual) {
+        videoLeft.srcObject = streamActual;
+        videoRight.srcObject = streamActual;
+      } else {
+        videoLeft.srcObject = null;
+        videoRight.srcObject = null;
+      }
+    }
 
     function setModoVR(activo) {
       modoVR = activo;
@@ -1675,74 +1637,57 @@ function duplicarStreamVR() {
       };
     }
 
-    // Al cambiar de cámara, actualiza los videos VR si está activo
+
     async function cambiarCamara(nuevaCamara) {
-  await obtenerDispositivosVideo();
-  if (dispositivosVideo.length < 2) {
-    mostrarNotificacionTrofeo("Solo se detecta una cámara en el dispositivo.");
-    return;
-  }
-
-  camaraActual = nuevaCamara;
-  if (streamActual) {
-    streamActual.getTracks().forEach(track => track.stop());
-  }
-
-  try {
-    const constraints = {
-      video: { facingMode: { exact: nuevaCamara } }
-    };
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    streamActual = stream;
-
-    // Asignar y forzar reproducción en el video principal
-    video.srcObject = stream;
-    video.play().catch(() => { /* evita errores de autoplay */ });
-    video.style.transform = '';
-
-    // Si estamos en modo VR, duplicamos el stream
-    if (modoVR) {
-      duplicarStreamVR();
+      await obtenerDispositivosVideo();
+      if (dispositivosVideo.length < 2) {
+        mostrarNotificacionTrofeo("Solo se detecta una cámara en el dispositivo.");
+        return;
+      }
+      camaraActual = nuevaCamara;
+      if (streamActual) {
+        streamActual.getTracks().forEach(track => track.stop());
+      }
+      try {
+        const constraints = {
+          video: { facingMode: { exact: nuevaCamara } }
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamActual = stream;
+        video.srcObject = stream;
+        video.style.transform = '';
+        if (modoVR) {
+          duplicarStreamVR();
+        }
+        mostrarNotificacionTrofeo(
+          nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
+        );
+      } catch (e) {
+        mostrarNotificacionTrofeo("No se pudo cambiar la cámara.");
+      }
     }
 
-    mostrarNotificacionTrofeo(
-      nuevaCamara === 'user'
-        ? "Cámara frontal activada."
-        : "Cámara trasera activada."
-    );
-  } catch (e) {
-    mostrarNotificacionTrofeo("No se pudo cambiar la cámara.");
-  }
-}
-
-
-async function inicializarCamara() {
-  await obtenerDispositivosVideo();
-  let facingMode = camaraActual;
-  if (dispositivosVideo.length === 1) facingMode = undefined;
-
-  try {
-    const constraints = facingMode
-      ? { video: { facingMode: { exact: facingMode } } }
-      : { video: true };
-
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    streamActual = stream;
-    video.srcObject = stream;
-    video.play().catch(() => {});
-
-    if (modoVR) {
-      duplicarStreamVR();
+    async function inicializarCamara() {
+      await obtenerDispositivosVideo();
+      let facingMode = camaraActual; // Esto ya es 'environment' por defecto
+      if (dispositivosVideo.length === 1) {
+        facingMode = undefined;
+      }
+      try {
+        const constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamActual = stream;
+        video.srcObject = stream;
+        video.style.transform = '';
+        if (modoVR) {
+          duplicarStreamVR();
+        }
+      } catch (error) {
+        console.error('Error al acceder a la cámara: ', error);
+        document.getElementById('mensaje').textContent = 'Error al acceder a la cámara. Por favor, verifica los permisos.';
+      }
     }
-  } catch (error) {
-    console.error('Error al acceder a la cámara: ', error);
-    document.getElementById('mensaje').textContent =
-      'Error al acceder a la cámara. Por favor, verifica los permisos.';
-  }
-}
 
-
-    // Al cargar la página, asegúrate de que el modo VR esté desactivado por defecto
     window.onload = async function () {
       selectedFloor = "B1";
       localStorage.setItem('simuladorPiso', "B1");
