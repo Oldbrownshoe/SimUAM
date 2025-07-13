@@ -1,0 +1,228 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.caja-texto {
+    padding: 10px;
+    font-size: 16px;
+    margin: 10px;
+    border-radius: 20px;
+    z-index: 2;
+}
+
+#simulador {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+}
+
+#encabezado {
+    background: rgba(70, 130, 180, 0.8);
+    color: white;
+}
+
+#mensaje {
+    background: rgba(220, 20, 60, 0.8);
+    color: white;
+    position: absolute;
+    top: 60px;
+    right: 10px;
+}
+
+#cronometro {
+    background: rgba(34, 139, 34, 0.8);
+    color: white;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 20px;
+    border: none;
+    z-index: 2;
+}
+
+#botonIniciar {
+    background: rgba(30, 144, 255, 0.8);
+    color: white;
+    transition: opacity 0.5s ease;
+}
+
+#botonDetener {
+    background: rgba(255, 69, 0, 0.8);
+    color: white;
+    margin-left: auto;
+    transition: opacity 0.5s ease;
+    display: none;
+    opacity: 0;
+}
+
+#intensidad {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(255, 215, 0, 0.8);
+    color: black;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#mercalli {
+    position: absolute;
+    top: 70px;
+    left: 10px;
+    background: rgba(138, 43, 226, 0.8);
+    color: white;
+    font-size: 16px;
+}
+
+#controles {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    position: absolute;
+    bottom: 10px;
+}
+
+video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transform: none;
+}
+
+.direction-indicator {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%) rotate(0deg);
+    font-size: 32px;
+    color: #FFFFFF;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 10px;
+    z-index: 1500;
+}
+
+/* Modal para el recorrido (anteriormente Tour) */
+#modalTutorial {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    background-color: #fff;
+    color: #000;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+}
+
+/* Modal para selección de piso */
+#modalPiso {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#modalPisoContent {
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    background-color: #fff;
+}
+
+#botonesPiso button {
+    margin: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+    background-color: #4682B4;
+    color: #fff;
+    transition: background 0.3s ease;
+}
+
+#botonesPiso button:hover {
+    background-color: #315f7d;
+}
+
+/* Nuevo Modal para configurar el dispositivo de realidad virtual */
+#modalVR {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#modalVRContent {
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    background-color: #fff;
+}
+
+#botonesVR button {
+    margin: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+    background-color: #4682B4;
+    color: #fff;
+    transition: background 0.3s ease;
+}
+
+#botonesVR button:hover {
+    background-color: #315f7d;
+}
