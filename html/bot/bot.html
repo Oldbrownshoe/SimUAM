@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Bot - SimUAM</title>
+  <style>
+    #chat-bot {
+      font-family: Arial, sans-serif;
+      width: 100%;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    #mensajes-chat {
+      height: 200px;
+      overflow-y: auto;
+      border: 1px solid #05bfc500;
+      padding: 10px;
+      background-color: #f2f2f200;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+
+    .burbuja-chat {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 15px;
+      margin: 5px;
+      max-width: 80%;
+      color: black;
+      font-size: 14px;
+      line-height: 1.4;
+      clear: both;
+    }
+
+    .bot {
+      background-color: #e6e6e6;
+      float: left;
+    }
+
+    .usuario {
+      background-color: #dcf8c6;
+      float: right;
+    }
+
+    .cara-bot {
+      width: 27px !important;
+      height: 25px !important;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    #entrada-chat {
+      width: calc(100% - 80px);
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      color: black;
+    }
+
+    #boton-enviar {
+      padding: 8px 12px;
+      border: none;
+      background-color: #337ab7;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    #boton-enviar:hover {
+      background-color: #286090;
+    }
+
+    #contenedor-entrada-chat {
+      text-align: center;
+    }
+
+    .limpiar {
+      clear: both;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="chat-bot">
+    <div id="mensajes-chat"></div>
+    <div id="contenedor-entrada-chat">
+      <input id="entrada-chat" type="text" placeholder="Pregunta sobre el simulador..." />
+      <button id="boton-enviar">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('boton-enviar').addEventListener('click', () => {
+      const campoEntrada = document.getElementById('entrada-chat');
+      const contenedorMensajes = document.getElementById('mensajes-chat');
+      const mensaje = campoEntrada.value.trim();
+      if (mensaje == "") return;
+
+      const burbujaUsuario = document.createElement('div');
+      burbujaUsuario.className = 'burbuja-chat usuario';
+      burbujaUsuario.textContent = mensaje;
+      contenedorMensajes.appendChild(burbujaUsuario);
+
+      const divLimpio = document.createElement('div');
+      divLimpio.className = 'limpiar';
+      contenedorMensajes.appendChild(divLimpio);
+
+      const respuestaBot = obtenerRespuestaBot(mensaje);
+
+      const burbujaBot = document.createElement('div');
+      burbujaBot.className = 'burbuja-chat bot';
+      burbujaBot.style.position = "relative";
+
+      // Ruta imagenes de emociones
+      let srcImagen = "";
+      switch (respuestaBot.emocion) {
+        case "cara_feliz":
+          srcImagen = "./../bot/images/vr_feliz.png";
+          break;
+        case "cara_curiosa":
+          srcImagen = "./../bot/images/vr_curioso.png";
+          break;
+        case "cara_consternada":
+          srcImagen = "./../bot/images/vr_consternado.png";
+          break;
+        case "cara_confundida":
+          srcImagen = "./../bot/images/vr_confundido.png";
+          break;
+        default:
+          srcImagen = "./../bot/images/vr_feliz.png";
+          break;
+      }
+
+      const imagenFondo = document.createElement('div');
+      imagenFondo.style.position = "absolute";
+      imagenFondo.style.top = "0";
+      imagenFondo.style.left = "0";
+      imagenFondo.style.width = "100%";
+      imagenFondo.style.height = "100%";
+      imagenFondo.style.backgroundImage = "url('" + srcImagen + "')";
+      imagenFondo.style.backgroundSize = "100px 100px";
+      imagenFondo.style.backgroundRepeat = "no-repeat";
+      imagenFondo.style.backgroundPosition = "center";
+      imagenFondo.style.opacity = "0.4";
+      imagenFondo.style.zIndex = "1";
+
+      burbujaBot.appendChild(imagenFondo);
+
+      const textoBot = document.createElement('span');
+      textoBot.textContent = respuestaBot.texto;
+      textoBot.style.position = "relative";
+      textoBot.style.zIndex = "2";
+      textoBot.style.padding = "10px";
+
+      burbujaBot.appendChild(textoBot);
+      contenedorMensajes.appendChild(burbujaBot);
+
+      const divLimpio2 = document.createElement('div');
+      divLimpio2.className = 'limpiar';
+      contenedorMensajes.appendChild(divLimpio2);
+
+      campoEntrada.value = "";
+      contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
+    });
+
+
+    function obtenerRespuestaBot(entrada) {
+      entrada = entrada.toLowerCase();
+
+      if (entrada.includes("hola") || entrada.includes("buenos")) {
+        return { texto: "¡Hola! Bienvenido al simulador de sismos para la prevención de accidentes SimUAM. ¿Qué aspecto deseas explorar hoy?", emocion: "cara_feliz" };
+      } else if (entrada.includes("tutorial") || entrada.includes("tour") || entrada.includes("guía") || entrada.includes("instrucción")) {
+        return { texto: "Nuestro simulador ofrece un tour interactivo que explica desde el encabezado hasta la calibración de sensores. ¿Quieres que te explique cómo iniciar el tutorial interactivo?", emocion: "cara_curiosa" };
+      } else if (entrada.includes("video") || entrada.includes("cámara") || entrada.includes("stream") || entrada.includes("imagen")) {
+        return { texto: "El simulador utiliza la cámara trasera para transmitir un video en vivo y simular el escenario del sismo. Verifica que los permisos de cámara estén activados para disfrutar de la experiencia completa.", emocion: "cara_consternada" };
+      } else if (entrada.includes("cronómetro") || entrada.includes("tiempo") || entrada.includes("reacción") || entrada.includes("medir")) {
+        return { texto: "El cronómetro inicia junto con la simulación y mide tu tiempo de reacción, cambiando de color según el tiempo transcurrido: verde para <20 s, amarillo para 20-40 s y rojo para ≥40 s. ¿Necesitas saber cómo se calcula este tiempo?", emocion: "cara_feliz" };
+      } else if (entrada.includes("intensidad") || entrada.includes("magnitud") || entrada.includes("mercalli") || entrada.includes("escala")) {
+        return { texto: "Puedes ajustar la intensidad del sismo y la escala de Mercalli transforma ese valor en una magnitud concreta. ¿Te gustaría conocer el proceso de asignación de la escala?", emocion: "cara_curiosa" };
+      } else if (entrada.includes("evacuación") || entrada.includes("evacuar") || entrada.includes("salida") || entrada.includes("refugio") || entrada.includes("seguro")) {
+        return { texto: "La simulación enfatiza la evacuación rápida y segura, utilizando una flecha de punto seguro para guiarte. ¿Quieres más detalles sobre el protocolo de evacuación?", emocion: "cara_consternada" };
+      } else if (entrada.includes("sensor") || entrada.includes("orientación") || entrada.includes("compás") || entrada.includes("acelerómetro") || entrada.includes("giroscopio") || entrada.includes("dirección")) {
+        return { texto: "El simulador utiliza sensores avanzados, como el giroscopio y deviceorientation, para determinar la orientación y calibrar el compás. ¿Necesitas información detallada sobre la integración de estos sensores?", emocion: "cara_confundida" };
+      } else if (entrada.includes("sismo") || entrada.includes("terremoto") || entrada.includes("simulación sísmica")) {
+        return { texto: "Este simulador te permite experimentar de forma virtual los efectos de un sismo, desde la sacudida inicial hasta la evacuación. ¿Deseas conocer más sobre cómo se modela el sismo en el sistema?", emocion: "cara_feliz" };
+      } else if (entrada.includes("audio") || entrada.includes("sonido") || entrada.includes("música") || entrada.includes("efecto sonoro")) {
+        return { texto: "Para una experiencia inmersiva, el simulador reproduce efectos sonoros que simulan el sismo. Asegúrate de tener el sonido activado para disfrutar de todos los detalles.", emocion: "cara_curiosa" };
+      } else if (entrada.includes("flecha") || entrada.includes("punto seguro") || entrada.includes("indicador") || entrada.includes("arrow")) {
+        return { texto: "La flecha de punto seguro se reposiciona automáticamente para indicarte la dirección ideal de evacuación. Seguirla es crucial para minimizar los riesgos. ¿Te gustaría saber cómo se recalcula su ángulo?", emocion: "cara_feliz" };
+      } else if (entrada.includes("configuración") || entrada.includes("calibración") || entrada.includes("ajustes") || entrada.includes("rendimiento") || entrada.includes("optimización") || entrada.includes("performance") || entrada.includes("parámetros")) {
+        return { texto: "El simulador permite ajustar varios parámetros, como la intensidad, la calibración de sensores y la optimización del rendimiento, para ofrecer una experiencia personalizada. ¿Quieres que te explique cómo realizar estos ajustes avanzados?", emocion: "cara_consternada" };
+      } else if (entrada.includes("estadística") || entrada.includes("datos") || entrada.includes("registro") || entrada.includes("análisis") || entrada.includes("número") || entrada.includes("científico") || entrada.includes("info")) {
+        return { texto: "Además de la simulación, el sistema recopila datos sobre tiempos de reacción, intensidad y otros parámetros, que pueden ser analizados para mejorar la seguridad. ¿Te interesa profundizar en las estadísticas generadas?", emocion: "cara_curiosa" };
+      } else if (entrada.includes("experiencia") || entrada.includes("opinión") || entrada.includes("sugerencia") || entrada.includes("comentario") || entrada.includes("feedback")) {
+        return { texto: "Nuestro simulador está en constante mejora y tu experiencia es importante. ¿Qué aspecto te gustaría comentar o sugerir para optimizar la simulación?", emocion: "cara_feliz" };
+      } else if (entrada.includes("documentación") || entrada.includes("manual") || entrada.includes("ayuda") || entrada.includes("soporte")) {
+        return { texto: "Si requieres información técnica detallada, te recomiendo consultar la documentación oficial del simulador o nuestro soporte técnico. ¿Necesitas el enlace directo a la documentación?", emocion: "cara_curiosa" };
+      } else if (entrada.includes("actualización") || entrada.includes("versión") || entrada.includes("novedad") || entrada.includes("cambio")) {
+        return { texto: "El simulador se actualiza periódicamente para incorporar mejoras y nuevas funciones. ¿Te gustaría conocer las últimas novedades o la versión actual?", emocion: "cara_curiosa" };
+      } else if (entrada.includes("¿cómo se siente") || entrada.includes("emocion") || entrada.includes("sentir")) {
+        return { texto: "El objetivo es que la experiencia sea intuitiva y realista, simulando no solo el sismo sino también la respuesta emocional ante una emergencia. ¿Qué aspecto de la experiencia te interesa conocer?", emocion: "cara_feliz" };
+      } else if (entrada.includes("error") || entrada.includes("problema") || entrada.includes("fallo") || entrada.includes("bug") || entrada.includes("incidencia")) {
+        return { texto: "Parece que has detectado un problema. Te recomiendo revisar la configuración, permisos, y la conexión de los sensores. Si el problema persiste, consulta la documentación técnica o nuestro soporte.", emocion: "cara_consternada" };
+      } else if (entrada.includes("simulación avanzada") || entrada.includes("caso de uso") || entrada.includes("detalle avanzado")) {
+        return { texto: "La simulación avanzada incluye parámetros como la variación de intensidad, respuesta de sensores y análisis de datos en tiempo real. ¿Quieres saber cómo se integra toda esta tecnología en el simulador?", emocion: "cara_curiosa" };
+      } else {
+        return { texto: "Interesante, ¿podrías especificar un poco más a qué aspecto del simulador de sismos te refieres o qué duda tienes exactamente?", emocion: "cara_confundida" };
+      }
+    }
+  </script>
+</body>
+
+</html>

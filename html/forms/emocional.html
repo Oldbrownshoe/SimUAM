@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimUAM: Formulario de Condiciones Emocionales</title>
+  <link rel="icon" href="./../../images/ico/logo_morado.ico" type="image/x-icon">
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #faf9fb;
+      color: #222;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto 0 auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 24px rgba(140, 0, 255, 0.08), 0 1.5px 6px rgba(0, 0, 0, 0.04);
+      padding: 32px 36px 24px 36px;
+    }
+
+    h2,
+    h3 {
+      color: rgb(140, 0, 255);
+      font-weight: 600;
+      margin-bottom: 18px;
+      letter-spacing: 0.5px;
+    }
+
+    h3 {
+      font-size: 1.1em;
+      margin-top: 28px;
+    }
+
+    form {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 6px 0;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      margin: 0 0 10px 0;
+      border: 1.2px solid #ccc;
+      border-radius: 6px;
+      font-size: 1em;
+      background: #f7f6fa;
+      transition: border 0.2s;
+      box-sizing: border-box;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      border-color: rgb(140, 0, 255);
+      outline: none;
+      background: #f3eaff;
+    }
+
+    input[type="submit"] {
+      background-color: rgb(140, 0, 255);
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1.05em;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-top: 12px;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px rgba(140, 0, 255, 0.08);
+    }
+
+    input[type="submit"]:hover {
+      background-color: rgba(140, 0, 255, 0.85);
+    }
+
+    #resultados {
+      margin-top: 24px;
+      padding: 18px 20px;
+      border: 1.2px solid #ccc;
+      border-radius: 8px;
+      background: #f7f6fa;
+      min-height: 40px;
+      font-size: 1em;
+    }
+
+    .redirect-button {
+      background: none;
+      border: 1.5px solid rgb(140, 0, 255);
+      color: rgb(140, 0, 255);
+      padding: 8px 22px;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .redirect-button:hover {
+      background: rgb(140, 0, 255);
+      color: #fff;
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        padding: 18px 8px 16px 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Formulario de Condiciones Emocionales</h2>
+    <form id="formularioCondiciones">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required><br><br>
+
+      <label for="edad">Edad:</label>
+      <input type="number" id="edad" name="edad" required><br><br>
+
+      <label for="genero">Género:</label>
+      <select id="genero" name="genero" required>
+        <option value="">Seleccione...</option>
+        <option value="masculino">Masculino</option>
+        <option value="femenino">Femenino</option>
+        <option value="otro">Otro</option>
+        <option value="prefiere_no_decir">Prefiere no decir</option>
+      </select><br><br>
+
+      <h3>Preguntas sobre Condiciones Emocionales</h3>
+
+      <label for="calma">¿Mantiene la calma durante un sismo?</label>
+      <select id="calma" name="calma" required>
+        <option value="">Seleccione...</option>
+        <option value="siempre">Siempre</option>
+        <option value="a_veces">A veces</option>
+        <option value="nunca">Nunca</option>
+      </select><br><br>
+
+      <label for="lider">¿Suele liderar a otras personas en situaciones de emergencia?</label>
+      <select id="lider" name="lider" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+
+      <label for="sigue">¿Prefiere seguir indicaciones en vez de liderar?</label>
+      <select id="sigue" name="sigue" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+
+      <label for="estres">¿Se estresa fácilmente en situaciones de crisis?</label>
+      <select id="estres" name="estres" required>
+        <option value="">Seleccione...</option>
+        <option value="siempre">Siempre</option>
+        <option value="a_veces">A veces</option>
+        <option value="nunca">Nunca</option>
+      </select><br><br>
+
+      <label for="decisiones">¿Puede tomar decisiones rápidas bajo presión?</label>
+      <select id="decisiones" name="decisiones" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+
+      <input type="submit" value="Enviar">
+    </form>
+
+    <h2>Resultados y Recomendaciones</h2>
+    <div id="resultados"></div>
+  </div>
+
+  <div style="text-align:center; margin-top: 20px;">
+    <a href="./../inicio.html"><button class="redirect-button">Regresar</button></a>
+  </div>
+
+  <script>
+    document.getElementById('formularioCondiciones').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const nombre = document.getElementById('nombre').value;
+      const edad = document.getElementById('edad').value;
+      const genero = document.getElementById('genero').value;
+      const calma = document.getElementById('calma').value;
+      const lider = document.getElementById('lider').value;
+      const sigue = document.getElementById('sigue').value;
+      const estres = document.getElementById('estres').value;
+      const decisiones = document.getElementById('decisiones').value;
+
+      let resultado = `<p>Nombre: ${nombre}</p>`;
+      resultado += `<p>Edad: ${edad}</p>`;
+      resultado += `<p>Género: ${genero}</p>`;
+
+      if (calma === 'siempre') {
+        resultado += `<p>Recomendación: Perfecto para liderar grupos en simulaciones de sismos.</p>`;
+      } else if (calma === 'a_veces') {
+        resultado += `<p>Recomendación: Participar en ejercicios de respiración y manejo del estrés.</p>`;
+      } else {
+        resultado += `<p>Recomendación: Entrenamiento intensivo en manejo de crisis.</p>`;
+      }
+
+      if (lider === 'si') {
+        resultado += `<p>Recomendación: Capacitación adicional para liderar evacuaciones.</p>`;
+      }
+
+      if (sigue === 'si') {
+        resultado += `<p>Recomendación: Enfocarse en seguir instrucciones claras durante simulaciones.</p>`;
+      }
+
+      if (estres === 'siempre') {
+        resultado += `<p>Recomendación: Realizar simulaciones progresivas para acostumbrarse al entorno.</p>`;
+      } else if (estres === 'a_veces') {
+        resultado += `<p>Recomendación: Entrenamiento en identificación de puntos seguros rápidamente.</p>`;
+      }
+
+      if (decisiones === 'si') {
+        resultado += `<p>Recomendación: Entrenamiento para escenarios complejos y rápidos.</p>`;
+      } else {
+        resultado += `<p>Recomendación: Prácticas de toma de decisiones bajo presión.</p>`;
+      }
+
+      document.getElementById('resultados').innerHTML = resultado;
+    });
+
+  </script>
+</body>
+
+</html>
