@@ -196,7 +196,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      object-fit: contain; /* Cambiado de cover a contain para evitar recortes y mantener la orientación nativa */
+      object-fit: contain; /* Cambiado de cover a contain para evitar recortes y mantener la orientación */
       z-index: 0;
       /* Eliminamos transform: none; para evitar forzar orientación */
     }
@@ -258,38 +258,37 @@
     }
 
     #modalPisoContent {
-      padding: 32px 28px 24px 28px;
+      padding: 2.5vw 2vw 2vw 2vw;
       border-radius: 18px;
       text-align: center;
-      max-width: 420px;
-      width: 95%;
+      max-width: 40vw;
+      width: 95vw;
+      max-height: 80vh;
+      overflow-y: auto;
       background: rgba(255, 255, 255, 0.97);
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
       border: 3px solid #1a4a7a;
       position: relative;
+      font-size: 1.1rem;
+      transition: max-width 0.2s, max-height 0.2s, padding 0.2s;
     }
 
-    #modalPisoContent h2 {
-      margin-top: 0;
-      color: #1a4a7a;
-      font-size: 2rem;
-      letter-spacing: 1px;
+    @media (max-width: 700px) {
+      #modalPisoContent {
+        max-width: 95vw;
+        width: 98vw;
+        padding: 4vw 2vw 2vw 2vw;
+        font-size: 1rem;
+      }
     }
 
-    #botonesPiso button {
-      margin: 5px;
-      padding: 10px 15px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 10px;
-      border: 2.5px solid #1a4a7a;
-      background-color: #4682B4;
-      color: #fff;
-      transition: background 0.3s ease;
-    }
-
-    #botonesPiso button:hover {
-      background-color: #315f7d;
+    @media (max-width: 400px) {
+      #modalPisoContent {
+        max-width: 99vw;
+        width: 99vw;
+        padding: 2vw 1vw 1vw 1vw;
+        font-size: 0.95rem;
+      }
     }
 
     #modalPartePiso button {
@@ -945,7 +944,7 @@
       setBotonesHabilitados(true);
 
       partePisoSeleccionada = null;
-      mostrarModalPartePiso(piso);
+      mostrarModalPartePiso(piso); // <-- rehabilitado
     }
 
     document.getElementById('boton_configSim').onclick = abrirConfiguracionSimulador;
@@ -1577,6 +1576,30 @@
     //   });
 
     // ...existing code...
+    // --- REHABILITACIÓN DE MODAL PARTE PISO ---
+    function mostrarModalPartePiso(piso) {
+      partePisoSeleccionada = null;
+      const modal = document.getElementById('modalPartePiso');
+      const img = document.getElementById('imagenPisoParte');
+      if (modal && img) {
+        img.src = 'mapas/png/' + piso + '.png';
+        img.alt = 'Plano del piso ' + piso;
+        modal.style.display = 'flex';
+      }
+    }
+
+    function seleccionarPartePiso(parte) {
+      partePisoSeleccionada = parte;
+      // mostrarNotificacionTrofeo('Parte seleccionada: ' + parte);
+      cerrarModalPartePiso();
+      mostrarMapaPiso(selectedFloor);
+    }
+
+    function cerrarModalPartePiso() {
+      const modal = document.getElementById('modalPartePiso');
+      if (modal) modal.style.display = 'none';
+    }
+
   </script>
 </body>
 
