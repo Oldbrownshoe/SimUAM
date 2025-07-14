@@ -973,7 +973,7 @@
       setBotonesHabilitados(true);
 
       partePisoSeleccionada = null;
-      mostrarModalPartePiso(piso); // <-- rehabilitado
+      mostrarModalPartePiso(piso);
     }
 
     document.getElementById('boton_configSim').onclick = abrirConfiguracionSimulador;
@@ -1504,14 +1504,13 @@
 
     async function cambiarCamara(nuevaCamara) {
       await obtenerDispositivosVideo();
-      // Detener todos los tracks del stream anterior
       if (streamActual) {
         streamActual.getTracks().forEach(track => track.stop());
         streamActual = null;
       }
       try {
         let constraints = { video: { facingMode: { exact: nuevaCamara } } };
-        // Fallback si el constraint exact falla (algunos dispositivos no lo soportan)
+
         let stream;
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -1535,7 +1534,6 @@
 
     async function inicializarCamara() {
       await obtenerDispositivosVideo();
-      // Detener tracks previos si existen
       if (streamActual) {
         streamActual.getTracks().forEach(track => track.stop());
         streamActual = null;
@@ -1550,7 +1548,6 @@
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
         } catch (e) {
-          // Fallback si exact no funciona
           constraints = facingMode ? { video: { facingMode } } : { video: true };
           stream = await navigator.mediaDevices.getUserMedia(constraints);
         }
@@ -1582,28 +1579,24 @@
       await inicializarCamara();
     };
 
-    // 1. AGREGAR MANEJADOR AL BOTÓN DE CÁMARA
     const toggleCamaraBtn = document.getElementById('toggleCamaraBtn');
     if (toggleCamaraBtn) {
       toggleCamaraBtn.onclick = async function () {
-        // Alternar entre 'environment' (trasera) y 'user' (frontal)
         camaraActual = (camaraActual === 'environment') ? 'user' : 'environment';
         toggleCamaraBtn.textContent = camaraActual === 'environment' ? 'Usar cámara trasera' : 'Usar cámara frontal';
         await cambiarCamara(camaraActual);
       };
     }
 
-    // 2. MEJORAR CAMBIO DE CÁMARA Y MANEJO DE STREAMS
     async function cambiarCamara(nuevaCamara) {
       await obtenerDispositivosVideo();
-      // Detener todos los tracks del stream anterior
       if (streamActual) {
         streamActual.getTracks().forEach(track => track.stop());
         streamActual = null;
       }
       try {
         let constraints = { video: { facingMode: { exact: nuevaCamara } } };
-        // Fallback si el constraint exact falla (algunos dispositivos no lo soportan)
+
         let stream;
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -1625,10 +1618,8 @@
       }
     }
 
-    // 3. MEJORAR INICIALIZACIÓN DE CÁMARA
     async function inicializarCamara() {
       await obtenerDispositivosVideo();
-      // Detener tracks previos si existen
       if (streamActual) {
         streamActual.getTracks().forEach(track => track.stop());
         streamActual = null;
@@ -1643,7 +1634,6 @@
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
         } catch (e) {
-          // Fallback si exact no funciona
           constraints = facingMode ? { video: { facingMode } } : { video: true };
           stream = await navigator.mediaDevices.getUserMedia(constraints);
         }
@@ -1699,14 +1689,12 @@
 
     let modoVR = false;
 
-    // NUEVO: Referencias a los elementos VR
     const vrToggleBtn = document.getElementById('vrToggleBtn');
     const vrVideoContainer = document.getElementById('vrVideoContainer');
     const video = document.getElementById('video');
     const videoLeft = document.getElementById('videoLeft');
     const videoRight = document.getElementById('videoRight');
 
-    // Duplicar el stream en ambos videos VR
     function duplicarStreamVR() {
       if (streamActual) {
         videoLeft.srcObject = streamActual;
@@ -1747,14 +1735,13 @@
     async function cambiarCamara(nuevaCamara) {
 
       await obtenerDispositivosVideo();
-      // Detener todos los tracks del stream anterior
+
       if (streamActual) {
         streamActual.getTracks().forEach(track => track.stop());
         streamActual = null;
       }
       try {
         let constraints = { video: { facingMode: { exact: nuevaCamara } } };
-        // Fallback si el constraint exact falla (algunos dispositivos no lo soportan)
         let stream;
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -1823,28 +1810,29 @@
       await inicializarCamara();
     };
 
-    document.addEventListener('keydown', function (e) {
-      // Algunos navegadores usan e.key, otros e.code
-      const key = e.key ? e.key.toLowerCase() : '';
-      const code = e.code ? e.code.toLowerCase() : '';
-      // Android/iOS suelen usar 'AudioVolumeUp' y 'AudioVolumeDown' en e.code
-      if (key === 'volumeup' || code === 'audiovolumeup') {
-        // Solo si el modal de configuración no está abierto y el botón está habilitado
-        const modalPiso = document.getElementById('modalPiso');
-        const botonIniciar = document.getElementById('botonIniciar');
-        if (modalPiso && modalPiso.style.display !== 'flex' && botonIniciar && !botonIniciar.disabled) {
-          botonIniciar.click();
-          e.preventDefault();
-        }
-      }
-      if (key === 'volumedown' || code === 'audiovolumedown') {
-        const botonDetener = document.getElementById('botonDetener');
-        if (botonDetener && botonDetener.style.display !== 'none' && !botonDetener.disabled) {
-          botonDetener.click();
-          e.preventDefault();
-        }
-      }
-    }, false);
+    /*   document.addEventListener('keydown', function (e) {
+   
+         const key = e.key ? e.key.toLowerCase() : '';
+         const code = e.code ? e.code.toLowerCase() : '';
+        
+         if (key === 'volumeup' || code === 'audiovolumeup') {
+          
+           const modalPiso = document.getElementById('modalPiso');
+           const botonIniciar = document.getElementById('botonIniciar');
+           if (modalPiso && modalPiso.style.display !== 'flex' && botonIniciar && !botonIniciar.disabled) {
+             botonIniciar.click();
+             e.preventDefault();
+           }
+         }
+         if (key === 'volumedown' || code === 'audiovolumedown') {
+           const botonDetener = document.getElementById('botonDetener');
+           if (botonDetener && botonDetener.style.display !== 'none' && !botonDetener.disabled) {
+             botonDetener.click();
+             e.preventDefault();
+           }
+         }
+       }, false); */
+
   </script>
 </body>
 
