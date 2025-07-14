@@ -1504,23 +1504,24 @@
 
     async function cambiarCamara(nuevaCamara) {
       await obtenerDispositivosVideo();
-      if (dispositivosVideo.length < 2) {
-        mostrarNotificacionTrofeo("Solo se detecta una cámara en el dispositivo.");
-        return;
-      }
-      camaraActual = nuevaCamara;
+      // Detener todos los tracks del stream anterior
       if (streamActual) {
         streamActual.getTracks().forEach(track => track.stop());
+        streamActual = null;
       }
       try {
-        const constraints = {
-          video: { facingMode: { exact: nuevaCamara } }
-        };
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        let constraints = { video: { facingMode: { exact: nuevaCamara } } };
+        // Fallback si el constraint exact falla (algunos dispositivos no lo soportan)
+        let stream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (e) {
+          constraints = { video: { facingMode: nuevaCamara } };
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        }
         streamActual = stream;
         video.srcObject = stream;
         video.style.transform = '';
-
         if (modoVR) {
           duplicarStreamVR();
         }
@@ -1534,13 +1535,118 @@
 
     async function inicializarCamara() {
       await obtenerDispositivosVideo();
-      let facingMode = camaraActual; // Esto ya es 'environment' por defecto
+      // Detener tracks previos si existen
+      if (streamActual) {
+        streamActual.getTracks().forEach(track => track.stop());
+        streamActual = null;
+      }
+      let facingMode = camaraActual;
       if (dispositivosVideo.length === 1) {
         facingMode = undefined;
       }
       try {
-        const constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        let constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
+        let stream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (e) {
+          // Fallback si exact no funciona
+          constraints = facingMode ? { video: { facingMode } } : { video: true };
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        }
+        streamActual = stream;
+        video.srcObject = stream;
+        video.style.transform = '';
+        if (modoVR) {
+          duplicarStreamVR();
+        }
+      } catch (error) {
+        console.error('Error al acceder a la cámara: ', error);
+        document.getElementById('mensaje').textContent = 'Error al acceder a la cámara. Por favor, verifica los permisos.';
+      }
+    }
+
+    window.onload = async function () {
+      selectedFloor = "B1";
+      localStorage.setItem('simuladorPiso', "B1");
+      document.getElementById('pisoSeleccionadoValor').textContent = "B1";
+      showTutorialStep();
+      mostrarGifCronometro(false);
+      actualizarIntensidadTexto();
+      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Simulación');
+      mostrarMapaPiso(selectedFloor);
+
+      alertaActiva = false;
+      actualizarEstadoAlerta();
+      actualizarBotonAlertaPorModo();
+      await inicializarCamara();
+    };
+
+    // 1. AGREGAR MANEJADOR AL BOTÓN DE CÁMARA
+    const toggleCamaraBtn = document.getElementById('toggleCamaraBtn');
+    if (toggleCamaraBtn) {
+      toggleCamaraBtn.onclick = async function () {
+        // Alternar entre 'environment' (trasera) y 'user' (frontal)
+        camaraActual = (camaraActual === 'environment') ? 'user' : 'environment';
+        toggleCamaraBtn.textContent = camaraActual === 'environment' ? 'Usar cámara trasera' : 'Usar cámara frontal';
+        await cambiarCamara(camaraActual);
+      };
+    }
+
+    // 2. MEJORAR CAMBIO DE CÁMARA Y MANEJO DE STREAMS
+    async function cambiarCamara(nuevaCamara) {
+      await obtenerDispositivosVideo();
+      // Detener todos los tracks del stream anterior
+      if (streamActual) {
+        streamActual.getTracks().forEach(track => track.stop());
+        streamActual = null;
+      }
+      try {
+        let constraints = { video: { facingMode: { exact: nuevaCamara } } };
+        // Fallback si el constraint exact falla (algunos dispositivos no lo soportan)
+        let stream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (e) {
+          constraints = { video: { facingMode: nuevaCamara } };
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        }
+        streamActual = stream;
+        video.srcObject = stream;
+        video.style.transform = '';
+        if (modoVR) {
+          duplicarStreamVR();
+        }
+        mostrarNotificacionTrofeo(
+          nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
+        );
+      } catch (e) {
+        mostrarNotificacionTrofeo("No se pudo cambiar la cámara.");
+      }
+    }
+
+    // 3. MEJORAR INICIALIZACIÓN DE CÁMARA
+    async function inicializarCamara() {
+      await obtenerDispositivosVideo();
+      // Detener tracks previos si existen
+      if (streamActual) {
+        streamActual.getTracks().forEach(track => track.stop());
+        streamActual = null;
+      }
+      let facingMode = camaraActual;
+      if (dispositivosVideo.length === 1) {
+        facingMode = undefined;
+      }
+      try {
+        let constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
+        let stream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (e) {
+          // Fallback si exact no funciona
+          constraints = facingMode ? { video: { facingMode } } : { video: true };
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        }
         streamActual = stream;
         video.srcObject = stream;
         video.style.transform = '';
@@ -1639,20 +1745,23 @@
 
 
     async function cambiarCamara(nuevaCamara) {
+
       await obtenerDispositivosVideo();
-      if (dispositivosVideo.length < 2) {
-        mostrarNotificacionTrofeo("Solo se detecta una cámara en el dispositivo.");
-        return;
-      }
-      camaraActual = nuevaCamara;
+      // Detener todos los tracks del stream anterior
       if (streamActual) {
         streamActual.getTracks().forEach(track => track.stop());
+        streamActual = null;
       }
       try {
-        const constraints = {
-          video: { facingMode: { exact: nuevaCamara } }
-        };
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        let constraints = { video: { facingMode: { exact: nuevaCamara } } };
+        // Fallback si el constraint exact falla (algunos dispositivos no lo soportan)
+        let stream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (e) {
+          constraints = { video: { facingMode: nuevaCamara } };
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        }
         streamActual = stream;
         video.srcObject = stream;
         video.style.transform = '';
@@ -1669,13 +1778,25 @@
 
     async function inicializarCamara() {
       await obtenerDispositivosVideo();
-      let facingMode = camaraActual; // Esto ya es 'environment' por defecto
+      // Detener tracks previos si existen
+      if (streamActual) {
+        streamActual.getTracks().forEach(track => track.stop());
+        streamActual = null;
+      }
+      let facingMode = camaraActual;
       if (dispositivosVideo.length === 1) {
         facingMode = undefined;
       }
       try {
-        const constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        let constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
+        let stream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (e) {
+          // Fallback si exact no funciona
+          constraints = facingMode ? { video: { facingMode } } : { video: true };
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        }
         streamActual = stream;
         video.srcObject = stream;
         video.style.transform = '';
@@ -1703,7 +1824,6 @@
       actualizarBotonAlertaPorModo();
       await inicializarCamara();
     };
-
   </script>
 </body>
 
