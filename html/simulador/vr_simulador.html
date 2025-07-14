@@ -1778,7 +1778,6 @@
 
     async function inicializarCamara() {
       await obtenerDispositivosVideo();
-      // Detener tracks previos si existen
       if (streamActual) {
         streamActual.getTracks().forEach(track => track.stop());
         streamActual = null;
@@ -1793,7 +1792,6 @@
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
         } catch (e) {
-          // Fallback si exact no funciona
           constraints = facingMode ? { video: { facingMode } } : { video: true };
           stream = await navigator.mediaDevices.getUserMedia(constraints);
         }
@@ -1824,6 +1822,29 @@
       actualizarBotonAlertaPorModo();
       await inicializarCamara();
     };
+
+    document.addEventListener('keydown', function (e) {
+      // Algunos navegadores usan e.key, otros e.code
+      const key = e.key ? e.key.toLowerCase() : '';
+      const code = e.code ? e.code.toLowerCase() : '';
+      // Android/iOS suelen usar 'AudioVolumeUp' y 'AudioVolumeDown' en e.code
+      if (key === 'volumeup' || code === 'audiovolumeup') {
+        // Solo si el modal de configuración no está abierto y el botón está habilitado
+        const modalPiso = document.getElementById('modalPiso');
+        const botonIniciar = document.getElementById('botonIniciar');
+        if (modalPiso && modalPiso.style.display !== 'flex' && botonIniciar && !botonIniciar.disabled) {
+          botonIniciar.click();
+          e.preventDefault();
+        }
+      }
+      if (key === 'volumedown' || code === 'audiovolumedown') {
+        const botonDetener = document.getElementById('botonDetener');
+        if (botonDetener && botonDetener.style.display !== 'none' && !botonDetener.disabled) {
+          botonDetener.click();
+          e.preventDefault();
+        }
+      }
+    }, false);
   </script>
 </body>
 
