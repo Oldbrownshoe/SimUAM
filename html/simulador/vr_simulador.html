@@ -358,6 +358,16 @@
       background-color: #315f7d;
     }
 
+    #boton_sonido {
+
+      position: absolute;
+      top: 10px;
+      left: 190px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 2.5px solid #bbb;
+
+    }
+
     #botonIniciar,
     #boton_home,
     #botonDetener,
@@ -366,7 +376,8 @@
     #verRecorrido,
     #boton_configSim,
     #caja_pisoSeleccionado,
-    #modoIndicador {
+    #modoIndicador,
+    #boton_sonido {
       box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25), 0 1.5px 6px 0 rgba(0, 0, 0, 0.18);
     }
 
@@ -558,8 +569,8 @@
       </div>
 
       <div id="tipoEvaluacionContainer" style="margin-bottom: 10px;">
-        <h2 style="margin:0;">Tipo de Evaluación</h2>
-        <button id="modoSimulacionBtn">Simulación</button>
+        <h2 style="margin:0;">Tipo de Experiencia</h2>
+        <button id="modoSimulacionBtn">Entrenamiento</button>
         <button id="modoPruebaBtn">Prueba</button>
       </div>
 
@@ -581,7 +592,7 @@
       </div>
 
       <div id="alertaContainer" style="margin-bottom: 10px;">
-        <h2 style="margin:0; font-size:1.1rem;">Alerta</h2>
+        <h2 style="margin:0; font-size:1.1rem;">Alertamiento</h2>
         <button id="alertaToggleBtn"
           style="background:#e0e0e0; color:#222; border:2.5px solid #bfa000; border-radius:10px; padding:8px 18px; font-size:15px;">
           Desactivada
@@ -594,12 +605,12 @@
           Usar cámara trasera
         </button>
       </div>
-      <!-- NUEVO: Toggle VR -->
+
       <div id="vrToggleContainer" style="margin-bottom: 10px;">
-        <h2 style="margin:0; font-size:1.1rem;">Modo Realidad Virtual</h2>
+        <h2 style="margin:0; font-size:1.1rem;">Modo 3D</h2>
         <button id="vrToggleBtn"
           style="background:#e0e0e0; color:#222; border:2.5px solid #4682B4; border-radius:10px; padding:8px 18px; font-size:15px;">
-          Sin VR
+          Sin 3D
         </button>
       </div>
       <button id="botonReanudarPausa" onclick="cerrarMenuPausa()">Cerrar</button>
@@ -643,7 +654,6 @@
   </div>
 
   <video id="video" autoplay style="z-index:0;"></video>
-  <!-- Contenedor para modo VR (mismo nivel que el video normal, z-index:0) -->
   <div id="vrVideoContainer"
     style="display:none; position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:0;">
     <div style="display:flex; width:100vw; height:100vh;">
@@ -680,7 +690,7 @@
   </div>
   <button id="intensidad">Escala: 0.0 - 4.0</button>
   <div id="caja_pisoSeleccionado" class="caja-texto">Piso: <span id="pisoSeleccionadoValor">B1</span></div>
-  <button id="mercalli" onclick="siguienteMercalli()">Intensidad: I (escala de Mercalli)</button>
+  <button id="mercalli" onclick="siguienteMercalli()">Intensidad: I (Mercalli)</button>
   <button id="verRecorrido" class="caja-texto" onclick="mostrarRecorrido()">
     <img src="images/ayuda.png" alt="Ver Recorrido" style="height: 24px;">
   </button>
@@ -690,6 +700,11 @@
 
   <button id="boton_configSim" class="caja-texto"> <img src="images/configuracion.png" alt="Configuración del Simulador"
       style="height: 24px;"> </button>
+
+  <button id="boton_sonido" class="caja-texto">
+    <img id="iconoSonido" src="images/sonido_activado.png" alt="Sonido activado" style="height:24px;">
+  </button>
+
   </a>
   <audio id="sonidoSismo">
     <source src="../../../sound/inicio.mp3" type="audio/mpeg">
@@ -730,6 +745,11 @@
       <div id="distractorTexto" style="margin-bottom:18px;"></div>
     </div>
   </div>
+
+  <!-- Botón oculto para escanear QR -->
+  <button id="botonEscanearQR" style="display:none; position:fixed; bottom:80px; right:20px; z-index:3000; background:#fff; border:2.5px solid #4682B4; border-radius:16px; padding:12px 24px; font-size:18px; box-shadow:0 4px 24px 0 rgba(0,0,0,0.25);">
+    Escanear QR
+  </button>
 
   <script>
     let horaInicio;
@@ -847,33 +867,46 @@
       fadeIn(document.getElementById('botonDetener'), "inline-block");
       horaInicio = new Date().getTime();
       intervaloCronometro = setInterval(actualizarCronometro, 10);
+      qrSacudidaDetenida = false;
+      qrScanEnabled = false;
+      document.getElementById('botonEscanearQR').style.display = 'none';
       iniciarSacudida();
+
+      // Habilitar QR tras 50s
+      setTimeout(() => {
+        if (intervaloCronometro) {
+          detenerSacudidaPorQR();
+          qrScanEnabled = true;
+          document.getElementById('botonEscanearQR').style.display = 'none'; // Oculta el botón
+          iniciarEscaneoQR(); // Inicia automáticamente el escaneo QR
+        }
+      }, 50000);
 
       if (alertaActiva) {
         if (alertaImg) {
           alertaImg.src = "images/alerta.gif";
-          alertaImg.alt = "Alerta activa";
+          alertaImg.alt = "Alertamiento activado";
         }
         if (alertaImgIzq) {
           alertaImgIzq.src = "images/alerta.gif";
-          alertaImgIzq.alt = "Alerta activa";
+          alertaImgIzq.alt = "Alertamiento activado";
         }
         if (alertaImgDer) {
           alertaImgDer.src = "images/alerta.gif";
-          alertaImgDer.alt = "Alerta activa";
+          alertaImgDer.alt = "Alertamiento activado";
         }
       } else {
         if (alertaImg) {
           alertaImg.src = "images/alerta.png";
-          alertaImg.alt = "Alerta desactivada";
+          alertaImg.alt = "Alertamiento desactivado";
         }
         if (alertaImgIzq) {
           alertaImgIzq.src = "images/alerta.png";
-          alertaImgIzq.alt = "Alerta desactivada";
+          alertaImgIzq.alt = "Alertamiento desactivado";
         }
         if (alertaImgDer) {
           alertaImgDer.src = "images/alerta.png";
-          alertaImgDer.alt = "Alerta desactivada";
+          alertaImgDer.alt = "Alertamiento desactivado";
         }
       }
     }
@@ -943,14 +976,14 @@
       btnDentroUAM.onclick = function () {
         ubicacionActual = 'dentro';
         actualizarUIUbicacion();
-        mostrarNotificacionTrofeo("Ubicación seleccionada: Dentro de la UAM");
+        mostrarNotificacionTrofeo("Ubicación seleccionada: Dentro de la UAM-C");
       };
     }
     if (btnFueraUAM) {
       btnFueraUAM.onclick = function () {
         ubicacionActual = 'fuera';
         actualizarUIUbicacion();
-        mostrarNotificacionTrofeo("Ubicación seleccionada: Fuera de la UAM");
+        mostrarNotificacionTrofeo("Ubicación seleccionada: Fuera de la UAM-C");
       };
     }
 
@@ -1003,7 +1036,7 @@
             btn.style.pointerEvents = 'auto';
           });
         }
-        mostrarNotificacionTrofeo("¡Modo de Simulacion activado!, selecciona tu configuracion personal.");
+        mostrarNotificacionTrofeo("¡Modo de Entrenamiento activado!, selecciona tu configuracion personal.");
         actualizarBotonAlertaPorModo();
       };
       btnPrueba.onclick = function () {
@@ -1098,29 +1131,21 @@
       "Estas en una conferencia en el aula magna",
     ];
 
-    function mostrarModalDistractor(mensaje) {
+    function mostrarModalDistractor(mensaje, duracion, callback) {
       const modal = document.getElementById('modalDistractor');
       document.getElementById('distractorTexto').textContent = mensaje;
       modal.style.display = 'flex';
       setTimeout(() => {
         modal.style.display = 'none';
-      }, 6000);
+        if (typeof callback === 'function') callback();
+      }, duracion);
     }
 
-    function iniciarDistractoresAntesSimulacion(tiempoTotal, callback) {
-      let tiempoRestante = tiempoTotal;
-      function mostrarSiguienteDistractor() {
-        if (tiempoRestante <= 0) {
-          if (typeof callback === 'function') callback();
-          return;
-        }
-
-        const idx = Math.floor(Math.random() * distractores.length);
-        mostrarModalDistractor(distractores[idx]);
-        tiempoRestante -= 7;
-        setTimeout(mostrarSiguienteDistractor, 6000);
-      }
-      mostrarSiguienteDistractor();
+    // Cambiado: ahora solo muestra un distractor aleatorio por simulación y lo mantiene todo el tiempo
+    function iniciarDistractorUnicoAntesSimulacion(tiempoTotal, callback) {
+      const idx = Math.floor(Math.random() * distractores.length);
+      const mensaje = distractores[idx];
+      mostrarModalDistractor(mensaje, tiempoTotal * 1000, callback);
     }
 
     function seleccionarTiempoVR(tiempoSeleccionado) {
@@ -1137,9 +1162,10 @@
           clearInterval(vrInterval);
           document.getElementById("modalVR").style.display = "none";
           if (modoEvaluacion === 'simulacion' && alertaActiva) {
+            // Cambiado: solo un distractor aleatorio, mostrado todo el tiempo
             const tiemposDistractor = [30, 45, 60];
             const tiempoDistractor = tiemposDistractor[Math.floor(Math.random() * tiemposDistractor.length)];
-            iniciarDistractoresAntesSimulacion(tiempoDistractor, function () {
+            iniciarDistractorUnicoAntesSimulacion(tiempoDistractor, function () {
               iniciarSimulacionConAlerta();
             });
           } else {
@@ -1195,16 +1221,20 @@
 
       if (alertaImg) {
         alertaImg.src = "images/alerta.png";
-        alertaImg.alt = alertaActiva ? "Alerta activa" : "Alerta desactivada";
+        alertaImg.alt = alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado";
       }
       if (alertaImgIzq) {
         alertaImgIzq.src = "images/alerta.png";
-        alertaImgIzq.alt = alertaActiva ? "Alerta activa" : "Alerta desactivada";
+        alertaImgIzq.alt = alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado";
       }
       if (alertaImgDer) {
         alertaImgDer.src = "images/alerta.png";
-        alertaImgDer.alt = alertaActiva ? "Alerta activa" : "Alerta desactivada";
+        alertaImgDer.alt = alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado";
       }
+
+      qrScanEnabled = false;
+      document.getElementById('botonEscanearQR').style.display = 'none';
+      cerrarModalQRScan();
     }
 
     function actualizarCronometro() {
@@ -1225,7 +1255,7 @@
     function ajustarIntensidad() {
       intensidad = (Math.round((intensidad + 0.1) * 10) / 10) % 10;
       document.getElementById('intensidad').textContent = "Intensidad: " + intensidad.toFixed(1);
-      document.getElementById('mercalli').textContent = "Intensidad: " + escalaMercalli(intensidad) + " (escala de Mercalli)";
+      document.getElementById('mercalli').textContent = "Intensidad: " + escalaMercalli(intensidad) + " (Mercalli)";
     }
 
     function actualizarIntensidadTexto() {
@@ -1237,7 +1267,228 @@
       indiceMercalliActual = (indiceMercalliActual + 1) % nivelesMercalli.length;
       const nuevoNivel = nivelesMercalli[indiceMercalliActual];
       intensidad = nuevoNivel.richterMin;
-      document.getElementById('mercalli').textContent = "Intensidad: " + nuevoNivel.etiqueta + " (escala de Mercalli)";
+      document.getElementById('mercalli').textContent = "Intensidad: " + nuevoNivel.etiqueta + " (Mercalli)";
+      actualizarIntensidadTexto();
+    }
+
+    function iniciarSacudida() {
+      intervaloSacudida = setInterval(() => {
+        const nivelIntensidad = intensidad * 10;
+        const x = Math.random() * nivelIntensidad - nivelIntensidad / 2;
+        const y = Math.random() * nivelIntensidad - nivelIntensidad / 2;
+        document.getElementById('video').style.transform = `translate(${x}px, ${y}px)`;
+      }, 50);
+    }
+
+    let qrScanEnabled = false;
+    let qrSacudidaDetenida = false;
+    let qrScanner = null;
+
+    // --- QR SCAN LOGIC ---
+    function habilitarEscaneoQR() {
+      qrScanEnabled = true;
+      document.getElementById('botonEscanearQR').style.display = 'inline-block';
+      mostrarNotificacionTrofeo("Escanea el QR para finalizar la simulación.");
+    }
+
+    function detenerSacudidaPorQR() {
+      if (!qrSacudidaDetenida) {
+        clearInterval(intervaloSacudida);
+        qrSacudidaDetenida = true;
+      }
+    }
+
+    // Simple QR scanner usando html5-qrcode (solo cuando se habilita)
+    function iniciarEscaneoQR() {
+      // Crea modal para escaneo
+      let modal = document.createElement('div');
+      modal.id = 'modalQRScan';
+      modal.style = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:4000;display:flex;align-items:center;justify-content:center;';
+      modal.innerHTML = `
+        <div style="background:#fff;padding:24px;border-radius:16px;max-width:90vw;width:340px;text-align:center;">
+          <div id="qr-reader" style="width:300px;margin:auto;"></div>
+          <button onclick="cerrarModalQRScan()" style="margin-top:16px;background:#888;color:#fff;border:none;border-radius:8px;padding:8px 24px;font-size:16px;cursor:pointer;">Cancelar</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      // Cargar html5-qrcode si no existe
+      if (!window.Html5Qrcode) {
+        let script = document.createElement('script');
+        script.src = "https://unpkg.com/html5-qrcode";
+        script.onload = () => iniciarHtml5Qrcode();
+        document.body.appendChild(script);
+      } else {
+        iniciarHtml5Qrcode();
+      }
+
+      function iniciarHtml5Qrcode() {
+        qrScanner = new Html5Qrcode("qr-reader");
+        qrScanner.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          qrCodeMessage => {
+            finalizarEvacuacion();
+            cerrarModalQRScan();
+          },
+          errorMessage => {}
+        );
+      }
+    }
+
+    function cerrarModalQRScan() {
+      let modal = document.getElementById('modalQRScan');
+      if (modal) modal.remove();
+      if (qrScanner) {
+        qrScanner.stop().catch(()=>{});
+        qrScanner.clear();
+        qrScanner = null;
+      }
+    }
+
+    document.getElementById('botonEscanearQR').onclick = function() {
+      if (qrScanEnabled) iniciarEscaneoQR();
+    };
+
+    // --- MODIFICAR comenzarSimulacion PARA HABILITAR QR ---
+    function comenzarSimulacion() {
+      const cronometroEl = document.getElementById('cronometro');
+      document.getElementById('textoCronometro').textContent = '0.000 segundos';
+      mostrarGifCronometro(true);
+      cronometroEl.style.backgroundColor = "rgba(34, 139, 34, 0.8)";
+      cronometroEl.style.color = "#ffffff";
+      let mensajeSimulacion = "";
+      if (selectedFloor === "B1" || selectedFloor === "B2" || selectedFloor === "B3") {
+        mensajeSimulacion = "¡Simulación en progreso!";
+      } else {
+        mensajeSimulacion = "¡Simulación en progreso!";
+      }
+
+      const barraMensaje = document.getElementById('mensaje');
+      barraMensaje.textContent = '';
+      barraMensaje.classList.remove('animado');
+      mostrarNotificacionTrofeo(mensajeSimulacion, function () {
+        barraMensaje.textContent = mensajeSimulacion;
+        barraMensaje.classList.remove('animado');
+
+        void barraMensaje.offsetWidth;
+        barraMensaje.classList.add('animado');
+      });
+      fadeOut(document.getElementById('botonIniciar'));
+      fadeIn(document.getElementById('botonDetener'), "inline-block");
+      horaInicio = new Date().getTime();
+      intervaloCronometro = setInterval(actualizarCronometro, 10);
+      qrSacudidaDetenida = false;
+      qrScanEnabled = false;
+      document.getElementById('botonEscanearQR').style.display = 'none';
+      iniciarSacudida();
+
+      // Habilitar QR tras 50s
+      setTimeout(() => {
+        if (intervaloCronometro) {
+          detenerSacudidaPorQR();
+          qrScanEnabled = true;
+          document.getElementById('botonEscanearQR').style.display = 'none'; // Oculta el botón
+          iniciarEscaneoQR(); // Inicia automáticamente el escaneo QR
+        }
+      }, 50000);
+
+      if (alertaActiva) {
+        if (alertaImg) {
+          alertaImg.src = "images/alerta.gif";
+          alertaImg.alt = "Alertamiento activado";
+        }
+        if (alertaImgIzq) {
+          alertaImgIzq.src = "images/alerta.gif";
+          alertaImgIzq.alt = "Alertamiento activado";
+        }
+        if (alertaImgDer) {
+          alertaImgDer.src = "images/alerta.gif";
+          alertaImgDer.alt = "Alertamiento activado";
+        }
+      } else {
+        if (alertaImg) {
+          alertaImg.src = "images/alerta.png";
+          alertaImg.alt = "Alertamiento desactivado";
+        }
+        if (alertaImgIzq) {
+          alertaImgIzq.src = "images/alerta.png";
+          alertaImgIzq.alt = "Alertamiento desactivado";
+        }
+        if (alertaImgDer) {
+          alertaImgDer.src = "images/alerta.png";
+          alertaImgDer.alt = "Alertamiento desactivado";
+        }
+      }
+    }
+
+    // --- MODIFICAR finalizarEvacuacion PARA LIMPIAR QR ---
+    function finalizarEvacuacion() {
+      const horaFin = new Date().getTime();
+      const tiempoReaccion = (horaFin - horaInicio) / 1000;
+      const mensaje = "¡Sismo terminado! Tu tiempo de reacción fue de " + tiempoReaccion.toFixed(3) + " s.";
+
+      mostrarNotificacionTrofeo(mensaje);
+
+      document.getElementById('mensaje').textContent = '';
+      document.getElementById('modalMensajeSimulador').style.display = 'none';
+      document.getElementById('sonidoSismo').pause();
+      document.getElementById('sonidoSismo').currentTime = 0;
+      clearInterval(intervaloCronometro);
+      clearInterval(intervaloSacudida);
+      mostrarGifCronometro(false);
+      fadeOut(document.getElementById('botonDetener'));
+      fadeIn(document.getElementById('botonIniciar'), "inline-block");
+
+      if (alertaImg) {
+        alertaImg.src = "images/alerta.png";
+        alertaImg.alt = alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado";
+      }
+      if (alertaImgIzq) {
+        alertaImgIzq.src = "images/alerta.png";
+        alertaImgIzq.alt = alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado";
+      }
+      if (alertaImgDer) {
+        alertaImgDer.src = "images/alerta.png";
+        alertaImgDer.alt = alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado";
+      }
+
+      qrScanEnabled = false;
+      document.getElementById('botonEscanearQR').style.display = 'none';
+      cerrarModalQRScan();
+    }
+
+    function actualizarCronometro() {
+      const tiempoActual = new Date().getTime();
+      const tiempoTranscurrido = (tiempoActual - horaInicio) / 1000;
+      document.getElementById('textoCronometro').textContent = tiempoTranscurrido.toFixed(3) + " segundos";
+      const cronometroEl = document.getElementById('cronometro');
+      if (tiempoTranscurrido >= 40) {
+        cronometroEl.style.backgroundColor = "rgba(255, 0, 0, 0.8)"; // Rojo
+      } else if (tiempoTranscurrido >= 20) {
+        cronometroEl.style.backgroundColor = "rgba(255, 215, 0, 0.8)"; // Amarillo
+      } else {
+        cronometroEl.style.backgroundColor = "rgba(34, 139, 34, 0.8)"; // Verde
+      }
+      cronometroEl.style.color = "#ffffff";
+    }
+
+    function ajustarIntensidad() {
+      intensidad = (Math.round((intensidad + 0.1) * 10) / 10) % 10;
+      document.getElementById('intensidad').textContent = "Intensidad: " + intensidad.toFixed(1);
+      document.getElementById('mercalli').textContent = "Intensidad: " + escalaMercalli(intensidad) + " (Mercalli)";
+    }
+
+    function actualizarIntensidadTexto() {
+      const nivel = nivelesMercalli[indiceMercalliActual];
+      document.getElementById('intensidad').textContent = `Escala: ${nivel.richterMin.toFixed(1)} - ${nivel.richterMax.toFixed(1)}`;
+    }
+
+    function siguienteMercalli() {
+      indiceMercalliActual = (indiceMercalliActual + 1) % nivelesMercalli.length;
+      const nuevoNivel = nivelesMercalli[indiceMercalliActual];
+      intensidad = nuevoNivel.richterMin;
+      document.getElementById('mercalli').textContent = "Intensidad: " + nuevoNivel.etiqueta + " (Mercalli)";
       actualizarIntensidadTexto();
     }
 
@@ -1335,8 +1586,13 @@
       botones.forEach(id => {
         const btn = document.getElementById(id);
         if (btn) {
-          btn.style.opacity = habilitado ? '1' : '0.5';
-          btn.style.pointerEvents = habilitado ? 'auto' : 'none';
+          if (habilitado) {
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+          } else {
+            btn.style.opacity = '0.5';
+            btn.style.pointerEvents = 'none';
+          }
         }
       });
     }
@@ -1391,7 +1647,7 @@
         alertaToggleBtn.style.background = alertaActiva ? "#bfa000" : "#e0e0e0";
         alertaToggleBtn.style.color = alertaActiva ? "#fff" : "#222";
 
-        mostrarNotificacionTrofeo(alertaActiva ? "Alerta activada" : "Alerta desactivada");
+        mostrarNotificacionTrofeo(alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado");
       }
 
       const simulacionActiva = typeof intervaloCronometro !== 'undefined' && intervaloCronometro;
@@ -1443,7 +1699,7 @@
         btnSimulacion.style.color = '#fff';
         btnPrueba.style.background = '#bfa000';
         btnPrueba.style.color = '#222';
-        if (modoIndicador) modoIndicador.textContent = 'Modo: Simulación';
+        if (modoIndicador) modoIndicador.textContent = 'Modo: Entrenamiento';
         if (botonesPiso) {
           Array.from(botonesPiso.getElementsByTagName('button')).forEach(btn => {
             btn.disabled = false;
@@ -1451,7 +1707,7 @@
             btn.style.pointerEvents = 'auto';
           });
         }
-        mostrarNotificacionTrofeo("¡Modo de Simulacion activado!, selecciona tu configuracion personal.");
+        mostrarNotificacionTrofeo("¡Modo de Entrenamiento activado!, selecciona tu configuracion personal.");
         actualizarBotonAlertaPorModo();
       };
       btnPrueba.onclick = function () {
@@ -1480,7 +1736,7 @@
       showTutorialStep();
       mostrarGifCronometro(false);
       actualizarIntensidadTexto();
-      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Simulación');
+      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Entrenamiento');
       mostrarMapaPiso(selectedFloor);
 
       alertaActiva = false;
@@ -1570,7 +1826,7 @@
       showTutorialStep();
       mostrarGifCronometro(false);
       actualizarIntensidadTexto();
-      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Simulación');
+      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Entrenamiento');
       mostrarMapaPiso(selectedFloor);
 
       alertaActiva = false;
@@ -1588,15 +1844,41 @@
       };
     }
 
+    let sonidoHabilitado = true;
+    const botonSonido = document.getElementById('boton_sonido');
+    const iconoSonido = document.getElementById('iconoSonido');
+    function actualizarEstadoSonido() {
+      const audios = document.querySelectorAll('audio');
+      audios.forEach(audio => {
+        audio.muted = !sonidoHabilitado;
+      });
+      if (iconoSonido) {
+        iconoSonido.src = sonidoHabilitado ? "images/sonido_activado.png" : "images/sonido_desactivado.png";
+        iconoSonido.alt = sonidoHabilitado ? "Sonido activado" : "Sonido desactivado";
+      }
+      mostrarNotificacionTrofeo(sonidoHabilitado ? "Sonido activado" : "Sonido desactivado");
+    }
+    if (botonSonido) {
+      botonSonido.onclick = function () {
+        sonidoHabilitado = !sonidoHabilitado;
+        actualizarEstadoSonido();
+      };
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      actualizarEstadoSonido();
+    });
+
     async function cambiarCamara(nuevaCamara) {
+
       await obtenerDispositivosVideo();
+
       if (streamActual) {
         streamActual.getTracks().forEach(track => track.stop());
         streamActual = null;
       }
       try {
         let constraints = { video: { facingMode: { exact: nuevaCamara } } };
-
         let stream;
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -1656,7 +1938,7 @@
       showTutorialStep();
       mostrarGifCronometro(false);
       actualizarIntensidadTexto();
-      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Simulación');
+      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Entrenamiento');
       mostrarMapaPiso(selectedFloor);
 
       alertaActiva = false;
@@ -1686,153 +1968,6 @@
       const modal = document.getElementById('modalPartePiso');
       if (modal) modal.style.display = 'none';
     }
-
-    let modoVR = false;
-
-    const vrToggleBtn = document.getElementById('vrToggleBtn');
-    const vrVideoContainer = document.getElementById('vrVideoContainer');
-    const video = document.getElementById('video');
-    const videoLeft = document.getElementById('videoLeft');
-    const videoRight = document.getElementById('videoRight');
-
-    function duplicarStreamVR() {
-      if (streamActual) {
-        videoLeft.srcObject = streamActual;
-        videoRight.srcObject = streamActual;
-      } else {
-        videoLeft.srcObject = null;
-        videoRight.srcObject = null;
-      }
-    }
-
-    function setModoVR(activo) {
-      modoVR = activo;
-      if (modoVR) {
-        video.style.display = 'none';
-        vrVideoContainer.style.display = 'block';
-        duplicarStreamVR();
-        vrToggleBtn.textContent = "Con VR";
-        vrToggleBtn.style.background = "#4682B4";
-        vrToggleBtn.style.color = "#fff";
-      } else {
-        video.style.display = '';
-        vrVideoContainer.style.display = 'none';
-        videoLeft.srcObject = null;
-        videoRight.srcObject = null;
-        vrToggleBtn.textContent = "Sin VR";
-        vrToggleBtn.style.background = "#e0e0e0";
-        vrToggleBtn.style.color = "#222";
-      }
-    }
-
-    if (vrToggleBtn) {
-      vrToggleBtn.onclick = function () {
-        setModoVR(!modoVR);
-      };
-    }
-
-
-    async function cambiarCamara(nuevaCamara) {
-
-      await obtenerDispositivosVideo();
-
-      if (streamActual) {
-        streamActual.getTracks().forEach(track => track.stop());
-        streamActual = null;
-      }
-      try {
-        let constraints = { video: { facingMode: { exact: nuevaCamara } } };
-        let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (e) {
-          constraints = { video: { facingMode: nuevaCamara } };
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        }
-        streamActual = stream;
-        video.srcObject = stream;
-        video.style.transform = '';
-        if (modoVR) {
-          duplicarStreamVR();
-        }
-        mostrarNotificacionTrofeo(
-          nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
-        );
-      } catch (e) {
-        mostrarNotificacionTrofeo("No se pudo cambiar la cámara.");
-      }
-    }
-
-    async function inicializarCamara() {
-      await obtenerDispositivosVideo();
-      if (streamActual) {
-        streamActual.getTracks().forEach(track => track.stop());
-        streamActual = null;
-      }
-      let facingMode = camaraActual;
-      if (dispositivosVideo.length === 1) {
-        facingMode = undefined;
-      }
-      try {
-        let constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
-        let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (e) {
-          constraints = facingMode ? { video: { facingMode } } : { video: true };
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        }
-        streamActual = stream;
-        video.srcObject = stream;
-        video.style.transform = '';
-        if (modoVR) {
-          duplicarStreamVR();
-        }
-      } catch (error) {
-        console.error('Error al acceder a la cámara: ', error);
-        document.getElementById('mensaje').textContent = 'Error al acceder a la cámara. Por favor, verifica los permisos.';
-      }
-    }
-
-    window.onload = async function () {
-      selectedFloor = "B1";
-      localStorage.setItem('simuladorPiso', "B1");
-      document.getElementById('pisoSeleccionadoValor').textContent = "B1";
-      showTutorialStep();
-      mostrarGifCronometro(false);
-      actualizarIntensidadTexto();
-      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Simulación');
-      mostrarMapaPiso(selectedFloor);
-
-      alertaActiva = false;
-      actualizarEstadoAlerta();
-      actualizarBotonAlertaPorModo();
-      await inicializarCamara();
-    };
-
-    /*   document.addEventListener('keydown', function (e) {
-   
-         const key = e.key ? e.key.toLowerCase() : '';
-         const code = e.code ? e.code.toLowerCase() : '';
-        
-         if (key === 'volumeup' || code === 'audiovolumeup') {
-          
-           const modalPiso = document.getElementById('modalPiso');
-           const botonIniciar = document.getElementById('botonIniciar');
-           if (modalPiso && modalPiso.style.display !== 'flex' && botonIniciar && !botonIniciar.disabled) {
-             botonIniciar.click();
-             e.preventDefault();
-           }
-         }
-         if (key === 'volumedown' || code === 'audiovolumedown') {
-           const botonDetener = document.getElementById('botonDetener');
-           if (botonDetener && botonDetener.style.display !== 'none' && !botonDetener.disabled) {
-             botonDetener.click();
-             e.preventDefault();
-           }
-         }
-       }, false); */
-
   </script>
 </body>
 
