@@ -107,6 +107,41 @@
         #controles-ruta button:hover {
             background: #fff3;
         }
+
+        /* Estilos para la trivia */
+        #trivia-container {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 28px 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #0003;
+            z-index: 100;
+        }
+
+        #trivia-pregunta {
+            font-size: 1.1em;
+            margin-bottom: 18px;
+        }
+
+        #trivia-feedback {
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        #puntaje-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 30;
+            background: #fff8;
+            padding: 8px 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #0003;
+        }
     </style>
 </head>
 
@@ -140,6 +175,16 @@
         <div id="controles-ruta">
             <button id="btn-marcar-ruta">Marcar ruta</button>
             <button id="btn-limpiar-ruta">Limpiar ruta</button>
+        </div>
+        <!-- Trivia y puntaje -->
+        <div id="trivia-container" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:28px 24px;border-radius:12px;box-shadow:0 2px 8px #0003;z-index:100;">
+            <div id="trivia-pregunta" style="font-size:1.1em;margin-bottom:18px;"></div>
+            <form id="trivia-form"></form>
+            <div id="trivia-feedback" style="margin-top:12px;font-weight:bold;"></div>
+            <button id="trivia-close" style="margin-top:16px;display:none;">Cerrar</button>
+        </div>
+        <div id="puntaje-container" style="position:absolute;top:10px;left:10px;z-index:30;background:#fff8;padding:8px 16px;border-radius:8px;box-shadow:0 2px 8px #0003;">
+            Puntaje: <span id="puntaje">0</span>
         </div>
     </div>
     <script>
@@ -180,6 +225,99 @@
         let puntosRuta = [];
         const sliderRotacion = document.getElementById('slider-rotacion');
         const flechaRotacion = document.getElementById('flecha-rotacion');
+
+        // --- Trivia de ruta de evacuación ---
+        let puntaje = 0;
+        const triviaContainer = document.getElementById('trivia-container');
+        const triviaPregunta = document.getElementById('trivia-pregunta');
+        const triviaForm = document.getElementById('trivia-form');
+        const triviaFeedback = document.getElementById('trivia-feedback');
+        const triviaClose = document.getElementById('trivia-close');
+        const puntajeSpan = document.getElementById('puntaje');
+
+        // Preguntas de ejemplo por piso (puedes personalizar)
+        const preguntasRuta = {
+            "B1.png": {
+                pregunta: "¿Cuál es la ruta de evacuación correcta desde el Estacionamiento 1?",
+                opciones: [
+                    "Salir por la rampa principal hacia la calle",
+                    "Subir al piso 4 y buscar la salida",
+                    "Esperar en el auto",
+                    "Ir al jardín de abejas"
+                ],
+                respuesta: 0
+            },
+            "B2.png": {
+                pregunta: "¿Por dónde debes evacuar desde Estacionamiento 2?",
+                opciones: [
+                    "Por la escalera de emergencia más cercana",
+                    "Por el elevador",
+                    "Esperar instrucciones",
+                    "Ir al piso 8"
+                ],
+                respuesta: 0
+            },
+            "B3.png": {
+                pregunta: "¿Cuál es la mejor ruta de evacuación desde Estacionamiento 3?",
+                opciones: [
+                    "Por la salida lateral señalada",
+                    "Por el elevador",
+                    "Subir al piso 4",
+                    "Esperar en el auto"
+                ],
+                respuesta: 0
+            },
+            "4.png": {
+                pregunta: "¿Cómo evacuarías desde el Piso 4?",
+                opciones: [
+                    "Bajar por la escalera de emergencia",
+                    "Esperar en el salón",
+                    "Usar el elevador",
+                    "Ir al jardín de abejas"
+                ],
+                respuesta: 0
+            },
+            "6.png": {
+                pregunta: "¿Cuál es la ruta de evacuación desde el Piso 6?",
+                opciones: [
+                    "Bajar por la escalera de emergencia",
+                    "Esperar en el salón",
+                    "Usar el elevador",
+                    "Ir al estacionamiento"
+                ],
+                respuesta: 0
+            },
+            "7.png": {
+                pregunta: "¿Por dónde evacuarías desde el Piso 7?",
+                opciones: [
+                    "Bajar por la escalera de emergencia",
+                    "Esperar en el salón",
+                    "Usar el elevador",
+                    "Ir al jardín de abejas"
+                ],
+                respuesta: 0
+            },
+            "8.png": {
+                pregunta: "¿Cuál es la mejor opción de evacuación desde el Piso 8?",
+                opciones: [
+                    "Bajar por la escalera de emergencia",
+                    "Esperar en el salón",
+                    "Usar el elevador",
+                    "Ir al estacionamiento"
+                ],
+                respuesta: 0
+            },
+            "G.png": {
+                pregunta: "¿Qué debes hacer en el Jardín de Abejas en caso de evacuación?",
+                opciones: [
+                    "Dirigirte a la zona de menor riesgo señalada",
+                    "Entrar al edificio",
+                    "Esperar en el jardín",
+                    "Ir al estacionamiento"
+                ],
+                respuesta: 0
+            }
+        };
 
         function clamp(val, min, max) {
             return Math.max(min, Math.min(max, val));
@@ -297,6 +435,10 @@
                 canvasRuta.style.pointerEvents = 'auto';
             } else {
                 canvasRuta.style.pointerEvents = 'none';
+                // Mostrar trivia solo si se marcó una ruta
+                if (puntosRuta.length > 1) {
+                    mostrarTriviaRuta(pisoActual);
+                }
             }
         });
 
@@ -401,6 +543,57 @@
             ajustarCanvasYUsuario(true);
         } else {
             mapa.addEventListener('load', function () { ajustarCanvasYUsuario(true); });
+        }
+
+        function mostrarTriviaRuta(piso) {
+            const preguntaObj = preguntasRuta[piso];
+            if (!preguntaObj) return;
+            triviaPregunta.textContent = preguntaObj.pregunta;
+            triviaForm.innerHTML = '';
+            triviaFeedback.textContent = '';
+            triviaClose.style.display = 'none';
+
+            preguntaObj.opciones.forEach((op, idx) => {
+                const label = document.createElement('label');
+                label.style.display = 'block';
+                label.style.margin = '8px 0';
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'trivia-opcion';
+                input.value = idx;
+                input.required = true;
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(' ' + op));
+                triviaForm.appendChild(label);
+            });
+
+            const submitBtn = document.createElement('button');
+            submitBtn.type = 'submit';
+            submitBtn.textContent = 'Responder';
+            submitBtn.className = 'nav-button';
+            submitBtn.style.marginTop = '14px';
+            triviaForm.appendChild(submitBtn);
+
+            triviaForm.onsubmit = function(e) {
+                e.preventDefault();
+                const seleccion = parseInt(triviaForm.querySelector('input[name="trivia-opcion"]:checked').value);
+                if (seleccion === preguntaObj.respuesta) {
+                    triviaFeedback.textContent = '¡Correcto! Has sumado un punto.';
+                    puntaje++;
+                    puntajeSpan.textContent = puntaje;
+                } else {
+                    triviaFeedback.textContent = 'Respuesta incorrecta. Intenta conocer mejor la ruta.';
+                }
+                triviaClose.style.display = '';
+                triviaForm.querySelectorAll('input').forEach(inp => inp.disabled = true);
+                submitBtn.disabled = true;
+            };
+
+            triviaClose.onclick = function() {
+                triviaContainer.style.display = 'none';
+            };
+
+            triviaContainer.style.display = '';
         }
     </script>
 </body>
