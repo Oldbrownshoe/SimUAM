@@ -36,13 +36,13 @@
     }
 
     #modalPisoContent button {
-      background-color: #4682B4 !important;
-      border: 2.5px solid #1a4a7a !important;
+      background-color: #ec7711 !important;
+      border: 2.5px solid #bd5f0e !important;
       color: #fff !important;
     }
 
     #modalPisoContent button:hover {
-      background-color: #315f7d !important;
+      background-color: #d46b0f !important;
     }
 
 
@@ -137,7 +137,6 @@
       border: 2.5px solid #6a1bb3;
     }
 
-
     #verRecorrido {
       position: absolute;
       top: 10px;
@@ -181,6 +180,17 @@
       box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25), 0 1.5px 6px 0 rgba(0, 0, 0, 0.18);
     }
 
+
+    #boton_manualUsuario {
+      position: absolute;
+      top: 10px;
+      left: 190px;
+      background: rgba(255, 255, 255, 0.8);
+      color: black;
+      font-size: 16px;
+      border: 2.5px solid #bbb;
+    }
+
     #modoIndicador {
       position: absolute;
       top: 230px;
@@ -208,9 +218,7 @@
       width: 100vw;
       height: 100vh;
       object-fit: contain;
-      /* Cambiado de cover a contain para evitar recortes y mantener la orientación */
       z-index: 0;
-      /* Eliminamos transform: none; para evitar forzar orientación */
     }
 
     .direction-indicator {
@@ -279,7 +287,7 @@
       overflow-y: auto;
       background: rgba(255, 255, 255, 0.97);
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
-      border: 3px solid #1a4a7a;
+      border: 3px solid #ec7711;
       position: relative;
       font-size: 1.1rem;
       transition: max-width 0.2s, max-height 0.2s, padding 0.2s;
@@ -309,15 +317,15 @@
       font-size: 16px;
       cursor: pointer;
       border-radius: 10px;
-      border: 2.5px solid #1a4a7a;
-      background-color: #4682B4;
+      background-color: #ec7711;
+      border: 2.5px solid #bd5f0e;
       color: #fff;
       transition: background 0.3s ease;
       box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25), 0 1.5px 6px 0 rgba(0, 0, 0, 0.18);
     }
 
     #modalPartePiso button:hover {
-      background-color: #315f7d;
+      background-color: #d46b0f;
     }
 
     #modalVR {
@@ -361,8 +369,8 @@
     #boton_sonido {
 
       position: absolute;
-      top: 10px;
-      left: 190px;
+      bottom: 240px;
+      left: 10px;
       background: rgba(255, 255, 255, 0.8);
       border: 2.5px solid #bbb;
 
@@ -377,7 +385,8 @@
     #boton_configSim,
     #caja_pisoSeleccionado,
     #modoIndicador,
-    #boton_sonido {
+    #boton_sonido,
+    #boton_manualUsuario {
       box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25), 0 1.5px 6px 0 rgba(0, 0, 0, 0.18);
     }
 
@@ -389,10 +398,10 @@
       left: auto;
       bottom: auto;
       transform: none;
-      background: rgba(60, 60, 60, 0.95);
+      background: #ec7711;
       color: #fff;
       border-radius: 16px;
-      border: 3px solid #bfa000;
+      border: 3px solid #8e470a;
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
       min-width: 260px;
       max-width: 90vw;
@@ -537,6 +546,67 @@
         transform: translateY(0) scale(1);
       }
     }
+
+    #botonesPiso {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    #botonesPiso button {
+      width: 60px;
+      height: 36px;
+      margin: 2px 0;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 2.5px solid #1a4a7a;
+      transition: transform 0.1s, box-shadow 0.1s;
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.10);
+      opacity: 1;
+      background: #FFD800FF;
+    }
+
+    #boton-anterior,
+    #boton-siguiente {
+      margin: 0 0.5rem;
+      padding: 0.5rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    #boton-anterior,
+    #boton-siguiente {
+      color: #fff;
+      background-color: #ec7711;
+      border: 2.5px solid #bd5f0e;
+    }
+
+    #boton-anterior:hover:not(:disabled) {
+      background-color: #d46b0f;
+    }
+
+    #boton-siguiente:hover:not(:disabled) {
+      background-color: #d46b0f;
+    }
+
+    #boton-anterior:disabled,
+    #boton-siguiente:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 
@@ -561,7 +631,7 @@
       <div id="ubicacionContainer" style="margin-bottom: 10px;">
         <h2 style="margin:0;">¿Dónde te encuentras?</h2>
         <button id="btnDentroUAM"
-          style="background:#4682B4; color:#fff; border:2.5px solid #1a4a7a; border-radius:10px; padding:8px 18px; font-size:15px; margin-right:8px;">Dentro
+          style="background:#4682B4; color:#fff; border:2.5px solid #ec7711; border-radius:10px; padding:8px 18px; font-size:15px; margin-right:8px;">Dentro
           de la UAM</button>
         <button id="btnFueraUAM"
           style="background:#e0e0e0; color:#222; border:2.5px solid #bbb; border-radius:10px; padding:8px 18px; font-size:15px;">Fuera
@@ -579,15 +649,15 @@
         <p style="font-size:1.1rem; color:#222; margin-bottom:10px;">Selecciona el piso donde te encuentras o regresa a
           la simulación.</p>
         <div id="botonesPiso">
-          <button onclick="seleccionarPiso('B1')">B1</button>
-          <button onclick="seleccionarPiso('B2')">B2</button>
-          <button onclick="seleccionarPiso('B3')">B3</button>
-          <button onclick="seleccionarPiso('4')">4</button>
-          <button onclick="seleccionarPiso('5')">5</button>
-          <button onclick="seleccionarPiso('6')">6</button>
-          <button onclick="seleccionarPiso('7')">7</button>
-          <button onclick="seleccionarPiso('8')">8</button>
           <button onclick="seleccionarPiso('G')">G</button>
+          <button onclick="seleccionarPiso('8')">8</button>
+          <button onclick="seleccionarPiso('7')">7</button>
+          <button onclick="seleccionarPiso('6')">6</button>
+          <button onclick="seleccionarPiso('5')">5</button>
+          <button onclick="seleccionarPiso('4')">4</button>
+          <button onclick="seleccionarPiso('B3')">B3</button>
+          <button onclick="seleccionarPiso('B2')">B2</button>
+          <button onclick="seleccionarPiso('B1')">B1</button>
         </div>
       </div>
 
@@ -601,18 +671,25 @@
       <div id="camaraContainer" style="margin-bottom: 10px;">
         <h2 style="margin:0; font-size:1.1rem;">Cámara</h2>
         <button id="toggleCamaraBtn"
-          style="background:#e0e0e0; color:#222; border:2.5px solid #4682B4; border-radius:10px; padding:8px 18px; font-size:15px;">
+          style="background:#e0e0e0; color:#222; border:2.5px solid #ec7711; border-radius:10px; padding:8px 18px; font-size:15px;">
           Usar cámara trasera
+        </button>
+        <button id="rotarCamaraBtn"
+          style="background:#e0e0e0; color:#222; border:2.5px solid #ec7711; border-radius:10px; padding:8px 18px; font-size:15px; margin-left:8px;">
+          Rotar Cámara
         </button>
       </div>
 
-      <div id="vrToggleContainer" style="margin-bottom: 10px;">
-        <h2 style="margin:0; font-size:1.1rem;">Modo 3D</h2>
-        <button id="vrToggleBtn"
-          style="background:#e0e0e0; color:#222; border:2.5px solid #4682B4; border-radius:10px; padding:8px 18px; font-size:15px;">
-          Sin 3D
+      <div id="generaQRContainer" style="margin-bottom: 10px;">
+        <h2 style="margin:0; font-size:1.1rem;">Genera QR de Finalizar</h2>
+        <button id="generaQRBtn"
+          style="background:#e0e0e0; color:#222; border:2.5px solid #ec7711; border-radius:10px; padding:8px 18px; font-size:15px;">
+          Genera QR
         </button>
+        <br>
+        <canvas id="qrFinalizar" style="margin-top:10px;"></canvas>
       </div>
+
       <button id="botonReanudarPausa" onclick="cerrarMenuPausa()">Cerrar</button>
     </div>
   </div>
@@ -622,13 +699,15 @@
     <div
       style="background:#fff; padding:24px; border-radius:16px; text-align:center; box-shadow:0 4px 24px rgba(0,0,0,0.25); max-width:90vw; width:420px;">
       <h2>¿En qué parte del piso estás?</h2>
-      <img id="imagenPisoParte" src="" alt="Plano del piso"
-        style="width:100%; max-height:300px; object-fit:contain; margin-bottom:16px; border:2px solid #1a4a7a; border-radius:12px;">
-      <div>
-        <button onclick="seleccionarPartePiso('SI')">Superior Izquierda</button>
-        <button onclick="seleccionarPartePiso('SD')">Superior Derecha</button>
-        <button onclick="seleccionarPartePiso('II')">Inferior Izquierda</button>
-        <button onclick="seleccionarPartePiso('ID')">Inferior Derecha</button>
+      <div style="position:relative; width:100%; max-height:300px; margin-bottom:16px;">
+        <img id="imagenPisoParte" src="" alt="Plano del piso"
+          style="width:100%; max-height:300px; object-fit:contain; border:2px solid #ec7711; border-radius:12px;">
+        <div id="resaltadoPartePiso"
+          style="display:none; position:absolute; pointer-events:none; background:rgba(236,119,17,0.35); border-radius:8px; z-index:9;">
+        </div>
+        <div id="hoverPartePiso"
+          style="display:none; position:absolute; pointer-events:none; background:#d46b0f; color:#fff; padding:6px 14px; border-radius:8px; font-size:1.1rem; z-index:10;">
+        </div>
       </div>
       <br>
       <button onclick="cerrarModalPartePiso()">Cancelar</button>
@@ -642,6 +721,7 @@
         style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:24px; color:#888; cursor:pointer; z-index:10;">&times;</button>
       <h2>Configura tu dispositivo VR</h2>
       <p>Selecciona el tiempo que necesitas para colocarte dispositivo VR.</p>
+      <img src="images/coloca_VR.png" alt="Colocando los VR" style="width: 20%; margin-bottom:10px;">
       <div id="botonesVR">
         <button onclick="seleccionarTiempoVR(30)">30 seg.</button>
         <button onclick="seleccionarTiempoVR(45)">45 seg.</button>
@@ -691,7 +771,7 @@
   <button id="intensidad">Escala: 0.0 - 4.0</button>
   <div id="caja_pisoSeleccionado" class="caja-texto">Piso: <span id="pisoSeleccionadoValor">B1</span></div>
   <button id="mercalli" onclick="siguienteMercalli()">Intensidad: I (Mercalli)</button>
-  <button id="verRecorrido" class="caja-texto" onclick="mostrarRecorrido()">
+  <button id="verRecorrido" class="caja-texto" onclick="iniciarTourTutorial()">
     <img src="images/ayuda.png" alt="Ver Recorrido" style="height: 24px;">
   </button>
   <a href="./../inicio.html"> <button id="boton_home" class="caja-texto"> <img src="images/home.png" alt="Inicio"
@@ -700,6 +780,10 @@
 
   <button id="boton_configSim" class="caja-texto"> <img src="images/configuracion.png" alt="Configuración del Simulador"
       style="height: 24px;"> </button>
+
+  <button id="boton_manualUsuario" class="caja-texto">
+    <img src="images/manualUsuario.png" alt="Manual de Usuario" style="height: 24px;">
+  </button>
 
   <button id="boton_sonido" class="caja-texto">
     <img id="iconoSonido" src="images/sonido_activado.png" alt="Sonido activado" style="height:24px;">
@@ -718,6 +802,10 @@
 
   <audio id="sfxFinish">
     <source src="../../../sound/fin_cronometro_vr.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="sfxFinSimulacion">
+    <source src="../../../sound/fin_simulacion.mp3" type="audio/mpeg">
   </audio>
 
   <div id="directionIndicator" class="direction-indicator"></div>
@@ -746,11 +834,36 @@
     </div>
   </div>
 
-  <!-- Botón oculto para escanear QR -->
-  <button id="botonEscanearQR" style="display:none; position:fixed; bottom:80px; right:20px; z-index:3000; background:#fff; border:2.5px solid #4682B4; border-radius:16px; padding:12px 24px; font-size:18px; box-shadow:0 4px 24px 0 rgba(0,0,0,0.25);">
-    Escanear QR
-  </button>
+  <div id="modalManualUsuario"
+    style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); z-index:5000; justify-content:center; align-items:center;">
+    <div id="manualUsuarioContent"
+      style="background:#fff; border-radius:18px; max-width:98vw; width:1200px; max-height:96vh; overflow:auto; position:relative; box-shadow:0 8px 32px 0 rgba(0,0,0,0.35); padding:24px;">
+      <button id="cerrarManualUsuarioBtn"
+        style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:32px; color:#888; cursor:pointer; z-index:10;">&times;</button>
+      <h3 style="text-align:center; margin-bottom:1rem;">SimUAM: Manual de Usuario</h3>
+      <audio id="sonido-pagina" src="./../../sound/manualUsuario.mp3" preload="auto"></audio>
+      <div id="contenedor-libro"
+        style="background:#ccc; box-shadow:0 8px 20px rgba(0,0,0,0.3); overflow:hidden; display:flex; justify-content:center; align-items:center; width:100%; margin-bottom:1rem;">
+        <div class="pagina"
+          style="width:48%; height:800px; background:white; box-shadow:inset 0 0 5px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center;">
+          <canvas id="lienzo-izquierdo"></canvas>
+        </div>
+        <div class="pagina"
+          style="width:48%; height:800px; background:white; box-shadow:inset 0 0 5px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center;">
+          <canvas id="lienzo-derecho"></canvas>
+        </div>
+      </div>
+      <div class="controles" style="text-align:center; margin-top:1rem;">
+        <button id="boton-anterior" disabled>← Anterior</button>
+        <button id="boton-siguiente" disabled>Siguiente →</button>
+      </div>
+    </div>
+  </div>
 
+
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
   <script>
     let horaInicio;
     let intervaloCronometro;
@@ -869,16 +982,14 @@
       intervaloCronometro = setInterval(actualizarCronometro, 10);
       qrSacudidaDetenida = false;
       qrScanEnabled = false;
-      document.getElementById('botonEscanearQR').style.display = 'none';
       iniciarSacudida();
 
-      // Habilitar QR tras 50s
       setTimeout(() => {
         if (intervaloCronometro) {
           detenerSacudidaPorQR();
           qrScanEnabled = true;
-          document.getElementById('botonEscanearQR').style.display = 'none'; // Oculta el botón
-          iniciarEscaneoQR(); // Inicia automáticamente el escaneo QR
+          iniciarEscaneoQR();
+          mostrarNotificacionTrofeo("Escanea el QR para finalizar el ejercicio");
         }
       }, 50000);
 
@@ -1141,7 +1252,6 @@
       }, duracion);
     }
 
-    // Cambiado: ahora solo muestra un distractor aleatorio por simulación y lo mantiene todo el tiempo
     function iniciarDistractorUnicoAntesSimulacion(tiempoTotal, callback) {
       const idx = Math.floor(Math.random() * distractores.length);
       const mensaje = distractores[idx];
@@ -1162,10 +1272,11 @@
           clearInterval(vrInterval);
           document.getElementById("modalVR").style.display = "none";
           if (modoEvaluacion === 'simulacion' && alertaActiva) {
-            // Cambiado: solo un distractor aleatorio, mostrado todo el tiempo
+            const idx = Math.floor(Math.random() * distractores.length);
+            const mensaje = distractores[idx];
             const tiemposDistractor = [30, 45, 60];
             const tiempoDistractor = tiemposDistractor[Math.floor(Math.random() * tiemposDistractor.length)];
-            iniciarDistractorUnicoAntesSimulacion(tiempoDistractor, function () {
+            mostrarModalDistractor(mensaje, tiempoDistractor * 1000, function () {
               iniciarSimulacionConAlerta();
             });
           } else {
@@ -1235,227 +1346,12 @@
       qrScanEnabled = false;
       document.getElementById('botonEscanearQR').style.display = 'none';
       cerrarModalQRScan();
-    }
 
-    function actualizarCronometro() {
-      const tiempoActual = new Date().getTime();
-      const tiempoTranscurrido = (tiempoActual - horaInicio) / 1000;
-      document.getElementById('textoCronometro').textContent = tiempoTranscurrido.toFixed(3) + " segundos";
-      const cronometroEl = document.getElementById('cronometro');
-      if (tiempoTranscurrido >= 40) {
-        cronometroEl.style.backgroundColor = "rgba(255, 0, 0, 0.8)"; // Rojo
-      } else if (tiempoTranscurrido >= 20) {
-        cronometroEl.style.backgroundColor = "rgba(255, 215, 0, 0.8)"; // Amarillo
-      } else {
-        cronometroEl.style.backgroundColor = "rgba(34, 139, 34, 0.8)"; // Verde
+      var sfxFinSimulacion = document.getElementById("sfxFinSimulacion");
+      if (sfxFinSimulacion) {
+        sfxFinSimulacion.currentTime = 0;
+        sfxFinSimulacion.play();
       }
-      cronometroEl.style.color = "#ffffff";
-    }
-
-    function ajustarIntensidad() {
-      intensidad = (Math.round((intensidad + 0.1) * 10) / 10) % 10;
-      document.getElementById('intensidad').textContent = "Intensidad: " + intensidad.toFixed(1);
-      document.getElementById('mercalli').textContent = "Intensidad: " + escalaMercalli(intensidad) + " (Mercalli)";
-    }
-
-    function actualizarIntensidadTexto() {
-      const nivel = nivelesMercalli[indiceMercalliActual];
-      document.getElementById('intensidad').textContent = `Escala: ${nivel.richterMin.toFixed(1)} - ${nivel.richterMax.toFixed(1)}`;
-    }
-
-    function siguienteMercalli() {
-      indiceMercalliActual = (indiceMercalliActual + 1) % nivelesMercalli.length;
-      const nuevoNivel = nivelesMercalli[indiceMercalliActual];
-      intensidad = nuevoNivel.richterMin;
-      document.getElementById('mercalli').textContent = "Intensidad: " + nuevoNivel.etiqueta + " (Mercalli)";
-      actualizarIntensidadTexto();
-    }
-
-    function iniciarSacudida() {
-      intervaloSacudida = setInterval(() => {
-        const nivelIntensidad = intensidad * 10;
-        const x = Math.random() * nivelIntensidad - nivelIntensidad / 2;
-        const y = Math.random() * nivelIntensidad - nivelIntensidad / 2;
-        document.getElementById('video').style.transform = `translate(${x}px, ${y}px)`;
-      }, 50);
-    }
-
-    let qrScanEnabled = false;
-    let qrSacudidaDetenida = false;
-    let qrScanner = null;
-
-    // --- QR SCAN LOGIC ---
-    function habilitarEscaneoQR() {
-      qrScanEnabled = true;
-      document.getElementById('botonEscanearQR').style.display = 'inline-block';
-      mostrarNotificacionTrofeo("Escanea el QR para finalizar la simulación.");
-    }
-
-    function detenerSacudidaPorQR() {
-      if (!qrSacudidaDetenida) {
-        clearInterval(intervaloSacudida);
-        qrSacudidaDetenida = true;
-      }
-    }
-
-    // Simple QR scanner usando html5-qrcode (solo cuando se habilita)
-    function iniciarEscaneoQR() {
-      // Crea modal para escaneo
-      let modal = document.createElement('div');
-      modal.id = 'modalQRScan';
-      modal.style = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:4000;display:flex;align-items:center;justify-content:center;';
-      modal.innerHTML = `
-        <div style="background:#fff;padding:24px;border-radius:16px;max-width:90vw;width:340px;text-align:center;">
-          <div id="qr-reader" style="width:300px;margin:auto;"></div>
-          <button onclick="cerrarModalQRScan()" style="margin-top:16px;background:#888;color:#fff;border:none;border-radius:8px;padding:8px 24px;font-size:16px;cursor:pointer;">Cancelar</button>
-        </div>
-      `;
-      document.body.appendChild(modal);
-
-      // Cargar html5-qrcode si no existe
-      if (!window.Html5Qrcode) {
-        let script = document.createElement('script');
-        script.src = "https://unpkg.com/html5-qrcode";
-        script.onload = () => iniciarHtml5Qrcode();
-        document.body.appendChild(script);
-      } else {
-        iniciarHtml5Qrcode();
-      }
-
-      function iniciarHtml5Qrcode() {
-        qrScanner = new Html5Qrcode("qr-reader");
-        qrScanner.start(
-          { facingMode: "environment" },
-          { fps: 10, qrbox: 250 },
-          qrCodeMessage => {
-            finalizarEvacuacion();
-            cerrarModalQRScan();
-          },
-          errorMessage => {}
-        );
-      }
-    }
-
-    function cerrarModalQRScan() {
-      let modal = document.getElementById('modalQRScan');
-      if (modal) modal.remove();
-      if (qrScanner) {
-        qrScanner.stop().catch(()=>{});
-        qrScanner.clear();
-        qrScanner = null;
-      }
-    }
-
-    document.getElementById('botonEscanearQR').onclick = function() {
-      if (qrScanEnabled) iniciarEscaneoQR();
-    };
-
-    // --- MODIFICAR comenzarSimulacion PARA HABILITAR QR ---
-    function comenzarSimulacion() {
-      const cronometroEl = document.getElementById('cronometro');
-      document.getElementById('textoCronometro').textContent = '0.000 segundos';
-      mostrarGifCronometro(true);
-      cronometroEl.style.backgroundColor = "rgba(34, 139, 34, 0.8)";
-      cronometroEl.style.color = "#ffffff";
-      let mensajeSimulacion = "";
-      if (selectedFloor === "B1" || selectedFloor === "B2" || selectedFloor === "B3") {
-        mensajeSimulacion = "¡Simulación en progreso!";
-      } else {
-        mensajeSimulacion = "¡Simulación en progreso!";
-      }
-
-      const barraMensaje = document.getElementById('mensaje');
-      barraMensaje.textContent = '';
-      barraMensaje.classList.remove('animado');
-      mostrarNotificacionTrofeo(mensajeSimulacion, function () {
-        barraMensaje.textContent = mensajeSimulacion;
-        barraMensaje.classList.remove('animado');
-
-        void barraMensaje.offsetWidth;
-        barraMensaje.classList.add('animado');
-      });
-      fadeOut(document.getElementById('botonIniciar'));
-      fadeIn(document.getElementById('botonDetener'), "inline-block");
-      horaInicio = new Date().getTime();
-      intervaloCronometro = setInterval(actualizarCronometro, 10);
-      qrSacudidaDetenida = false;
-      qrScanEnabled = false;
-      document.getElementById('botonEscanearQR').style.display = 'none';
-      iniciarSacudida();
-
-      // Habilitar QR tras 50s
-      setTimeout(() => {
-        if (intervaloCronometro) {
-          detenerSacudidaPorQR();
-          qrScanEnabled = true;
-          document.getElementById('botonEscanearQR').style.display = 'none'; // Oculta el botón
-          iniciarEscaneoQR(); // Inicia automáticamente el escaneo QR
-        }
-      }, 50000);
-
-      if (alertaActiva) {
-        if (alertaImg) {
-          alertaImg.src = "images/alerta.gif";
-          alertaImg.alt = "Alertamiento activado";
-        }
-        if (alertaImgIzq) {
-          alertaImgIzq.src = "images/alerta.gif";
-          alertaImgIzq.alt = "Alertamiento activado";
-        }
-        if (alertaImgDer) {
-          alertaImgDer.src = "images/alerta.gif";
-          alertaImgDer.alt = "Alertamiento activado";
-        }
-      } else {
-        if (alertaImg) {
-          alertaImg.src = "images/alerta.png";
-          alertaImg.alt = "Alertamiento desactivado";
-        }
-        if (alertaImgIzq) {
-          alertaImgIzq.src = "images/alerta.png";
-          alertaImgIzq.alt = "Alertamiento desactivado";
-        }
-        if (alertaImgDer) {
-          alertaImgDer.src = "images/alerta.png";
-          alertaImgDer.alt = "Alertamiento desactivado";
-        }
-      }
-    }
-
-    // --- MODIFICAR finalizarEvacuacion PARA LIMPIAR QR ---
-    function finalizarEvacuacion() {
-      const horaFin = new Date().getTime();
-      const tiempoReaccion = (horaFin - horaInicio) / 1000;
-      const mensaje = "¡Sismo terminado! Tu tiempo de reacción fue de " + tiempoReaccion.toFixed(3) + " s.";
-
-      mostrarNotificacionTrofeo(mensaje);
-
-      document.getElementById('mensaje').textContent = '';
-      document.getElementById('modalMensajeSimulador').style.display = 'none';
-      document.getElementById('sonidoSismo').pause();
-      document.getElementById('sonidoSismo').currentTime = 0;
-      clearInterval(intervaloCronometro);
-      clearInterval(intervaloSacudida);
-      mostrarGifCronometro(false);
-      fadeOut(document.getElementById('botonDetener'));
-      fadeIn(document.getElementById('botonIniciar'), "inline-block");
-
-      if (alertaImg) {
-        alertaImg.src = "images/alerta.png";
-        alertaImg.alt = alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado";
-      }
-      if (alertaImgIzq) {
-        alertaImgIzq.src = "images/alerta.png";
-        alertaImgIzq.alt = alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado";
-      }
-      if (alertaImgDer) {
-        alertaImgDer.src = "images/alerta.png";
-        alertaImgDer.alt = alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado";
-      }
-
-      qrScanEnabled = false;
-      document.getElementById('botonEscanearQR').style.display = 'none';
-      cerrarModalQRScan();
     }
 
     function actualizarCronometro() {
@@ -1758,6 +1654,7 @@
       }
     }
 
+
     async function cambiarCamara(nuevaCamara) {
       await obtenerDispositivosVideo();
       if (streamActual) {
@@ -1766,7 +1663,6 @@
       }
       try {
         let constraints = { video: { facingMode: { exact: nuevaCamara } } };
-
         let stream;
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -1777,9 +1673,97 @@
         streamActual = stream;
         video.srcObject = stream;
         video.style.transform = '';
-        if (modoVR) {
-          duplicarStreamVR();
+        mostrarNotificacionTrofeo(
+          nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
+        );
+      } catch (e) {
+        mostrarNotificacionTrofeo("No se pudo cambiar la cámara.");
+      }
+    }
+
+
+    async function inicializarCamara() {
+      await obtenerDispositivosVideo();
+      if (streamActual) {
+        streamActual.getTracks().forEach(track => track.stop());
+        streamActual = null;
+      }
+      let facingMode = camaraActual;         // 'environment' o 'user'
+      if (dispositivosVideo.length === 1) {
+        facingMode = undefined;
+      }
+      try {
+        let constraints = facingMode
+          ? { video: { facingMode: { exact: facingMode } } }
+          : { video: true };
+        let stream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (e) {
+          constraints = facingMode
+            ? { video: { facingMode } }
+            : { video: true };
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
         }
+        streamActual = stream;
+        video.srcObject = stream;
+        video.style.transform = '';  // reset rotación
+      } catch (error) {
+        console.error('Error al acceder a la cámara: ', error);
+        document.getElementById('mensaje').textContent =
+          'Error al acceder a la cámara. Por favor, verifica los permisos.';
+      }
+    }
+
+
+    window.onload = async function () {
+      selectedFloor = "B1";
+      localStorage.setItem('simuladorPiso', "B1");
+      document.getElementById('pisoSeleccionadoValor').textContent = "B1";
+      showTutorialStep();
+      mostrarGifCronometro(false);
+      actualizarIntensidadTexto();
+      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Entrenamiento');
+      mostrarMapaPiso(selectedFloor);
+
+      alertaActiva = false;
+      actualizarEstadoAlerta();
+      actualizarBotonAlertaPorModo();
+      await inicializarCamara();
+    };
+
+    // Rotar la camara
+    // Rotación manual de video
+    let rotacionActual = 0;
+    const rotarCamaraBtn = document.getElementById('rotarCamaraBtn');
+    const video = document.getElementById('video');
+
+    if (rotarCamaraBtn && video) {
+      rotarCamaraBtn.onclick = function () {
+        rotacionActual = (rotacionActual + 90) % 360;
+        video.style.transform = `rotate(${rotacionActual}deg)`;
+      };
+    }
+
+
+    async function cambiarCamara(nuevaCamara) {
+      await obtenerDispositivosVideo();
+      if (streamActual) {
+        streamActual.getTracks().forEach(track => track.stop());
+        streamActual = null;
+      }
+      try {
+        let constraints = { video: { facingMode: { exact: nuevaCamara } } };
+        let stream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (e) {
+          constraints = { video: { facingMode: nuevaCamara } };
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        }
+        streamActual = stream;
+        video.srcObject = stream;
+        video.style.transform = `rotate(${rotacionActual}deg)`;
         mostrarNotificacionTrofeo(
           nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
         );
@@ -1809,10 +1793,7 @@
         }
         streamActual = stream;
         video.srcObject = stream;
-        video.style.transform = '';
-        if (modoVR) {
-          duplicarStreamVR();
-        }
+        video.style.transform = `rotate(${rotacionActual}deg)`;
       } catch (error) {
         console.error('Error al acceder a la cámara: ', error);
         document.getElementById('mensaje').textContent = 'Error al acceder a la cámara. Por favor, verifica los permisos.';
@@ -1835,126 +1816,195 @@
       await inicializarCamara();
     };
 
-    const toggleCamaraBtn = document.getElementById('toggleCamaraBtn');
-    if (toggleCamaraBtn) {
-      toggleCamaraBtn.onclick = async function () {
-        camaraActual = (camaraActual === 'environment') ? 'user' : 'environment';
-        toggleCamaraBtn.textContent = camaraActual === 'environment' ? 'Usar cámara trasera' : 'Usar cámara frontal';
-        await cambiarCamara(camaraActual);
-      };
-    }
-
-    let sonidoHabilitado = true;
-    const botonSonido = document.getElementById('boton_sonido');
-    const iconoSonido = document.getElementById('iconoSonido');
-    function actualizarEstadoSonido() {
-      const audios = document.querySelectorAll('audio');
-      audios.forEach(audio => {
-        audio.muted = !sonidoHabilitado;
-      });
-      if (iconoSonido) {
-        iconoSonido.src = sonidoHabilitado ? "images/sonido_activado.png" : "images/sonido_desactivado.png";
-        iconoSonido.alt = sonidoHabilitado ? "Sonido activado" : "Sonido desactivado";
-      }
-      mostrarNotificacionTrofeo(sonidoHabilitado ? "Sonido activado" : "Sonido desactivado");
-    }
-    if (botonSonido) {
-      botonSonido.onclick = function () {
-        sonidoHabilitado = !sonidoHabilitado;
-        actualizarEstadoSonido();
-      };
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      actualizarEstadoSonido();
-    });
-
-    async function cambiarCamara(nuevaCamara) {
-
-      await obtenerDispositivosVideo();
-
-      if (streamActual) {
-        streamActual.getTracks().forEach(track => track.stop());
-        streamActual = null;
-      }
-      try {
-        let constraints = { video: { facingMode: { exact: nuevaCamara } } };
-        let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (e) {
-          constraints = { video: { facingMode: nuevaCamara } };
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        }
-        streamActual = stream;
-        video.srcObject = stream;
-        video.style.transform = '';
-        if (modoVR) {
-          duplicarStreamVR();
-        }
-        mostrarNotificacionTrofeo(
-          nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
-        );
-      } catch (e) {
-        mostrarNotificacionTrofeo("No se pudo cambiar la cámara.");
-      }
-    }
-
-    async function inicializarCamara() {
-      await obtenerDispositivosVideo();
-      if (streamActual) {
-        streamActual.getTracks().forEach(track => track.stop());
-        streamActual = null;
-      }
-      let facingMode = camaraActual;
-      if (dispositivosVideo.length === 1) {
-        facingMode = undefined;
-      }
-      try {
-        let constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
-        let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (e) {
-          constraints = facingMode ? { video: { facingMode } } : { video: true };
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        }
-        streamActual = stream;
-        video.srcObject = stream;
-        video.style.transform = '';
-        if (modoVR) {
-          duplicarStreamVR();
-        }
-      } catch (error) {
-        console.error('Error al acceder a la cámara: ', error);
-        document.getElementById('mensaje').textContent = 'Error al acceder a la cámara. Por favor, verifica los permisos.';
-      }
-    }
-
-    window.onload = async function () {
-      selectedFloor = "B1";
-      localStorage.setItem('simuladorPiso', "B1");
-      document.getElementById('pisoSeleccionadoValor').textContent = "B1";
-      showTutorialStep();
-      mostrarGifCronometro(false);
-      actualizarIntensidadTexto();
-      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Entrenamiento');
-      mostrarMapaPiso(selectedFloor);
-
-      alertaActiva = false;
-      actualizarEstadoAlerta();
-      actualizarBotonAlertaPorModo();
-      await inicializarCamara();
+    // Coordenadas por piso y zona (extraídas de temp.html)
+    const coordenadasPorPiso = {
+      B1: [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 136, 158] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [138, 0, 273, 159] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [276, 1, 400, 159] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 158, 137, 317] },
+        { parte: 'CC', nombre: 'Central Central', coords: [138, 159, 273, 316] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [274, 160, 400, 315] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 318, 135, 464] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [136, 317, 273, 465] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [274, 316, 400, 464] }
+      ],
+      B2: [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 142, 125] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [143, 0, 264, 125] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [265, 1, 395, 125] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 126, 142, 262] },
+        { parte: 'CC', nombre: 'Central Central', coords: [143, 126, 266, 261] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [265, 126, 396, 261] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 263, 142, 417] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [143, 262, 266, 417] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [266, 262, 395, 417] }
+      ],
+      B3: [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 214, 236] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [214, 2, 439, 235] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [440, 0, 654, 206] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 236, 213, 476] },
+        { parte: 'CC', nombre: 'Central Central', coords: [213, 237, 436, 476] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [437, 237, 653, 476] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 477, 214, 690] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [215, 477, 435, 690] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [436, 475, 653, 689] }
+      ],
+      '4': [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 141, 149] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [142, 0, 285, 148] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [286, 2, 426, 147] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 148, 139, 293] },
+        { parte: 'CC', nombre: 'Central Central', coords: [140, 148, 286, 292] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [286, 147, 428, 292] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 294, 143, 439] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [143, 293, 284, 440] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [284, 293, 428, 441] }
+        // Agora omitido
+      ],
+      '5': [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [1, 0, 257, 255] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [258, 4, 499, 256] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [499, 1, 738, 256] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [1, 256, 248, 504] },
+        { parte: 'CC', nombre: 'Central Central', coords: [253, 257, 499, 505] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [500, 258, 737, 505] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 506, 253, 772] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [254, 507, 498, 772] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [498, 505, 738, 771] }
+      ],
+      '6': [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [1, 2, 161, 166] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [161, 2, 327, 166] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [325, 1, 492, 165] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 167, 163, 326] },
+        { parte: 'CC', nombre: 'Central Central', coords: [164, 166, 325, 327] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [326, 166, 491, 326] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 327, 162, 497] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [172, 326, 328, 498] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [329, 326, 492, 498] }
+      ],
+      '7': [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 221, 260] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [223, 0, 456, 260] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [458, 0, 673, 262] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 261, 223, 486] },
+        { parte: 'CC', nombre: 'Central Central', coords: [223, 261, 454, 485] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [456, 262, 676, 484] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 487, 222, 697] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [223, 486, 452, 701] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [453, 484, 674, 700] }
+      ],
+      '8': [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 238, 260] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [238, 0, 452, 259] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [454, 49, 682, 260] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 260, 236, 480] },
+        { parte: 'CC', nombre: 'Central Central', coords: [237, 259, 453, 480] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [454, 261, 682, 479] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 482, 236, 722] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [237, 481, 453, 721] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [454, 479, 681, 722] }
+      ],
+      G: [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 135, 145] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [136, 0, 273, 145] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [274, 0, 416, 146] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 146, 134, 280] },
+        { parte: 'CC', nombre: 'Central Central', coords: [134, 147, 274, 280] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [274, 147, 416, 280] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 281, 133, 427] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [134, 281, 275, 427] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [274, 281, 415, 427] }
+      ]
     };
 
     function mostrarModalPartePiso(piso) {
       partePisoSeleccionada = null;
       const modal = document.getElementById('modalPartePiso');
       const img = document.getElementById('imagenPisoParte');
+      const resaltado = document.getElementById('resaltadoPartePiso');
       if (modal && img) {
         img.src = 'mapas/png/' + piso + '.png';
         img.alt = 'Plano del piso ' + piso;
         modal.style.display = 'flex';
+
+        // Interactivo por coordenadas
+        const zonas = coordenadasPorPiso[piso] || [];
+        img.onmousemove = function (e) {
+          const rect = img.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const w = rect.width;
+          const h = rect.height;
+          let zona = null;
+          for (const z of zonas) {
+            // Normaliza coordenadas a la imagen actual
+            const [x1, y1, x2, y2] = z.coords;
+            // Calcula escala respecto a la imagen real
+            const scaleX = w / img.naturalWidth;
+            const scaleY = h / img.naturalHeight;
+            // Si naturalWidth no está disponible, usa w/h directamente
+            const sx1 = x1 * scaleX;
+            const sy1 = y1 * scaleY;
+            const sx2 = x2 * scaleX;
+            const sy2 = y2 * scaleY;
+            if (x >= sx1 && x <= sx2 && y >= sy1 && y <= sy2) {
+              zona = z;
+              // Resalta la zona
+              if (resaltado) {
+                resaltado.style.display = 'block';
+                resaltado.style.left = sx1 + 'px';
+                resaltado.style.top = sy1 + 'px';
+                resaltado.style.width = (sx2 - sx1) + 'px';
+                resaltado.style.height = (sy2 - sy1) + 'px';
+              }
+              break;
+            }
+          }
+          if (!zona && resaltado) {
+            resaltado.style.display = 'none';
+          }
+          const hover = document.getElementById('hoverPartePiso');
+          if (zona) {
+            hover.style.display = 'block';
+            hover.textContent = zona.nombre + ' (' + zona.parte + ')';
+            hover.style.left = (x + 10) + 'px';
+            hover.style.top = (y + 10) + 'px';
+          } else {
+            hover.style.display = 'none';
+          }
+        };
+        img.onmouseleave = function () {
+          const hover = document.getElementById('hoverPartePiso');
+          hover.style.display = 'none';
+          if (resaltado) resaltado.style.display = 'none';
+        };
+        img.onclick = function (e) {
+          const rect = img.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const w = rect.width;
+          const h = rect.height;
+          let zona = null;
+          for (const z of zonas) {
+            const [x1, y1, x2, y2] = z.coords;
+            const scaleX = w / img.naturalWidth;
+            const scaleY = h / img.naturalHeight;
+            const sx1 = x1 * scaleX;
+            const sy1 = y1 * scaleY;
+            const sx2 = x2 * scaleX;
+            const sy2 = y2 * scaleY;
+            if (x >= sx1 && x <= sx2 && y >= sy1 && y <= sy2) {
+              zona = z;
+              break;
+            }
+          }
+          if (zona) {
+            seleccionarPartePiso(zona.parte);
+          }
+        };
       }
     }
 
@@ -1963,11 +2013,252 @@
       cerrarModalPartePiso();
       mostrarMapaPiso(selectedFloor);
     }
-
     function cerrarModalPartePiso() {
       const modal = document.getElementById('modalPartePiso');
       if (modal) modal.style.display = 'none';
     }
+
+    let qrScanEnabled = false;
+    let qrSacudidaDetenida = false;
+    let qrScanner = null;
+
+    function detenerSacudidaPorQR() {
+      if (!qrSacudidaDetenida) {
+        clearInterval(intervaloSacudida);
+        document.getElementById('video').style.transform = '';
+        qrSacudidaDetenida = true;
+      }
+    }
+
+    function iniciarEscaneoQR() {
+      mostrarModalQRScan();
+    }
+
+
+    function mostrarModalQRScan() {
+      if (document.getElementById('modalQRScan')) return;
+      const modal = document.createElement('div');
+      modal.id = 'modalQRScan';
+      modal.style.position = 'fixed';
+      modal.style.top = '0';
+      modal.style.left = '0';
+      modal.style.right = '0';
+      modal.style.bottom = '0';
+      modal.style.background = 'transparent';
+      modal.style.zIndex = '4000';
+      modal.style.display = 'flex';
+      modal.style.justifyContent = 'center';
+      modal.style.alignItems = 'center';
+
+
+      modal.innerHTML = `
+        <video id="qrVideo"
+          style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0vw;
+            height: 0vh;
+            object-fit: contain;
+            z-index: 0;
+            display: block;
+          ">
+        </video>
+      `;
+
+      document.body.appendChild(modal);
+
+      iniciarQRScanner();
+    }
+
+    function cerrarModalQRScan() {
+      if (qrScanner) {
+        qrScanner.stop();
+        qrScanner = null;
+      }
+      const modal = document.getElementById('modalQRScan');
+      if (modal) modal.remove();
+    }
+
+    function iniciarQRScanner() {
+      const videoElem = document.getElementById('qrVideo');
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        document.getElementById('qrScanMsg').textContent = 'No se puede acceder a la cámara.';
+        return;
+      }
+      navigator.mediaDevices
+        .getUserMedia({ video: { facingMode: 'environment' } })
+        .then(function (stream) {
+          videoElem.srcObject = stream;
+          videoElem.setAttribute('playsinline', true);
+          videoElem.play();
+          qrScanner = { stop: () => { stream.getTracks().forEach(t => t.stop()); } };
+          escanearFrameQR(videoElem, stream);
+        })
+        .catch(function () {
+          document.getElementById('qrScanMsg').textContent =
+            'No se pudo acceder a la cámara.';
+        });
+    }
+
+
+    function escanearFrameQR(videoElem, stream) {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+
+      function scan() {
+        if (!videoElem || videoElem.readyState !== videoElem.HAVE_ENOUGH_DATA) {
+          return requestAnimationFrame(scan);
+        }
+        canvas.width = videoElem.videoWidth;
+        canvas.height = videoElem.videoHeight;
+        context.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
+
+        let code = null;
+        try {
+          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          code = window.jsQR(imageData.data, canvas.width, canvas.height);
+        } catch (e) { }
+
+        if (code && code.data) {
+          stream.getTracks().forEach(t => t.stop());
+          detenerSacudidaPorQR();
+          cerrarModalQRScan();
+          finalizarEvacuacion();
+          return;
+        }
+        if (document.getElementById('modalQRScan')) {
+          requestAnimationFrame(scan);
+        }
+      }
+
+      scan();
+    }
+
+
+    function iniciarTourTutorial() {
+      currentStep = 0;
+      document.getElementById("modalTutorial").style.display = "flex";
+      showTutorialStep();
+    }
+
+    document.getElementById('generaQRBtn').onclick = function () {
+      const qr = new QRious({
+        element: document.getElementById('qrFinalizar'),
+        value: '¡Ejercicio terminado!',
+        size: 200
+
+      });
+      mostrarNotificacionTrofeo("Coloca el QR en tu punto de reunión.");
+    };
+
+    document.getElementById('boton_manualUsuario').onclick = function () {
+      document.getElementById('modalManualUsuario').style.display = 'flex';
+      setBotonesHabilitados(false);
+      inicializarManualUsuarioPDF();
+    };
+
+    document.getElementById('cerrarManualUsuarioBtn').onclick = function () {
+      document.getElementById('modalManualUsuario').style.display = 'none';
+      setBotonesHabilitados(true);
+
+      document.getElementById('lienzo-izquierdo').getContext('2d').clearRect(0, 0, document.getElementById('lienzo-izquierdo').width, document.getElementById('lienzo-izquierdo').height);
+      document.getElementById('lienzo-derecho').getContext('2d').clearRect(0, 0, document.getElementById('lienzo-derecho').width, document.getElementById('lienzo-derecho').height);
+    };
+
+
+    let docPDF = null;
+    let parActual = 0;
+    let parMaximo = 0;
+    let escala = 1.2;
+
+    function inicializarManualUsuarioPDF() {
+      if (docPDF) {
+        actualizarVistaManualUsuario();
+        actualizarBotonesManualUsuario();
+        return;
+      }
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.worker.min.js';
+      pdfjsLib.getDocument('SimUAM - Manual de Usuario.pdf')
+        .promise
+        .then(async documento => {
+          docPDF = documento;
+          parMaximo = Math.ceil((docPDF.numPages + 1) / 2) - 1;
+          const primera = await docPDF.getPage(1);
+          const vp = primera.getViewport({ scale: escala });
+          const anchoPag = vp.width;
+          const altoPag = vp.height;
+
+          ['lienzo-izquierdo', 'lienzo-derecho'].forEach(id => {
+            const canvas = document.getElementById(id);
+            canvas.width = anchoPag;
+            canvas.height = altoPag;
+            canvas.style.width = "100%";
+            canvas.style.height = "auto";
+          });
+          actualizarVistaManualUsuario();
+          actualizarBotonesManualUsuario();
+        });
+
+      document.getElementById('boton-siguiente').onclick = function () {
+        if (parActual < parMaximo) {
+          parActual++;
+          const sonidoPagina = document.getElementById('sonido-pagina');
+          sonidoPagina.currentTime = 0;
+          sonidoPagina.play();
+          actualizarVistaManualUsuario();
+          actualizarBotonesManualUsuario();
+        }
+      };
+      document.getElementById('boton-anterior').onclick = function () {
+        if (parActual > 0) {
+          parActual--;
+          const sonidoPagina = document.getElementById('sonido-pagina');
+          sonidoPagina.currentTime = 0;
+          sonidoPagina.play();
+          actualizarVistaManualUsuario();
+          actualizarBotonesManualUsuario();
+        }
+      };
+    }
+
+    function actualizarVistaManualUsuario() {
+      const lienzoIzquierdo = document.getElementById('lienzo-izquierdo');
+      const lienzoDerecho = document.getElementById('lienzo-derecho');
+      const ctxIzq = lienzoIzquierdo.getContext('2d');
+      const ctxDer = lienzoDerecho.getContext('2d');
+      const numIzq = parActual * 2;
+      const numDer = numIzq + 1;
+
+      if (numIzq > 0 && docPDF) {
+        docPDF.getPage(numIzq).then(p => {
+          const vp = p.getViewport({ scale: escala });
+          lienzoIzquierdo.width = vp.width;
+          lienzoIzquierdo.height = vp.height;
+          p.render({ canvasContext: ctxIzq, viewport: vp });
+        });
+      } else {
+        ctxIzq.clearRect(0, 0, lienzoIzquierdo.width, lienzoIzquierdo.height);
+      }
+
+      if (numDer <= docPDF.numPages && docPDF) {
+        docPDF.getPage(numDer).then(p => {
+          const vp = p.getViewport({ scale: escala });
+          lienzoDerecho.width = vp.width;
+          lienzoDerecho.height = vp.height;
+          p.render({ canvasContext: ctxDer, viewport: vp });
+        });
+      } else {
+        ctxDer.clearRect(0, 0, lienzoDerecho.width, lienzoDerecho.height);
+      }
+    }
+
+    function actualizarBotonesManualUsuario() {
+      document.getElementById('boton-anterior').disabled = parActual <= 0;
+      document.getElementById('boton-siguiente').disabled = parActual >= parMaximo;
+    }
+
   </script>
 </body>
 
