@@ -1682,7 +1682,7 @@
     }
 
 
-    async function inicializarCamara() {
+   /* async function inicializarCamara() {
       const videoElem = document.getElementById('video');
 
       try {
@@ -1748,7 +1748,7 @@
         video.style.transform = `rotate(${rotacionActual}deg)`;
       };
     }
-
+*/
 
     async function cambiarCamara(nuevaCamara) {
       await obtenerDispositivosVideo();
@@ -1776,33 +1776,44 @@
       }
     }
 
-    async function inicializarCamara() {
-      await obtenerDispositivosVideo();
-      if (streamActual) {
-        streamActual.getTracks().forEach(track => track.stop());
-        streamActual = null;
-      }
-      let facingMode = camaraActual;
-      if (dispositivosVideo.length === 1) {
-        facingMode = undefined;
-      }
-      try {
-        let constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
-        let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (e) {
-          constraints = facingMode ? { video: { facingMode } } : { video: true };
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        }
-        streamActual = stream;
-        video.srcObject = stream;
-        video.style.transform = `rotate(${rotacionActual}deg)`;
-      } catch (error) {
-        console.error('Error al acceder a la cámara: ', error);
-        document.getElementById('mensaje').textContent = 'Error al acceder a la cámara. Por favor, verifica los permisos.';
-      }
+async function inicializarCamara() {
+  const videoElem = document.getElementById('video');
+
+  try {
+    // 1️⃣ Pido permiso genérico
+    await navigator.mediaDevices.getUserMedia({ video: true });
+
+    // 2️⃣ Busco la cámara trasera
+    const dispositivos = await navigator.mediaDevices.enumerateDevices();
+    const camaraTrasera = dispositivos.find(d =>
+      d.kind === 'videoinput' &&
+      /back|rear|environment|trasera/i.test(d.label)
+    );
+
+    // 3️⃣ Defino constraints con deviceId o facingMode ideal
+    const constraints = camaraTrasera
+      ? { video: { deviceId: { exact: camaraTrasera.deviceId } } }
+      : { video: { facingMode: { ideal: 'environment' } } };
+
+    // 4️⃣ Abro el stream
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    videoElem.srcObject = stream;
+    console.log('Camara trasera abierta:', camaraTrasera?.label || 'ideal');
+
+  } catch (err) {
+    console.warn('No se pudo abrir trasera, uso predeterminada:', err);
+
+    // Fallback a cámara predeterminada
+    try {
+      const fallback = await navigator.mediaDevices.getUserMedia({ video: true });
+      videoElem.srcObject = fallback;
+    } catch (e) {
+      console.error('Tampoco se pudo abrir la cámara predeterminada:', e);
+      document.getElementById('mensaje').textContent =
+        'No fue posible acceder a la cámara. Verifica permisos.';
     }
+  }
+}
 
     window.onload = async function () {
       selectedFloor = "B1";
@@ -2263,7 +2274,6 @@
       document.getElementById('boton-siguiente').disabled = parActual >= parMaximo;
     }
 
-    // Restaurar funcionalidad botón sonido
     let sonidoActivado = true;
     const botonSonido = document.getElementById('boton_sonido');
     const iconoSonido = document.getElementById('iconoSonido');
@@ -2294,7 +2304,6 @@
       };
     }
 
-    // Inicializar estado de sonido al cargar
     actualizarEstadoSonido();
   </script>
 </body>
