@@ -1717,13 +1717,11 @@
       }
 
       try {
-        // Paso 1: solicitar permisos básicos
+        // Paso 1: solicitar permisos
         await navigator.mediaDevices.getUserMedia({ video: true });
+        await esperar(500); // espera breve para actualizar labels
 
-        // Paso 2: esperar unos segundos para que se actualicen los labels y deviceIds
-        await esperar(5000); // cambia a 10000 para esperar 10 segundos
-
-        // Paso 3: enumerar dispositivos de video
+        // Paso 2: enumerar dispositivos
         const dispositivos = await navigator.mediaDevices.enumerateDevices();
         const camaras = dispositivos.filter(d => d.kind === 'videoinput');
         const camaraTrasera = camaras.find(d =>
@@ -1731,20 +1729,31 @@
         );
 
         let constraints;
+        let stream;
+
         if (camaraTrasera) {
-          constraints = { video: { deviceId: { exact: camaraTrasera.deviceId } } };
-          mostrarNotificacionTrofeo('Usando cámara trasera: ' + camaraTrasera.label);
+          try {
+            // Paso 3: intentar abrir la cámara trasera
+            constraints = { video: { deviceId: { exact: camaraTrasera.deviceId } } };
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+            mostrarNotificacionTrofeo('Cámara trasera abierta: ' + camaraTrasera.label);
+          } catch (errorCamara) {
+            console.warn('Fallo abrir cámara trasera con deviceId, usando fallback.', errorCamara);
+            // Fallback a cualquier cámara
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            mostrarNotificacionTrofeo('Usando cámara predeterminada como fallback');
+          }
         } else {
-          constraints = { video: true };
-          mostrarNotificacionTrofeo('Usando cámara predeterminada');
+          // Si no se detecta ninguna cámara trasera
+          stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          mostrarNotificacionTrofeo('Usando cámara predeterminada (no se detectó cámara trasera)');
         }
 
-        // Paso 4: iniciar stream de video
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        // Paso 4: asignar el stream al elemento <video>
         videoElem.srcObject = stream;
         videoElem.style.transform = '';
 
-        // Paso 5: ocultar botón si ya se activó automáticamente
+        // Paso 5: ocultar botón
         if (botonCamara) {
           botonCamara.style.display = 'none';
         }
@@ -1752,9 +1761,10 @@
       } catch (err) {
         document.getElementById('mensaje').textContent =
           'No fue posible acceder a la cámara. Verifica permisos.';
-        console.error(err);
+        console.error('Error al abrir cámara:', err);
       }
     }
+
 
     window.onload = async function () {
       selectedFloor = "B1";
