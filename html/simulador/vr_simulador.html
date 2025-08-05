@@ -1710,25 +1710,22 @@
 
     async function inicializarCamara() {
       const videoElem = document.getElementById('video');
+      const botonCamara = document.getElementById('toggleCamaraBtn');
 
       function esperar(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
       }
 
       try {
-        // Pedir permisos
+        // Paso 1: solicitar permisos básicos
         await navigator.mediaDevices.getUserMedia({ video: true });
 
-        // Esperar un poco para que los labels estén disponibles (clave en móviles)
-        await esperar(500);
+        // Paso 2: esperar unos segundos para que se actualicen los labels y deviceIds
+        await esperar(5000); // cambia a 10000 para esperar 10 segundos
 
-        // Enumerar dispositivos
+        // Paso 3: enumerar dispositivos de video
         const dispositivos = await navigator.mediaDevices.enumerateDevices();
         const camaras = dispositivos.filter(d => d.kind === 'videoinput');
-
-        console.log("Cámaras detectadas:", camaras.map(c => c.label));
-
-        // Buscar cámara trasera
         const camaraTrasera = camaras.find(d =>
           /back|rear|environment/i.test(d.label)
         );
@@ -1742,10 +1739,15 @@
           mostrarNotificacionTrofeo('Usando cámara predeterminada');
         }
 
-        // Iniciar transmisión
+        // Paso 4: iniciar stream de video
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         videoElem.srcObject = stream;
         videoElem.style.transform = '';
+
+        // Paso 5: ocultar botón si ya se activó automáticamente
+        if (botonCamara) {
+          botonCamara.style.display = 'none';
+        }
 
       } catch (err) {
         document.getElementById('mensaje').textContent =
