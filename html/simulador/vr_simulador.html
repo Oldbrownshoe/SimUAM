@@ -1710,32 +1710,39 @@
 
     async function inicializarCamara() {
       const videoElem = document.getElementById('video');
+
+      function esperar(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
       try {
-        // Paso 1: Pedir permisos para desbloquear los labels
+        // Pedir permisos
         await navigator.mediaDevices.getUserMedia({ video: true });
 
-        // Paso 2: Enumerar dispositivos
+        // Esperar un poco para que los labels estén disponibles (clave en móviles)
+        await esperar(500);
+
+        // Enumerar dispositivos
         const dispositivos = await navigator.mediaDevices.enumerateDevices();
         const camaras = dispositivos.filter(d => d.kind === 'videoinput');
 
-        // Paso 3: Buscar cámara trasera según label
-        const camaraTrasera = camaras.find(cam =>
-          /back|rear|environment/i.test(cam.label)
+        console.log("Cámaras detectadas:", camaras.map(c => c.label));
+
+        // Buscar cámara trasera
+        const camaraTrasera = camaras.find(d =>
+          /back|rear|environment/i.test(d.label)
         );
 
         let constraints;
-
         if (camaraTrasera) {
-          // Paso 4: Usar la cámara trasera detectada
           constraints = { video: { deviceId: { exact: camaraTrasera.deviceId } } };
           mostrarNotificacionTrofeo('Usando cámara trasera: ' + camaraTrasera.label);
         } else {
-          // Fallback: usar la primera disponible
           constraints = { video: true };
-          mostrarNotificacionTrofeo('Cámara trasera no detectada, usando predeterminada');
+          mostrarNotificacionTrofeo('Usando cámara predeterminada');
         }
 
-        // Paso 5: Iniciar stream
+        // Iniciar transmisión
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         videoElem.srcObject = stream;
         videoElem.style.transform = '';
@@ -1746,7 +1753,6 @@
         console.error(err);
       }
     }
-
 
     window.onload = async function () {
       selectedFloor = "B1";
