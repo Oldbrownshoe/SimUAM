@@ -2232,6 +2232,18 @@
     }
 
     actualizarEstadoSonido();
+
+    let rotacionActual = 0;
+    const rotarCamaraBtn = document.getElementById('rotarCamaraBtn');
+    if (rotarCamaraBtn) {
+      rotarCamaraBtn.onclick = function () {
+        rotacionActual = (rotacionActual + 90) % 360;
+        const videoElem = document.getElementById('video');
+        if (videoElem) {
+          videoElem.style.transform = `rotate(${rotacionActual}deg)`;
+        }
+      };
+    }
   </script>
 </body>
 
