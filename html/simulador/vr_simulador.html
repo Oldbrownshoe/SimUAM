@@ -1641,197 +1641,53 @@
       await inicializarCamara();
     };
 
-    let camaraActual = 'environment';
-    let dispositivosVideo = [];
-    let streamActual = null;
-
-    async function obtenerDispositivosVideo() {
-      try {
-        const dispositivos = await navigator.mediaDevices.enumerateDevices();
-        dispositivosVideo = dispositivos.filter(d => d.kind === 'videoinput');
-      } catch (e) {
-        dispositivosVideo = [];
-      }
-    }
-
-
-    async function cambiarCamara(nuevaCamara) {
-      await obtenerDispositivosVideo();
-      if (streamActual) {
-        streamActual.getTracks().forEach(track => track.stop());
-        streamActual = null;
-      }
-      try {
-        let constraints = { video: { facingMode: { exact: nuevaCamara } } };
-        let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (e) {
-          constraints = { video: { facingMode: nuevaCamara } };
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        }
-        streamActual = stream;
-        video.srcObject = stream;
-        video.style.transform = '';
-        mostrarNotificacionTrofeo(
-          nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
-        );
-      } catch (e) {
-        mostrarNotificacionTrofeo("No se pudo cambiar la cámara.");
-      }
-    }
-
-
-   /* async function inicializarCamara() {
+    async function inicializarCamara() {
       const videoElem = document.getElementById('video');
-
       try {
+        // Solicitar permisos primero para poder enumerar dispositivos
         await navigator.mediaDevices.getUserMedia({ video: true });
         const dispositivos = await navigator.mediaDevices.enumerateDevices();
-        const camaraTrasera = dispositivos.find(d =>
-          d.kind === 'videoinput' &&
+        // Filtrar solo cámaras
+        const camaras = dispositivos.filter(d => d.kind === 'videoinput');
+        // Buscar la trasera por palabras clave
+        let camaraTrasera = camaras.find(d =>
           /back|rear|environment|trasera/i.test(d.label)
         );
-
-        const constraints = camaraTrasera
-          ? { video: { deviceId: { exact: camaraTrasera.deviceId } } }
-          : { video: { facingMode: { ideal: 'environment' } } };
-
+        let constraints;
+        if (camaraTrasera) {
+          constraints = { video: { deviceId: { exact: camaraTrasera.deviceId } } };
+        } else if (camaras.length > 0) {
+          // Si no hay trasera, usar la primera disponible
+          constraints = { video: { deviceId: { exact: camaras[0].deviceId } } };
+        } else {
+          // Fallback: usar facingMode ideal environment
+          constraints = { video: { facingMode: { ideal: 'environment' } } };
+        }
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         videoElem.srcObject = stream;
-        console.log('Camara trasera abierta:', camaraTrasera?.label || 'ideal');
-
+        videoElem.style.transform = '';
+        // Opcional: mostrar notificación de cuál cámara se abrió
+        if (camaraTrasera) {
+          mostrarNotificacionTrofeo('Cámara trasera abierta: ' + camaraTrasera.label);
+        } else if (camaras.length > 0) {
+          mostrarNotificacionTrofeo('Cámara abierta: ' + camaras[0].label);
+        } else {
+          mostrarNotificacionTrofeo('Cámara predeterminada abierta');
+        }
       } catch (err) {
-        console.warn('No se pudo abrir trasera, uso predeterminada:', err);
-
+        // Si falla, intentar abrir cualquier cámara disponible
         try {
           const fallback = await navigator.mediaDevices.getUserMedia({ video: true });
           videoElem.srcObject = fallback;
+          videoElem.style.transform = '';
+          mostrarNotificacionTrofeo('Cámara predeterminada abierta');
         } catch (e) {
-          console.error('Tampoco se pudo abrir la cámara predeterminada:', e);
           document.getElementById('mensaje').textContent =
             'No fue posible acceder a la cámara. Verifica permisos.';
         }
       }
     }
-    window.onload = async () => {
-      await inicializarCamara();
-    };
 
-
-
-    window.onload = async function () {
-      selectedFloor = "B1";
-      localStorage.setItem('simuladorPiso', "B1");
-      document.getElementById('pisoSeleccionadoValor').textContent = "B1";
-      showTutorialStep();
-      mostrarGifCronometro(false);
-      actualizarIntensidadTexto();
-      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Entrenamiento');
-      mostrarMapaPiso(selectedFloor);
-
-      alertaActiva = false;
-      actualizarEstadoAlerta();
-      actualizarBotonAlertaPorModo();
-      await inicializarCamara();
-    };
-
-    // Rotar la camara
-    // Rotación manual de video
-    let rotacionActual = 0;
-    const rotarCamaraBtn = document.getElementById('rotarCamaraBtn');
-    const video = document.getElementById('video');
-
-    if (rotarCamaraBtn && video) {
-      rotarCamaraBtn.onclick = function () {
-        rotacionActual = (rotacionActual + 90) % 360;
-        video.style.transform = `rotate(${rotacionActual}deg)`;
-      };
-    }
-*/
-
-    async function cambiarCamara(nuevaCamara) {
-      await obtenerDispositivosVideo();
-      if (streamActual) {
-        streamActual.getTracks().forEach(track => track.stop());
-        streamActual = null;
-      }
-      try {
-        let constraints = { video: { facingMode: { exact: nuevaCamara } } };
-        let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (e) {
-          constraints = { video: { facingMode: nuevaCamara } };
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        }
-        streamActual = stream;
-        video.srcObject = stream;
-        video.style.transform = `rotate(${rotacionActual}deg)`;
-        mostrarNotificacionTrofeo(
-          nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
-        );
-      } catch (e) {
-        mostrarNotificacionTrofeo("No se pudo cambiar la cámara.");
-      }
-    }
-
-async function inicializarCamara() {
-  const videoElem = document.getElementById('video');
-
-  try {
-    // 1️⃣ Pido permiso genérico
-    await navigator.mediaDevices.getUserMedia({ video: true });
-
-    // 2️⃣ Busco la cámara trasera
-    const dispositivos = await navigator.mediaDevices.enumerateDevices();
-    const camaraTrasera = dispositivos.find(d =>
-      d.kind === 'videoinput' &&
-      /back|rear|environment|trasera/i.test(d.label)
-    );
-
-    // 3️⃣ Defino constraints con deviceId o facingMode ideal
-    const constraints = camaraTrasera
-      ? { video: { deviceId: { exact: camaraTrasera.deviceId } } }
-      : { video: { facingMode: { ideal: 'environment' } } };
-
-    // 4️⃣ Abro el stream
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    videoElem.srcObject = stream;
-    console.log('Camara trasera abierta:', camaraTrasera?.label || 'ideal');
-
-  } catch (err) {
-    console.warn('No se pudo abrir trasera, uso predeterminada:', err);
-
-    // Fallback a cámara predeterminada
-    try {
-      const fallback = await navigator.mediaDevices.getUserMedia({ video: true });
-      videoElem.srcObject = fallback;
-    } catch (e) {
-      console.error('Tampoco se pudo abrir la cámara predeterminada:', e);
-      document.getElementById('mensaje').textContent =
-        'No fue posible acceder a la cámara. Verifica permisos.';
-    }
-  }
-}
-
-    window.onload = async function () {
-      selectedFloor = "B1";
-      localStorage.setItem('simuladorPiso', "B1");
-      document.getElementById('pisoSeleccionadoValor').textContent = "B1";
-      showTutorialStep();
-      mostrarGifCronometro(false);
-      actualizarIntensidadTexto();
-      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Entrenamiento');
-      mostrarMapaPiso(selectedFloor);
-
-      alertaActiva = false;
-      actualizarEstadoAlerta();
-      actualizarBotonAlertaPorModo();
-      await inicializarCamara();
-    };
-
-    // Coordenadas por piso y zona (extraídas de temp.html)
     const coordenadasPorPiso = {
       B1: [
         { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 136, 158] },
@@ -1876,7 +1732,7 @@ async function inicializarCamara() {
         { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 294, 143, 439] },
         { parte: 'IC', nombre: 'Inferior Central', coords: [143, 293, 284, 440] },
         { parte: 'ID', nombre: 'Inferior Derecha', coords: [284, 293, 428, 441] }
-        // Agora omitido
+        // se omitio el agora del mapa
       ],
       '5': [
         { parte: 'SI', nombre: 'Superior Izquierda', coords: [1, 0, 257, 255] },
@@ -1945,7 +1801,6 @@ async function inicializarCamara() {
         img.alt = 'Plano del piso ' + piso;
         modal.style.display = 'flex';
 
-        // Interactivo por coordenadas
         const zonas = coordenadasPorPiso[piso] || [];
         img.onmousemove = function (e) {
           const rect = img.getBoundingClientRect();
@@ -1955,19 +1810,15 @@ async function inicializarCamara() {
           const h = rect.height;
           let zona = null;
           for (const z of zonas) {
-            // Normaliza coordenadas a la imagen actual
             const [x1, y1, x2, y2] = z.coords;
-            // Calcula escala respecto a la imagen real
             const scaleX = w / img.naturalWidth;
             const scaleY = h / img.naturalHeight;
-            // Si naturalWidth no está disponible, usa w/h directamente
             const sx1 = x1 * scaleX;
             const sy1 = y1 * scaleY;
             const sx2 = x2 * scaleX;
             const sy2 = y2 * scaleY;
             if (x >= sx1 && x <= sx2 && y >= sy1 && y <= sy2) {
               zona = z;
-              // Resalta la zona
               if (resaltado) {
                 resaltado.style.display = 'block';
                 resaltado.style.left = sx1 + 'px';
