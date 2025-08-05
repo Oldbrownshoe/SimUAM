@@ -1641,52 +1641,30 @@
       await inicializarCamara();
     };
 
-    async function inicializarCamara() {
-      const videoElem = document.getElementById('video');
-      try {
-        // Solicitar permisos primero para poder enumerar dispositivos
-        await navigator.mediaDevices.getUserMedia({ video: true });
-        const dispositivos = await navigator.mediaDevices.enumerateDevices();
-        // Filtrar solo cámaras
-        const camaras = dispositivos.filter(d => d.kind === 'videoinput');
-        // Buscar la trasera por palabras clave
-        let camaraTrasera = camaras.find(d =>
-          /back|rear|environment|trasera/i.test(d.label)
-        );
-        let constraints;
-        if (camaraTrasera) {
-          constraints = { video: { deviceId: { exact: camaraTrasera.deviceId } } };
-        } else if (camaras.length > 0) {
-          // Si no hay trasera, usar la primera disponible
-          constraints = { video: { deviceId: { exact: camaras[0].deviceId } } };
-        } else {
-          // Fallback: usar facingMode ideal environment
-          constraints = { video: { facingMode: { ideal: 'environment' } } };
-        }
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        videoElem.srcObject = stream;
-        videoElem.style.transform = '';
-        // Opcional: mostrar notificación de cuál cámara se abrió
-        if (camaraTrasera) {
-          mostrarNotificacionTrofeo('Cámara trasera abierta: ' + camaraTrasera.label);
-        } else if (camaras.length > 0) {
-          mostrarNotificacionTrofeo('Cámara abierta: ' + camaras[0].label);
-        } else {
-          mostrarNotificacionTrofeo('Cámara predeterminada abierta');
-        }
-      } catch (err) {
-        // Si falla, intentar abrir cualquier cámara disponible
-        try {
-          const fallback = await navigator.mediaDevices.getUserMedia({ video: true });
-          videoElem.srcObject = fallback;
-          videoElem.style.transform = '';
-          mostrarNotificacionTrofeo('Cámara predeterminada abierta');
-        } catch (e) {
-          document.getElementById('mensaje').textContent =
-            'No fue posible acceder a la cámara. Verifica permisos.';
-        }
-      }
+   async function inicializarCamara() {
+  const videoElem = document.getElementById('video');
+  try {
+    // Intenta abrir directamente la cámara trasera
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { exact: "environment" } }
+    });
+    videoElem.srcObject = stream;
+    videoElem.style.transform = '';
+    mostrarNotificacionTrofeo('Cámara trasera abierta');
+  } catch (err) {
+    try {
+      // Fallback: abrir cualquier cámara disponible
+      const fallback = await navigator.mediaDevices.getUserMedia({ video: true });
+      videoElem.srcObject = fallback;
+      videoElem.style.transform = '';
+      mostrarNotificacionTrofeo('Cámara predeterminada abierta');
+    } catch (e) {
+      document.getElementById('mensaje').textContent =
+        'No fue posible acceder a la cámara. Verifica permisos.';
     }
+  }
+}
+
 
     const coordenadasPorPiso = {
       B1: [
@@ -2156,6 +2134,17 @@
     }
 
     actualizarEstadoSonido();
+
+    let videoRotation = 0;
+    const rotarCamaraBtn = document.getElementById('rotarCamaraBtn');
+    const videoElem = document.getElementById('video');
+
+    if (rotarCamaraBtn && videoElem) {
+      rotarCamaraBtn.onclick = function () {
+        videoRotation = (videoRotation + 90) % 360;
+        videoElem.style.transform = `rotate(${videoRotation}deg)`;
+      };
+    }
   </script>
 </body>
 
