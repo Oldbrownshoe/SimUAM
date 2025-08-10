@@ -1712,8 +1712,76 @@
       }
     }
 
-async function inicializarCamara() {
+  /*  async function inicializarCamara() {
+      const videoElem = document.getElementById('video');
+      const botonCamara = document.getElementById('toggleCamaraBtn');
+
+      function esperar(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      try {
+        let stream;
+
+        if (esMovil) {
+          // MÓVIL: usar facingMode
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({
+              video: { facingMode: { exact: "environment" } }
+            });
+            mostrarNotificacionTrofeo("Cámara trasera abierta (móvil)");
+          } catch (err) {
+            console.warn("No se pudo abrir cámara trasera (móvil), usando predeterminada", err);
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            mostrarNotificacionTrofeo("Usando cámara predeterminada (móvil)");
+          }
+        } else {
+          // ESCRITORIO: usar deviceId
+          await navigator.mediaDevices.getUserMedia({ video: true }); // desbloquear labels
+          await esperar(500); // esperar para que labels estén listos
+
+          const dispositivos = await navigator.mediaDevices.enumerateDevices();
+          const camaras = dispositivos.filter(d => d.kind === 'videoinput');
+          const camaraTrasera = camaras.find(d => /back|rear|environment/i.test(d.label));
+
+          if (camaraTrasera) {
+            try {
+              stream = await navigator.mediaDevices.getUserMedia({
+                video: { deviceId: { exact: camaraTrasera.deviceId } }
+              });
+              mostrarNotificacionTrofeo("Cámara trasera abierta: " + camaraTrasera.label);
+            } catch (err) {
+              console.warn("No se pudo abrir cámara trasera (PC), usando predeterminada", err);
+              stream = await navigator.mediaDevices.getUserMedia({ video: true });
+              mostrarNotificacionTrofeo("Usando cámara predeterminada (PC)");
+            }
+          } else {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            mostrarNotificacionTrofeo("Usando cámara predeterminada (no se detectó trasera)");
+          }
+        }
+
+        // Asignar stream al video
+        videoElem.srcObject = stream;
+        videoElem.style.transform = '';
+
+        if (botonCamara) {
+          botonCamara.style.display = 'none';
+        }
+
+      } catch (err) {
+        document.getElementById('mensaje').textContent =
+          'No fue posible acceder a la cámara. Verifica permisos.';
+        console.error("Error general al abrir cámara:", err);
+      }
+    } */
+
+    async function inicializarCamara() {
   const videoElem = document.getElementById('video');
+  const videoLeft = document.getElementById('videoLeft');
+  const videoRight = document.getElementById('videoRight');
   const botonCamara = document.getElementById('toggleCamaraBtn');
 
   function esperar(ms) {
@@ -1763,10 +1831,17 @@ async function inicializarCamara() {
       }
     }
 
-    // Asignar stream al video
-    videoElem.srcObject = stream;
-    videoElem.style.transform = '';
+    // Asignar stream al video normal y a los dos videos VR
+    if (videoElem) videoElem.srcObject = stream;
+    if (videoLeft) videoLeft.srcObject = stream;
+    if (videoRight) videoRight.srcObject = stream;
 
+    // Reset de transformaciones
+    if (videoElem) videoElem.style.transform = '';
+    if (videoLeft) videoLeft.style.transform = '';
+    if (videoRight) videoRight.style.transform = '';
+
+    // Ocultar botón si ya se activó
     if (botonCamara) {
       botonCamara.style.display = 'none';
     }
@@ -1777,6 +1852,7 @@ async function inicializarCamara() {
     console.error("Error general al abrir cámara:", err);
   }
 }
+
 
     window.onload = async function () {
       selectedFloor = "B1";
