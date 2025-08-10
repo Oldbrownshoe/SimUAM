@@ -1778,10 +1778,11 @@
       }
     } */
 
-    async function inicializarCamara() {
+async function inicializarCamara() {
   const videoElem = document.getElementById('video');
   const videoLeft = document.getElementById('videoLeft');
   const videoRight = document.getElementById('videoRight');
+  const vrContainer = document.getElementById('vrVideoContainer');
   const botonCamara = document.getElementById('toggleCamaraBtn');
 
   function esperar(ms) {
@@ -1794,7 +1795,7 @@
     let stream;
 
     if (esMovil) {
-      // MÓVIL: usar facingMode
+      // 📱 MÓVIL: usar facingMode environment
       try {
         stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: { exact: "environment" } }
@@ -1806,9 +1807,9 @@
         mostrarNotificacionTrofeo("Usando cámara predeterminada (móvil)");
       }
     } else {
-      // ESCRITORIO: usar deviceId
+      // 💻 ESCRITORIO: usar webcam y activar modo VR automáticamente
       await navigator.mediaDevices.getUserMedia({ video: true }); // desbloquear labels
-      await esperar(500); // esperar para que labels estén listos
+      await esperar(500);
 
       const dispositivos = await navigator.mediaDevices.enumerateDevices();
       const camaras = dispositivos.filter(d => d.kind === 'videoinput');
@@ -1829,19 +1830,32 @@
         stream = await navigator.mediaDevices.getUserMedia({ video: true });
         mostrarNotificacionTrofeo("Usando cámara predeterminada (no se detectó trasera)");
       }
+
+      // Activar VR automáticamente en escritorio
+      if (vrContainer) {
+        vrContainer.style.display = 'flex';
+      }
+      if (videoElem) {
+        videoElem.style.display = 'none';
+      }
     }
 
-    // Asignar stream al video normal y a los dos videos VR
+    // 📷 Asignar el mismo stream a todos los videos
     if (videoElem) videoElem.srcObject = stream;
     if (videoLeft) videoLeft.srcObject = stream;
     if (videoRight) videoRight.srcObject = stream;
 
-    // Reset de transformaciones
-    if (videoElem) videoElem.style.transform = '';
-    if (videoLeft) videoLeft.style.transform = '';
-    if (videoRight) videoRight.style.transform = '';
+    // 🎯 Ajustes de recorte VR
+    if (videoLeft) {
+      videoLeft.style.objectFit = "cover";
+      videoLeft.style.objectPosition = "left center";
+    }
+    if (videoRight) {
+      videoRight.style.objectFit = "cover";
+      videoRight.style.objectPosition = "right center";
+    }
 
-    // Ocultar botón si ya se activó
+    // Ocultar botón si ya está activa la cámara
     if (botonCamara) {
       botonCamara.style.display = 'none';
     }
@@ -1852,6 +1866,8 @@
     console.error("Error general al abrir cámara:", err);
   }
 }
+
+
 
 
     window.onload = async function () {
