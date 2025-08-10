@@ -1724,7 +1724,7 @@
       try {
 
         await navigator.mediaDevices.getUserMedia({ video: true });
-        await esperar(500);
+        await esperar(800);
 
         const dispositivos = await navigator.mediaDevices.enumerateDevices();
         const camaras = dispositivos.filter(d => d.kind === 'videoinput');
