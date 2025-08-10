@@ -819,21 +819,25 @@
 
   </a>
   <audio id="sonidoSismo">
-    <source src="../../../sound/inicio.mp3" type="audio/mpeg">
+    <source src="../../sound/inicio.mp3" type="audio/mpeg">
   </audio>
   <audio id="sonidoAlerta">
-    <source src="../../../sound/alerta.mp3" type="audio/mpeg">
+    <source src="../../sound/alerta.mp3" type="audio/mpeg">
   </audio>
   <audio id="sfxTimer">
-    <source src="../../../sound/cronometro_vr.mp3" type="audio/mpeg">
+    <source src="../../sound/cronometro_vr.mp3" type="audio/mpeg">
   </audio>
 
   <audio id="sfxFinish">
-    <source src="../../../sound/fin_cronometro_vr.mp3" type="audio/mpeg">
+    <source src="../../sound/fin_cronometro_vr.mp3" type="audio/mpeg">
   </audio>
 
   <audio id="sfxFinSimulacion">
-    <source src="../../../sound/fin_simulacion.mp3" type="audio/mpeg">
+    <source src="../../sound/fin_simulacion.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="sfxNotificacion">
+    <source src="../../sound/notificacion.mp3" type="audio/mpeg">
   </audio>
 
   <button id="btnMasMercalli" class="caja-texto"> + </button>
@@ -961,11 +965,13 @@
       notif.textContent = mensaje;
       notif.style.display = 'flex';
       notif.style.animation = 'trofeoFadeIn 6s forwards';
+      playNotificacion();
       setTimeout(() => {
         notif.style.display = 'none';
         notif.style.animation = 'none';
         if (typeof callback === 'function') callback();
       }, 6000);
+
     }
 
     function mostrarGifCronometro(mostrar) {
@@ -1344,6 +1350,13 @@
       }
     }
 
+    function playNotificacion() {
+      var notifiacionSfx = document.getElementById("sfxNotificacion");
+      if (notifiacionSfx) {
+        notifiacionSfx.play();
+      }
+    }
+
     function finalizarEvacuacion() {
       const horaFin = new Date().getTime();
       const tiempoReaccion = (horaFin - horaInicio) / 1000;
@@ -1712,8 +1725,10 @@
       }
     }
 
-  /*  async function inicializarCamara() {
+    async function inicializarCamara() {
       const videoElem = document.getElementById('video');
+      const videoLeft = document.getElementById('videoLeft');
+      const videoRight = document.getElementById('videoRight');
       const botonCamara = document.getElementById('toggleCamaraBtn');
 
       function esperar(ms) {
@@ -1726,7 +1741,6 @@
         let stream;
 
         if (esMovil) {
-          // MÓVIL: usar facingMode
           try {
             stream = await navigator.mediaDevices.getUserMedia({
               video: { facingMode: { exact: "environment" } }
@@ -1738,9 +1752,8 @@
             mostrarNotificacionTrofeo("Usando cámara predeterminada (móvil)");
           }
         } else {
-          // ESCRITORIO: usar deviceId
-          await navigator.mediaDevices.getUserMedia({ video: true }); // desbloquear labels
-          await esperar(500); // esperar para que labels estén listos
+          await navigator.mediaDevices.getUserMedia({ video: true });
+          await esperar(500);
 
           const dispositivos = await navigator.mediaDevices.enumerateDevices();
           const camaras = dispositivos.filter(d => d.kind === 'videoinput');
@@ -1763,9 +1776,20 @@
           }
         }
 
-        // Asignar stream al video
-        videoElem.srcObject = stream;
-        videoElem.style.transform = '';
+        // Asignar el mismo stream a todos los videos
+        if (videoElem) videoElem.srcObject = stream;
+        if (videoLeft) videoLeft.srcObject = stream;
+        if (videoRight) videoRight.srcObject = stream;
+
+        // Ajustar estilo para VR (recorte lado izquierdo y derecho)
+        if (videoLeft) {
+          videoLeft.style.objectFit = "cover";
+          videoLeft.style.objectPosition = "left center";
+        }
+        if (videoRight) {
+          videoRight.style.objectFit = "cover";
+          videoRight.style.objectPosition = "right center";
+        }
 
         if (botonCamara) {
           botonCamara.style.display = 'none';
@@ -1776,97 +1800,7 @@
           'No fue posible acceder a la cámara. Verifica permisos.';
         console.error("Error general al abrir cámara:", err);
       }
-    } */
-
-async function inicializarCamara() {
-  const videoElem = document.getElementById('video');
-  const videoLeft = document.getElementById('videoLeft');
-  const videoRight = document.getElementById('videoRight');
-  const vrContainer = document.getElementById('vrVideoContainer');
-  const botonCamara = document.getElementById('toggleCamaraBtn');
-
-  function esperar(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-  try {
-    let stream;
-
-    if (esMovil) {
-      // 📱 MÓVIL: usar facingMode environment
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { exact: "environment" } }
-        });
-        mostrarNotificacionTrofeo("Cámara trasera abierta (móvil)");
-      } catch (err) {
-        console.warn("No se pudo abrir cámara trasera (móvil), usando predeterminada", err);
-        stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        mostrarNotificacionTrofeo("Usando cámara predeterminada (móvil)");
-      }
-    } else {
-      // 💻 ESCRITORIO: usar webcam y activar modo VR automáticamente
-      await navigator.mediaDevices.getUserMedia({ video: true }); // desbloquear labels
-      await esperar(500);
-
-      const dispositivos = await navigator.mediaDevices.enumerateDevices();
-      const camaras = dispositivos.filter(d => d.kind === 'videoinput');
-      const camaraTrasera = camaras.find(d => /back|rear|environment/i.test(d.label));
-
-      if (camaraTrasera) {
-        try {
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: { deviceId: { exact: camaraTrasera.deviceId } }
-          });
-          mostrarNotificacionTrofeo("Cámara trasera abierta: " + camaraTrasera.label);
-        } catch (err) {
-          console.warn("No se pudo abrir cámara trasera (PC), usando predeterminada", err);
-          stream = await navigator.mediaDevices.getUserMedia({ video: true });
-          mostrarNotificacionTrofeo("Usando cámara predeterminada (PC)");
-        }
-      } else {
-        stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        mostrarNotificacionTrofeo("Usando cámara predeterminada (no se detectó trasera)");
-      }
-
-      // Activar VR automáticamente en escritorio
-      if (vrContainer) {
-        vrContainer.style.display = 'flex';
-      }
-      if (videoElem) {
-        videoElem.style.display = 'none';
-      }
     }
-
-    // 📷 Asignar el mismo stream a todos los videos
-    if (videoElem) videoElem.srcObject = stream;
-    if (videoLeft) videoLeft.srcObject = stream;
-    if (videoRight) videoRight.srcObject = stream;
-
-    // 🎯 Ajustes de recorte VR
-    if (videoLeft) {
-      videoLeft.style.objectFit = "cover";
-      videoLeft.style.objectPosition = "left center";
-    }
-    if (videoRight) {
-      videoRight.style.objectFit = "cover";
-      videoRight.style.objectPosition = "right center";
-    }
-
-    // Ocultar botón si ya está activa la cámara
-    if (botonCamara) {
-      botonCamara.style.display = 'none';
-    }
-
-  } catch (err) {
-    document.getElementById('mensaje').textContent =
-      'No fue posible acceder a la cámara. Verifica permisos.';
-    console.error("Error general al abrir cámara:", err);
-  }
-}
-
 
 
 
@@ -2333,7 +2267,8 @@ async function inicializarCamara() {
       document.getElementById('sfxTimer'),
       document.getElementById('sfxFinish'),
       document.getElementById('sfxFinSimulacion'),
-      document.getElementById('sonido-pagina')
+      document.getElementById('sonido-pagina'),
+      document.getElementById('sfxNotificacion')
     ];
 
     function actualizarEstadoSonido() {
