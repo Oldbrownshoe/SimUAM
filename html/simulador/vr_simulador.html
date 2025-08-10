@@ -59,7 +59,7 @@
       border: 2.5px solid #5c1414;
       border-radius: 20px;
       position: absolute;
-      top: 60px;
+      top: 80px;
       right: 10px;
     }
 
@@ -127,15 +127,7 @@
       pointer-events: none;
     }
 
-    #mercalli {
-      position: absolute;
-      top: 80px;
-      left: 10px;
-      background: rgba(138, 43, 226, 0.8);
-      color: white;
-      font-size: 16px;
-      border: 2.5px solid #6a1bb3;
-    }
+
 
     #verRecorrido {
       position: absolute;
@@ -369,8 +361,8 @@
     #boton_sonido {
 
       position: absolute;
-      bottom: 240px;
-      left: 10px;
+      top: 10px;
+      right: 10px;
       background: rgba(255, 255, 255, 0.8);
       border: 2.5px solid #bbb;
 
@@ -386,8 +378,40 @@
     #caja_pisoSeleccionado,
     #modoIndicador,
     #boton_sonido,
-    #boton_manualUsuario {
+    #boton_manualUsuario,
+    #btnMasMercalli,
+    #btnMenosMercalli {
       box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25), 0 1.5px 6px 0 rgba(0, 0, 0, 0.18);
+    }
+
+    #mercalli {
+      position: absolute;
+      top: 80px;
+      left: 10px;
+      background: rgba(138, 43, 226, 0.8);
+      color: white;
+      font-size: 16px;
+      border: 2.5px solid #6a1bb3;
+    }
+
+    #btnMasMercalli {
+      position: absolute;
+      top: 80px;
+      left: 190px;
+      background: rgba(138, 43, 226, 0.8);
+      color: white;
+      font-size: 16px;
+      border: 2.5px solid #6a1bb3;
+    }
+
+    #btnMenosMercalli {
+      position: absolute;
+      top: 80px;
+      left: 150px;
+      background: rgba(138, 43, 226, 0.8);
+      color: white;
+      font-size: 16px;
+      border: 2.5px solid #6a1bb3;
     }
 
     #notificacionTrofeo {
@@ -630,21 +654,21 @@
 
       <div id="ubicacionContainer" style="margin-bottom: 10px;">
         <h2 style="margin:0;">¿Dónde te encuentras?</h2>
-        <button id="btnDentroUAM"
-          style="background:#4682B4; color:#fff; border:2.5px solid #ec7711; border-radius:10px; padding:8px 18px; font-size:15px; margin-right:8px;">Dentro
-          de la UAM</button>
-        <button id="btnFueraUAM"
-          style="background:#e0e0e0; color:#222; border:2.5px solid #bbb; border-radius:10px; padding:8px 18px; font-size:15px;">Fuera
-          de la UAM</button>
+        <button id="btnDentroUAM">Dentro de la UAM</button>
+        <button id="btnFueraUAM">Fuera de la UAM</button>
       </div>
 
       <div id="tipoEvaluacionContainer" style="margin-bottom: 10px;">
+        <!-- Separador -->
+        <hr style="border: none; border-top: 2px solid #bd5f0e; margin: 0 0 10px 0;">
         <h2 style="margin:0;">Tipo de Experiencia</h2>
         <button id="modoSimulacionBtn">Entrenamiento</button>
         <button id="modoPruebaBtn">Prueba</button>
       </div>
 
       <div id="seleccionPisoContainer" style="margin-bottom: 10px;">
+        <!-- Separador -->
+        <hr style="border: none; border-top: 2px solid #bd5f0e; margin: 0 0 10px 0;">
         <h2 style="margin:0; font-size:1.1rem;">Selecciona el Piso</h2>
         <p style="font-size:1.1rem; color:#222; margin-bottom:10px;">Selecciona el piso donde te encuentras o regresa a
           la simulación.</p>
@@ -662,6 +686,8 @@
       </div>
 
       <div id="alertaContainer" style="margin-bottom: 10px;">
+        <!-- Separador -->
+        <hr style="border: none; border-top: 2px solid #bd5f0e; margin: 0 0 10px 0;">
         <h2 style="margin:0; font-size:1.1rem;">Alertamiento</h2>
         <button id="alertaToggleBtn"
           style="background:#e0e0e0; color:#222; border:2.5px solid #bfa000; border-radius:10px; padding:8px 18px; font-size:15px;">
@@ -669,11 +695,10 @@
         </button>
       </div>
       <div id="camaraContainer" style="margin-bottom: 10px;">
+        <!-- Separador -->
+        <hr style="border: none; border-top: 2px solid #bd5f0e; margin: 0 0 10px 0;">
         <h2 style="margin:0; font-size:1.1rem;">Cámara</h2>
-        <button id="toggleCamaraBtn"
-          style="background:#e0e0e0; color:#222; border:2.5px solid #ec7711; border-radius:10px; padding:8px 18px; font-size:15px;">
-          Usar cámara trasera
-        </button>
+
         <button id="rotarCamaraBtn"
           style="background:#e0e0e0; color:#222; border:2.5px solid #ec7711; border-radius:10px; padding:8px 18px; font-size:15px; margin-left:8px;">
           Rotar Cámara
@@ -681,6 +706,8 @@
       </div>
 
       <div id="generaQRContainer" style="margin-bottom: 10px;">
+        <!-- Separador -->
+        <hr style="border: none; border-top: 2px solid #bd5f0e; margin: 0 0 10px 0;">
         <h2 style="margin:0; font-size:1.1rem;">Genera QR de Finalizar</h2>
         <button id="generaQRBtn"
           style="background:#e0e0e0; color:#222; border:2.5px solid #ec7711; border-radius:10px; padding:8px 18px; font-size:15px;">
@@ -689,7 +716,8 @@
         <br>
         <canvas id="qrFinalizar" style="margin-top:10px;"></canvas>
       </div>
-
+      <!-- Separador -->
+      <hr style="border: none; border-top: 2px solid #bd5f0e; margin: 0 0 10px 0;">
       <button id="botonReanudarPausa" onclick="cerrarMenuPausa()">Cerrar</button>
     </div>
   </div>
@@ -721,7 +749,6 @@
         style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:24px; color:#888; cursor:pointer; z-index:10;">&times;</button>
       <h2>Configura tu dispositivo VR</h2>
       <p>Selecciona el tiempo que necesitas para colocarte dispositivo VR.</p>
-      <img src="images/coloca_VR.png" alt="Colocando los VR" style="width: 20%; margin-bottom:10px;">
       <div id="botonesVR">
         <button onclick="seleccionarTiempoVR(30)">30 seg.</button>
         <button onclick="seleccionarTiempoVR(45)">45 seg.</button>
@@ -732,8 +759,9 @@
       </div>
     </div>
   </div>
-
-  <video id="video" autoplay style="z-index:0;"></video>
+  <!-- Habilitar 16/9 -->
+  <!--  width:100vw; height:auto; aspect-ratio: 16/9; -->
+  <video id="video" autoplay style="z-index:0; width:100vw; height:auto; aspect-ratio: 16/9;"></video>
   <div id="vrVideoContainer"
     style="display:none; position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:0;">
     <div style="display:flex; width:100vw; height:100vh;">
@@ -770,7 +798,7 @@
   </div>
   <button id="intensidad">Escala: 0.0 - 4.0</button>
   <div id="caja_pisoSeleccionado" class="caja-texto">Piso: <span id="pisoSeleccionadoValor">B1</span></div>
-  <button id="mercalli" onclick="siguienteMercalli()">Intensidad: I (Mercalli)</button>
+  <button id="mercalli" class="caja-texto">Intensidad: I</button>
   <button id="verRecorrido" class="caja-texto" onclick="iniciarTourTutorial()">
     <img src="images/ayuda.png" alt="Ver Recorrido" style="height: 24px;">
   </button>
@@ -807,6 +835,10 @@
   <audio id="sfxFinSimulacion">
     <source src="../../../sound/fin_simulacion.mp3" type="audio/mpeg">
   </audio>
+
+  <button id="btnMasMercalli" class="caja-texto"> + </button>
+
+  <button id="btnMenosMercalli" class="caja-texto"> − </button>
 
   <div id="directionIndicator" class="direction-indicator"></div>
 
@@ -860,7 +892,6 @@
     </div>
   </div>
 
-
   <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
@@ -886,13 +917,13 @@
     });
 
     const nivelesMercalli = [
-      { richterMin: 0.0, richterMax: 4.0, etiqueta: 'I - Imperceptible' },
-      { richterMin: 4.1, richterMax: 5.0, etiqueta: 'IV - Moderado' },
-      { richterMin: 5.1, richterMax: 6.0, etiqueta: 'V - Poco Fuerte' },
-      { richterMin: 6.1, richterMax: 7.0, etiqueta: 'VI - Fuerte' },
-      { richterMin: 7.1, richterMax: 8.0, etiqueta: 'VII - Muy Fuerte' },
-      { richterMin: 8.1, richterMax: 9.0, etiqueta: 'VIII - Destructivo' },
-      { richterMin: 9.1, richterMax: 9.9, etiqueta: 'IX - Muy Desastroso' },
+      { richterMin: 0.0, richterMax: 4.0, etiqueta: 'I' },
+      { richterMin: 4.1, richterMax: 5.0, etiqueta: 'IV' },
+      { richterMin: 5.1, richterMax: 6.0, etiqueta: 'V' },
+      { richterMin: 6.1, richterMax: 7.0, etiqueta: 'VI' },
+      { richterMin: 7.1, richterMax: 8.0, etiqueta: 'VII' },
+      { richterMin: 8.1, richterMax: 9.0, etiqueta: 'VIII' },
+      { richterMin: 9.1, richterMax: 9.9, etiqueta: 'IX' },
     ];
     let indiceMercalliActual = 0;
     const escalaMercalli = (richter) => {
@@ -1186,7 +1217,7 @@
 
         document.getElementById('pisoSeleccionadoValor').textContent = "?";
         document.getElementById('mercalli').textContent = "Intensidad: ?";
-        document.getElementById('intensidad').textContent = "Escala: ?";
+        document.getElementById('intensidad').textContent = "Mercalli: ?";
 
 
         const tiempos = [30, 45, 60];
@@ -1372,7 +1403,7 @@
     function ajustarIntensidad() {
       intensidad = (Math.round((intensidad + 0.1) * 10) / 10) % 10;
       document.getElementById('intensidad').textContent = "Intensidad: " + intensidad.toFixed(1);
-      document.getElementById('mercalli').textContent = "Intensidad: " + escalaMercalli(intensidad) + " (Mercalli)";
+      document.getElementById('mercalli').textContent = "Intensidad: " + escalaMercalli(intensidad) + " ";
     }
 
     function actualizarIntensidadTexto() {
@@ -1384,7 +1415,7 @@
       indiceMercalliActual = (indiceMercalliActual + 1) % nivelesMercalli.length;
       const nuevoNivel = nivelesMercalli[indiceMercalliActual];
       intensidad = nuevoNivel.richterMin;
-      document.getElementById('mercalli').textContent = "Intensidad: " + nuevoNivel.etiqueta + " (Mercalli)";
+      document.getElementById('mercalli').textContent = "Intensidad: " + nuevoNivel.etiqueta;
       actualizarIntensidadTexto();
     }
 
@@ -1393,7 +1424,7 @@
         const nivelIntensidad = intensidad * 10;
         const x = Math.random() * nivelIntensidad - nivelIntensidad / 2;
         const y = Math.random() * nivelIntensidad - nivelIntensidad / 2;
-        document.getElementById('video').style.transform = `translate(${x}px, ${y}px)`;
+        document.getElementById('video').style.transform = `translate(${x}px, ${y}px) rotate(${rotacionActual}deg)`;
       }, 50);
     }
 
@@ -1672,7 +1703,7 @@
         }
         streamActual = stream;
         video.srcObject = stream;
-        video.style.transform = '';
+        video.style.transform = `rotate(${rotacionActual}deg)`;
         mostrarNotificacionTrofeo(
           nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
         );
@@ -1683,37 +1714,62 @@
 
 
     async function inicializarCamara() {
-      await obtenerDispositivosVideo();
-      if (streamActual) {
-        streamActual.getTracks().forEach(track => track.stop());
-        streamActual = null;
+      const videoElem = document.getElementById('video');
+      const botonCamara = document.getElementById('toggleCamaraBtn');
+
+      function esperar(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
       }
-      let facingMode = camaraActual;         // 'environment' o 'user'
-      if (dispositivosVideo.length === 1) {
-        facingMode = undefined;
-      }
+
       try {
-        let constraints = facingMode
-          ? { video: { facingMode: { exact: facingMode } } }
-          : { video: true };
+        // Paso 1: solicitar permisos
+        await navigator.mediaDevices.getUserMedia({ video: true });
+        await esperar(500); // espera breve para actualizar labels
+
+        // Paso 2: enumerar dispositivos
+        const dispositivos = await navigator.mediaDevices.enumerateDevices();
+        const camaras = dispositivos.filter(d => d.kind === 'videoinput');
+        const camaraTrasera = camaras.find(d =>
+          /back|rear|environment/i.test(d.label)
+        );
+
+        let constraints;
         let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (e) {
-          constraints = facingMode
-            ? { video: { facingMode } }
-            : { video: true };
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+        if (camaraTrasera) {
+          try {
+            // Paso 3: intentar abrir la cámara trasera
+            constraints = { video: { deviceId: { exact: camaraTrasera.deviceId } } };
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+            mostrarNotificacionTrofeo('Cámara trasera abierta: ' + camaraTrasera.label);
+          } catch (errorCamara) {
+            console.warn('Fallo abrir cámara trasera con deviceId, usando fallback.', errorCamara);
+            // Fallback a cualquier cámara
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            mostrarNotificacionTrofeo('Usando cámara predeterminada como fallback');
+          }
+        } else {
+          // Si no se detecta ninguna cámara trasera
+          stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          mostrarNotificacionTrofeo('Usando cámara predeterminada (no se detectó cámara trasera)');
         }
-        streamActual = stream;
-        video.srcObject = stream;
-        video.style.transform = '';  // reset rotación
-      } catch (error) {
-        console.error('Error al acceder a la cámara: ', error);
+
+        // Paso 4: asignar el stream al elemento <video>
+        videoElem.srcObject = stream;
+        videoElem.style.transform = '';
+
+        // Paso 5: ocultar botón
+        if (botonCamara) {
+          botonCamara.style.display = 'none';
+        }
+
+      } catch (err) {
         document.getElementById('mensaje').textContent =
-          'Error al acceder a la cámara. Por favor, verifica los permisos.';
+          'No fue posible acceder a la cámara. Verifica permisos.';
+        console.error('Error al abrir cámara:', err);
       }
     }
+
 
 
     window.onload = async function () {
@@ -1732,91 +1788,6 @@
       await inicializarCamara();
     };
 
-    // Rotar la camara
-    // Rotación manual de video
-    let rotacionActual = 0;
-    const rotarCamaraBtn = document.getElementById('rotarCamaraBtn');
-    const video = document.getElementById('video');
-
-    if (rotarCamaraBtn && video) {
-      rotarCamaraBtn.onclick = function () {
-        rotacionActual = (rotacionActual + 90) % 360;
-        video.style.transform = `rotate(${rotacionActual}deg)`;
-      };
-    }
-
-
-    async function cambiarCamara(nuevaCamara) {
-      await obtenerDispositivosVideo();
-      if (streamActual) {
-        streamActual.getTracks().forEach(track => track.stop());
-        streamActual = null;
-      }
-      try {
-        let constraints = { video: { facingMode: { exact: nuevaCamara } } };
-        let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (e) {
-          constraints = { video: { facingMode: nuevaCamara } };
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        }
-        streamActual = stream;
-        video.srcObject = stream;
-        video.style.transform = `rotate(${rotacionActual}deg)`;
-        mostrarNotificacionTrofeo(
-          nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
-        );
-      } catch (e) {
-        mostrarNotificacionTrofeo("No se pudo cambiar la cámara.");
-      }
-    }
-
-    async function inicializarCamara() {
-      await obtenerDispositivosVideo();
-      if (streamActual) {
-        streamActual.getTracks().forEach(track => track.stop());
-        streamActual = null;
-      }
-      let facingMode = camaraActual;
-      if (dispositivosVideo.length === 1) {
-        facingMode = undefined;
-      }
-      try {
-        let constraints = facingMode ? { video: { facingMode: { exact: facingMode } } } : { video: true };
-        let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (e) {
-          constraints = facingMode ? { video: { facingMode } } : { video: true };
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        }
-        streamActual = stream;
-        video.srcObject = stream;
-        video.style.transform = `rotate(${rotacionActual}deg)`;
-      } catch (error) {
-        console.error('Error al acceder a la cámara: ', error);
-        document.getElementById('mensaje').textContent = 'Error al acceder a la cámara. Por favor, verifica los permisos.';
-      }
-    }
-
-    window.onload = async function () {
-      selectedFloor = "B1";
-      localStorage.setItem('simuladorPiso', "B1");
-      document.getElementById('pisoSeleccionadoValor').textContent = "B1";
-      showTutorialStep();
-      mostrarGifCronometro(false);
-      actualizarIntensidadTexto();
-      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Entrenamiento');
-      mostrarMapaPiso(selectedFloor);
-
-      alertaActiva = false;
-      actualizarEstadoAlerta();
-      actualizarBotonAlertaPorModo();
-      await inicializarCamara();
-    };
-
-    // Coordenadas por piso y zona (extraídas de temp.html)
     const coordenadasPorPiso = {
       B1: [
         { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 136, 158] },
@@ -1861,7 +1832,7 @@
         { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 294, 143, 439] },
         { parte: 'IC', nombre: 'Inferior Central', coords: [143, 293, 284, 440] },
         { parte: 'ID', nombre: 'Inferior Derecha', coords: [284, 293, 428, 441] }
-        // Agora omitido
+        // se omitio el agora del mapa
       ],
       '5': [
         { parte: 'SI', nombre: 'Superior Izquierda', coords: [1, 0, 257, 255] },
@@ -1930,7 +1901,6 @@
         img.alt = 'Plano del piso ' + piso;
         modal.style.display = 'flex';
 
-        // Interactivo por coordenadas
         const zonas = coordenadasPorPiso[piso] || [];
         img.onmousemove = function (e) {
           const rect = img.getBoundingClientRect();
@@ -1940,19 +1910,15 @@
           const h = rect.height;
           let zona = null;
           for (const z of zonas) {
-            // Normaliza coordenadas a la imagen actual
             const [x1, y1, x2, y2] = z.coords;
-            // Calcula escala respecto a la imagen real
             const scaleX = w / img.naturalWidth;
             const scaleY = h / img.naturalHeight;
-            // Si naturalWidth no está disponible, usa w/h directamente
             const sx1 = x1 * scaleX;
             const sy1 = y1 * scaleY;
             const sx2 = x2 * scaleX;
             const sy2 = y2 * scaleY;
             if (x >= sx1 && x <= sx2 && y >= sy1 && y <= sy2) {
               zona = z;
-              // Resalta la zona
               if (resaltado) {
                 resaltado.style.display = 'block';
                 resaltado.style.left = sx1 + 'px';
@@ -2025,7 +1991,7 @@
     function detenerSacudidaPorQR() {
       if (!qrSacudidaDetenida) {
         clearInterval(intervaloSacudida);
-        document.getElementById('video').style.transform = '';
+        document.getElementById('video').style.transform = `rotate(${rotacionActual}deg)`;
         qrSacudidaDetenida = true;
       }
     }
@@ -2092,6 +2058,7 @@
           videoElem.srcObject = stream;
           videoElem.setAttribute('playsinline', true);
           videoElem.play();
+          videoElem.style.transform = `rotate(${rotacionActual}deg)`;
           qrScanner = { stop: () => { stream.getTracks().forEach(t => t.stop()); } };
           escanearFrameQR(videoElem, stream);
         })
@@ -2259,6 +2226,60 @@
       document.getElementById('boton-siguiente').disabled = parActual >= parMaximo;
     }
 
+    let sonidoActivado = true;
+    const botonSonido = document.getElementById('boton_sonido');
+    const iconoSonido = document.getElementById('iconoSonido');
+    const audios = [
+      document.getElementById('sonidoSismo'),
+      document.getElementById('sonidoAlerta'),
+      document.getElementById('sfxTimer'),
+      document.getElementById('sfxFinish'),
+      document.getElementById('sfxFinSimulacion'),
+      document.getElementById('sonido-pagina')
+    ];
+
+    function actualizarEstadoSonido() {
+      audios.forEach(audio => {
+        if (audio) audio.muted = !sonidoActivado;
+      });
+      if (iconoSonido) {
+        iconoSonido.src = sonidoActivado ? "images/sonido_activado.png" : "images/sonido_desactivado.png";
+        iconoSonido.alt = sonidoActivado ? "Sonido activado" : "Sonido desactivado";
+      }
+    }
+
+    if (botonSonido) {
+      botonSonido.onclick = function () {
+        sonidoActivado = !sonidoActivado;
+        actualizarEstadoSonido();
+        mostrarNotificacionTrofeo(sonidoActivado ? "Sonido activado" : "Sonido desactivado");
+      };
+    }
+
+    actualizarEstadoSonido();
+
+    let rotacionActual = 0;
+    const rotarCamaraBtn = document.getElementById('rotarCamaraBtn');
+    if (rotarCamaraBtn) {
+      rotarCamaraBtn.onclick = function () {
+        rotacionActual = (rotacionActual + 90) % 360;
+        const videoElem = document.getElementById('video');
+        if (videoElem) {
+          videoElem.style.transform = `rotate(${rotacionActual}deg)`;
+        }
+      };
+    }
+
+    document.getElementById('btnMasMercalli').onclick = function () {
+      siguienteMercalli();
+    };
+    document.getElementById('btnMenosMercalli').onclick = function () {
+      indiceMercalliActual = (indiceMercalliActual - 1 + nivelesMercalli.length) % nivelesMercalli.length;
+      const nuevoNivel = nivelesMercalli[indiceMercalliActual];
+      intensidad = nuevoNivel.richterMin;
+      document.getElementById('mercalli').textContent = "Intensidad: " + nuevoNivel.etiqueta + " ";
+      actualizarIntensidadTexto();
+    };
   </script>
 </body>
 
