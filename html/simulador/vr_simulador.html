@@ -1712,41 +1712,71 @@
       }
     }
 
+async function inicializarCamara() {
+  const videoElem = document.getElementById('video');
+  const botonCamara = document.getElementById('toggleCamaraBtn');
 
-    async function inicializarCamara() {
-      const videoElem = document.getElementById('video');
-      const botonCamara = document.getElementById('toggleCamaraBtn');
+  function esperar(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
+  const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  try {
+    let stream;
+
+    if (esMovil) {
+      // MÓVIL: usar facingMode
       try {
-        let stream;
-        try {
-          // Intentar cámara trasera por facingMode
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { exact: "environment" } }
-          });
-          mostrarNotificacionTrofeo("Cámara trasera abierta (facingMode)");
-        } catch (err) {
-          console.warn("No se pudo abrir con facingMode, usando predeterminada", err);
-          // Fallback
-          stream = await navigator.mediaDevices.getUserMedia({ video: true });
-          mostrarNotificacionTrofeo("Usando cámara predeterminada como fallback");
-        }
-
-        videoElem.srcObject = stream;
-        videoElem.style.transform = '';
-
-        if (botonCamara) {
-          botonCamara.style.display = 'none';
-        }
-
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { exact: "environment" } }
+        });
+        mostrarNotificacionTrofeo("Cámara trasera abierta (móvil)");
       } catch (err) {
-        document.getElementById('mensaje').textContent =
-          'No fue posible acceder a la cámara. Verifica permisos.';
-        console.error("Error general al abrir cámara:", err);
+        console.warn("No se pudo abrir cámara trasera (móvil), usando predeterminada", err);
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        mostrarNotificacionTrofeo("Usando cámara predeterminada (móvil)");
+      }
+    } else {
+      // ESCRITORIO: usar deviceId
+      await navigator.mediaDevices.getUserMedia({ video: true }); // desbloquear labels
+      await esperar(500); // esperar para que labels estén listos
+
+      const dispositivos = await navigator.mediaDevices.enumerateDevices();
+      const camaras = dispositivos.filter(d => d.kind === 'videoinput');
+      const camaraTrasera = camaras.find(d => /back|rear|environment/i.test(d.label));
+
+      if (camaraTrasera) {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { deviceId: { exact: camaraTrasera.deviceId } }
+          });
+          mostrarNotificacionTrofeo("Cámara trasera abierta: " + camaraTrasera.label);
+        } catch (err) {
+          console.warn("No se pudo abrir cámara trasera (PC), usando predeterminada", err);
+          stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          mostrarNotificacionTrofeo("Usando cámara predeterminada (PC)");
+        }
+      } else {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        mostrarNotificacionTrofeo("Usando cámara predeterminada (no se detectó trasera)");
       }
     }
 
+    // Asignar stream al video
+    videoElem.srcObject = stream;
+    videoElem.style.transform = '';
 
+    if (botonCamara) {
+      botonCamara.style.display = 'none';
+    }
+
+  } catch (err) {
+    document.getElementById('mensaje').textContent =
+      'No fue posible acceder a la cámara. Verifica permisos.';
+    console.error("Error general al abrir cámara:", err);
+  }
+}
 
     window.onload = async function () {
       selectedFloor = "B1";
