@@ -1,2305 +1,549 @@
 <!DOCTYPE html>
-<html lang="es-MX">
+<html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SimUAM: Simulador de Sismos para la Prevención de Accidentes</title>
-  <link rel="shortcut icon" href="../../images/ico/logo_azul.ico" type="image/x-icon">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .caja-texto {
-      padding: 10px;
-      font-size: 16px;
-      margin: 10px;
-      border-radius: 20px;
-      z-index: 2;
-    }
-
-    #simulador {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1;
-    }
-
-    #modalPisoContent button {
-      background-color: #ec7711 !important;
-      border: 2.5px solid #bd5f0e !important;
-      color: #fff !important;
-    }
-
-    #modalPisoContent button:hover {
-      background-color: #d46b0f !important;
-    }
-
-
-    #encabezado {
-      background: rgba(70, 130, 180, 0.8);
-      color: white;
-      border: 2.5px solid #1a4a7a;
-      border-radius: 20px;
-    }
-
-    #mensaje {
-      background: rgba(220, 20, 60, 0.8);
-      color: white;
-      border: 2.5px solid #5c1414;
-      border-radius: 20px;
-      position: absolute;
-      top: 80px;
-      right: 10px;
-    }
-
-    #cronometro {
-      background: rgba(34, 139, 34, 0.8);
-      color: white;
-      border: 2.5px solid #145c14;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      min-height: 30px;
-      min-width: 10px;
-    }
-
-    #gifCronometro,
-    #pngCronometro {
-      height: 38px;
-      width: 38px;
-      object-fit: contain;
-      margin-right: 8px;
-      margin-left: 2px;
-      flex-shrink: 0;
-      display: none;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin: 10px;
-      cursor: pointer;
-      border-radius: 20px;
-      border: 2.5px solid #222;
-      z-index: 2;
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.10);
-    }
-
-    #botonIniciar {
-      background: rgba(30, 144, 255, 0.8);
-      color: white;
-      border: 2.5px solid #0070b8;
-      transition: opacity 0.5s ease;
-    }
-
-    #botonDetener {
-      background: rgba(255, 69, 0, 0.8);
-      color: white;
-      border: 2.5px solid #b22200;
-      margin-left: auto;
-      transition: opacity 0.5s ease;
-      display: none;
-      opacity: 0;
-    }
-
-    #intensidad {
-      position: absolute;
-      top: 130px;
-      left: 10px;
-      background: rgba(255, 215, 0, 0.8);
-      color: black;
-      font-size: 16px;
-      border: 2.5px solid #bfa000;
-      cursor: default;
-      pointer-events: none;
-    }
-
-
-
-    #verRecorrido {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(255, 255, 255, 0.8);
-      color: black;
-      font-size: 16px;
-      border: 2.5px solid #bbb;
-    }
-
-    #caja_pisoSeleccionado {
-      position: absolute;
-      top: 180px;
-      left: 10px;
-      background: rgba(92, 92, 92, 0.8);
-      color: white;
-      font-size: 16px;
-      border: 2.5px solid rgba(92, 92, 92);
-      box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25), 0 1.5px 6px 0 rgba(0, 0, 0, 0.18);
-    }
-
-    #boton_home {
-      position: absolute;
-      top: 10px;
-      left: 70px;
-      background: rgba(255, 255, 255, 0.8);
-      color: black;
-      font-size: 16px;
-      border: 2.5px solid #bbb;
-
-    }
-
-    #boton_configSim {
-      position: absolute;
-      top: 10px;
-      left: 130px;
-      background: rgba(255, 255, 255, 0.8);
-      color: black;
-      font-size: 16px;
-      border: 2.5px solid #bbb;
-      box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25), 0 1.5px 6px 0 rgba(0, 0, 0, 0.18);
-    }
-
-
-    #boton_manualUsuario {
-      position: absolute;
-      top: 10px;
-      left: 190px;
-      background: rgba(255, 255, 255, 0.8);
-      color: black;
-      font-size: 16px;
-      border: 2.5px solid #bbb;
-    }
-
-    #modoIndicador {
-      position: absolute;
-      top: 230px;
-      left: 10px;
-      background: rgba(124, 0, 62, 0.8);
-      color: white;
-      font-size: 16px;
-      border: 2.5px solid rgb(124, 0, 62);
-      box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25), 0 1.5px 6px 0 rgba(0, 0, 0, 0.18);
-
-    }
-
-    #controles {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      position: absolute;
-      bottom: 10px;
-    }
-
-    video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: contain;
-      z-index: 0;
-    }
-
-    .direction-indicator {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%) rotate(0deg);
-      font-size: 32px;
-      color: #FFFFFF;
-      background-color: rgba(0, 0, 0, 0.5);
-      border-radius: 50%;
-      padding: 10px;
-      z-index: 1500;
-    }
-
-    #modalTutorial {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .modal-content {
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-      background-color: #fff;
-      color: #000;
-      border: 2.5px solid #888;
-    }
-
-    .modal-content h2 {
-      margin-top: 0;
-    }
-
-    #modalPiso {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(20, 20, 40, 0.85);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-      flex-direction: column;
-      animation: fadeInPause 0.3s;
-    }
-
-    #modalPisoContent {
-      padding: 2.5vw 2vw 2vw 2vw;
-      border-radius: 18px;
-      text-align: center;
-      max-width: 40vw;
-      width: 95vw;
-      max-height: 80vh;
-      overflow-y: auto;
-      background: rgba(255, 255, 255, 0.97);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
-      border: 3px solid #ec7711;
-      position: relative;
-      font-size: 1.1rem;
-      transition: max-width 0.2s, max-height 0.2s, padding 0.2s;
-    }
-
-    @media (max-width: 700px) {
-      #modalPisoContent {
-        max-width: 95vw;
-        width: 98vw;
-        padding: 4vw 2vw 2vw 2vw;
-        font-size: 1rem;
-      }
-    }
-
-    @media (max-width: 400px) {
-      #modalPisoContent {
-        max-width: 99vw;
-        width: 99vw;
-        padding: 2vw 1vw 1vw 1vw;
-        font-size: 0.95rem;
-      }
-    }
-
-    #modalPartePiso button {
-      margin: 5px;
-      padding: 10px 15px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 10px;
-      background-color: #ec7711;
-      border: 2.5px solid #bd5f0e;
-      color: #fff;
-      transition: background 0.3s ease;
-      box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25), 0 1.5px 6px 0 rgba(0, 0, 0, 0.18);
-    }
-
-    #modalPartePiso button:hover {
-      background-color: #d46b0f;
-    }
-
-    #modalVR {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    #modalVRContent {
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-      background-color: #fff;
-    }
-
-    #botonesVR button {
-      margin: 5px;
-      padding: 10px 15px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 10px;
-      border: 2.5px solid #1a4a7a;
-      background-color: #4682B4;
-      color: #fff;
-      transition: background 0.3s ease;
-    }
-
-    #botonesVR button:hover {
-      background-color: #315f7d;
-    }
-
-    #boton_sonido {
-
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(255, 255, 255, 0.8);
-      border: 2.5px solid #bbb;
-
-    }
-
-    #botonIniciar,
-    #boton_home,
-    #botonDetener,
-    #intensidad,
-    #mercalli,
-    #verRecorrido,
-    #boton_configSim,
-    #caja_pisoSeleccionado,
-    #modoIndicador,
-    #boton_sonido,
-    #boton_manualUsuario,
-    #btnMasMercalli,
-    #btnMenosMercalli {
-      box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25), 0 1.5px 6px 0 rgba(0, 0, 0, 0.18);
-    }
-
-    #mercalli {
-      position: absolute;
-      top: 80px;
-      left: 10px;
-      background: rgba(138, 43, 226, 0.8);
-      color: white;
-      font-size: 16px;
-      border: 2.5px solid #6a1bb3;
-    }
-
-    #btnMasMercalli {
-      position: absolute;
-      top: 80px;
-      left: 190px;
-      background: rgba(138, 43, 226, 0.8);
-      color: white;
-      font-size: 16px;
-      border: 2.5px solid #6a1bb3;
-    }
-
-    #btnMenosMercalli {
-      position: absolute;
-      top: 80px;
-      left: 150px;
-      background: rgba(138, 43, 226, 0.8);
-      color: white;
-      font-size: 16px;
-      border: 2.5px solid #6a1bb3;
-    }
-
-    #notificacionTrofeo {
-      display: none;
-      position: fixed;
-      top: 32px;
-      right: 32px;
-      left: auto;
-      bottom: auto;
-      transform: none;
-      background: #ec7711;
-      color: #fff;
-      border-radius: 16px;
-      border: 3px solid #8e470a;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
-      min-width: 260px;
-      max-width: 90vw;
-      padding: 14px 28px 14px 52px;
-      font-size: 15px;
-      z-index: 3000;
-      align-items: center;
-      font-family: 'Arial', sans-serif;
-      font-weight: bold;
-      background-image: url('images/notificacion.png');
-      background-repeat: no-repeat;
-      background-size: 30px 30px;
-      background-position: 10px center;
-      animation: none;
-    }
-
-    #modoSimulacionBtn {
-      margin: 4px 8px 4px 0;
-      padding: 8px 18px;
-      font-size: 15px;
-      border-radius: 8px;
-      border: 2px solid #4682B4;
-      background: #4682B4;
-      color: #fff;
-
-    }
-
-    #modoPruebaBtn {
-      margin: 4px 0 4px 0;
-      padding: 8px 18px;
-      font-size: 15px;
-      border-radius: 8px;
-      border: 2px solid #bfa000;
-      background: #bfa000;
-      color: #222;
-
-    }
-
-    #mapaPisoContainer {
-      display: none;
-      width: 100%;
-      text-align: right;
-      margin-top: 10px
-    }
-
-    #mapaPisoImg {
-      max-width: 90vw;
-      max-height: 40vh;
-      border-radius: 18px;
-      box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25);
-      border: 2.5px solid #1a4a7a;
-
-    }
-
-    #alertaImg {
-      height: 100px;
-      width: 100px;
-      object-fit: contain;
-    }
-
-    #alertaIndicador {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 8px;
-      top: 32px;
-      right: 32px;
-      left: auto;
-      bottom: auto;
-
-    }
-
-    .alerta-lado {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 1200;
-      width: 100px;
-      height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
-
-    #alertaDerecha {
-      position: fixed;
-      top: 500px;
-      bottom: 0px;
-      left: 62%;
-      transform: translateX(-50%);
-    }
-
-
-    #alertaIzquierda {
-      position: fixed;
-      top: 500px;
-      bottom: 0px;
-      left: 37%;
-      transform: translateX(-50%);
-    }
-
-    @keyframes trofeoFadeIn {
-      0% {
-        opacity: 0;
-        top: 0;
-      }
-
-      20% {
-        opacity: 1;
-        top: 32px;
-      }
-
-      80% {
-        opacity: 1;
-        top: 32px;
-      }
-
-      100% {
-        opacity: 0;
-        top: 0;
-      }
-    }
-
-    #mensaje.animado {
-      animation: mensajeSlideDown 1s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    @keyframes mensajeSlideDown {
-      0% {
-        opacity: 0;
-        transform: translateY(-40px) scale(0.95);
-      }
-
-      60% {
-        opacity: 1;
-        transform: translateY(10px) scale(1.03);
-      }
-
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    #botonesPiso {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    #botonesPiso button {
-      width: 60px;
-      height: 36px;
-      margin: 2px 0;
-      border-radius: 10px;
-      color: #fff;
-      font-weight: bold;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: 2.5px solid #1a4a7a;
-      transition: transform 0.1s, box-shadow 0.1s;
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.10);
-      opacity: 1;
-      background: #FFD800FF;
-    }
-
-    #boton-anterior,
-    #boton-siguiente {
-      margin: 0 0.5rem;
-      padding: 0.5rem 1.2rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    #boton-anterior,
-    #boton-siguiente {
-      color: #fff;
-      background-color: #ec7711;
-      border: 2.5px solid #bd5f0e;
-    }
-
-    #boton-anterior:hover:not(:disabled) {
-      background-color: #d46b0f;
-    }
-
-    #boton-siguiente:hover:not(:disabled) {
-      background-color: #d46b0f;
-    }
-
-    #boton-anterior:disabled,
-    #boton-siguiente:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-  </style>
-</head>
-
-<body>
-  <div id="modalTutorial">
-    <div id="tutorialModalContent" class="modal-content">
-      <button id="cerrarTutorialBtn" onclick="cerrarTutorial()"
-        style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:24px; color:#888; cursor:pointer; z-index:10;">&times;</button>
-      <h2 id="tutorialTitle">Bienvenido al Simulador de Sismos: SimUAM</h2>
-      <p id="tutorialContent">
-        En este recorrido te mostraremos la función de cada parte del simulador. Presiona "Siguiente" para comenzar.
-      </p>
-      <button id="tutorialPrevButton" onclick="prevTutorialStep()"
-        style="display:none; margin-right:10px;">Anterior</button>
-      <button id="tutorialButton" onclick="nextTutorialStep()">Siguiente</button>
-    </div>
-  </div>
-
-  <div id="modalPiso">
-    <div id="modalPisoContent" class="modal-content">
-
-      <div id="ubicacionContainer" style="margin-bottom: 10px;">
-        <h2 style="margin:0;">¿Dónde te encuentras?</h2>
-        <button id="btnDentroUAM">Dentro de la UAM</button>
-        <button id="btnFueraUAM">Fuera de la UAM</button>
-      </div>
-
-      <div id="tipoEvaluacionContainer" style="margin-bottom: 10px;">
-        <!-- Separador -->
-        <hr style="border: none; border-top: 2px solid #bd5f0e; margin: 0 0 10px 0;">
-        <h2 style="margin:0;">Tipo de Experiencia</h2>
-        <button id="modoSimulacionBtn">Entrenamiento</button>
-        <button id="modoPruebaBtn">Prueba</button>
-      </div>
-
-      <div id="seleccionPisoContainer" style="margin-bottom: 10px;">
-        <!-- Separador -->
-        <hr style="border: none; border-top: 2px solid #bd5f0e; margin: 0 0 10px 0;">
-        <h2 style="margin:0; font-size:1.1rem;">Selecciona el Piso</h2>
-        <p style="font-size:1.1rem; color:#222; margin-bottom:10px;">Selecciona el piso donde te encuentras o regresa a
-          la simulación.</p>
-        <div id="botonesPiso">
-          <button onclick="seleccionarPiso('G')">G</button>
-          <button onclick="seleccionarPiso('8')">8</button>
-          <button onclick="seleccionarPiso('7')">7</button>
-          <button onclick="seleccionarPiso('6')">6</button>
-          <button onclick="seleccionarPiso('5')">5</button>
-          <button onclick="seleccionarPiso('4')">4</button>
-          <button onclick="seleccionarPiso('B3')">B3</button>
-          <button onclick="seleccionarPiso('B2')">B2</button>
-          <button onclick="seleccionarPiso('B1')">B1</button>
-        </div>
-      </div>
-
-      <div id="alertaContainer" style="margin-bottom: 10px;">
-        <!-- Separador -->
-        <hr style="border: none; border-top: 2px solid #bd5f0e; margin: 0 0 10px 0;">
-        <h2 style="margin:0; font-size:1.1rem;">Alertamiento</h2>
-        <button id="alertaToggleBtn"
-          style="background:#e0e0e0; color:#222; border:2.5px solid #bfa000; border-radius:10px; padding:8px 18px; font-size:15px;">
-          Desactivada
-        </button>
-      </div>
-      <div id="camaraContainer" style="margin-bottom: 10px;">
-        <!-- Separador -->
-        <hr style="border: none; border-top: 2px solid #bd5f0e; margin: 0 0 10px 0;">
-        <h2 style="margin:0; font-size:1.1rem;">Cámara</h2>
-
-        <button id="rotarCamaraBtn"
-          style="background:#e0e0e0; color:#222; border:2.5px solid #ec7711; border-radius:10px; padding:8px 18px; font-size:15px; margin-left:8px;">
-          Rotar Cámara
-        </button>
-      </div>
-
-      <div id="generaQRContainer" style="margin-bottom: 10px;">
-        <!-- Separador -->
-        <hr style="border: none; border-top: 2px solid #bd5f0e; margin: 0 0 10px 0;">
-        <h2 style="margin:0; font-size:1.1rem;">Genera QR de Finalizar</h2>
-        <button id="generaQRBtn"
-          style="background:#e0e0e0; color:#222; border:2.5px solid #ec7711; border-radius:10px; padding:8px 18px; font-size:15px;">
-          Genera QR
-        </button>
-        <br>
-        <canvas id="qrFinalizar" style="margin-top:10px;"></canvas>
-      </div>
-      <!-- Separador -->
-      <hr style="border: none; border-top: 2px solid #bd5f0e; margin: 0 0 10px 0;">
-      <button id="botonReanudarPausa" onclick="cerrarMenuPausa()">Cerrar</button>
-    </div>
-  </div>
-
-  <div id="modalPartePiso"
-    style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:2100; justify-content:center; align-items:center;">
-    <div
-      style="background:#fff; padding:24px; border-radius:16px; text-align:center; box-shadow:0 4px 24px rgba(0,0,0,0.25); max-width:90vw; width:420px;">
-      <h2>¿En qué parte del piso estás?</h2>
-      <div style="position:relative; width:100%; max-height:300px; margin-bottom:16px;">
-        <img id="imagenPisoParte" src="" alt="Plano del piso"
-          style="width:100%; max-height:300px; object-fit:contain; border:2px solid #ec7711; border-radius:12px;">
-        <div id="resaltadoPartePiso"
-          style="display:none; position:absolute; pointer-events:none; background:rgba(236,119,17,0.35); border-radius:8px; z-index:9;">
-        </div>
-        <div id="hoverPartePiso"
-          style="display:none; position:absolute; pointer-events:none; background:#d46b0f; color:#fff; padding:6px 14px; border-radius:8px; font-size:1.1rem; z-index:10;">
-        </div>
-      </div>
-      <br>
-      <button onclick="cerrarModalPartePiso()">Cancelar</button>
-    </div>
-  </div>
-
-
-  <div id="modalVR">
-    <div id="modalVRContent" class="modal-content">
-      <button id="cerrarVRBtn" onclick="cerrarModalVR()"
-        style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:24px; color:#888; cursor:pointer; z-index:10;">&times;</button>
-      <h2>Configura tu dispositivo VR</h2>
-      <p>Selecciona el tiempo que necesitas para colocarte dispositivo VR.</p>
-      <div id="botonesVR">
-        <button onclick="seleccionarTiempoVR(30)">30 seg.</button>
-        <button onclick="seleccionarTiempoVR(45)">45 seg.</button>
-        <button onclick="seleccionarTiempoVR(60)">60 seg.</button>
-      </div>
-      <div id="contadorVR" style="margin-top: 10px; font-size: 20px;">
-        Tiempo restante: 0 seg.
-      </div>
-    </div>
-  </div>
-  <!-- Habilitar 16/9 -->
-  <!--  width:100vw; height:auto; aspect-ratio: 16/9; -->
-  <video id="video" autoplay style="z-index:0; width:100vw; height:auto; aspect-ratio: 16/9;"></video>
-  <div id="vrVideoContainer"
-    style="display:none; position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:0;">
-    <div style="display:flex; width:100vw; height:100vh;">
-      <video id="videoLeft" autoplay style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
-      <video id="videoRight" autoplay style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
-    </div>
-  </div>
-
-  <div id="simulador">
-    <h2 id="encabezado" class="caja-texto">Simulador de Sismos: SimUAM</h2>
-    <div id="mensaje" class="caja-texto"></div>
-
-    <div id="mapaPisoContainer">
-      <img id="mapaPisoImg" src="" alt="Mapa del piso" />
-    </div>
-
-    <div id="alertaIzquierda" class="alerta-lado">
-      <img id="alertaImgIzq" src="images/alerta.png" alt="Alerta" style="height:100px;width:100px;object-fit:contain;">
-    </div>
-    <div id="cronometro" class="caja-texto">
-      <img id="pngCronometro" src="images/temporizador_b.png" alt="Cronómetro estático" />
-      <img id="gifCronometro" src="images/temporizador_b.gif" alt="Cronómetro animado" />
-      <span id="textoCronometro">0.000 s.</span>
-    </div>
-
-    <div id="alertaDerecha" class="alerta-lado">
-      <img id="alertaImgDer" src="images/alerta.png" alt="Alerta" style="height:100px; width:100px;">
-    </div>
-
-    <div id="controles">
-      <button id="botonIniciar" onclick="preguntarPiso()">Iniciar Ejercicio</button>
-      <button id="botonDetener" onclick="finalizarEvacuacion()">Finalizar Ejercicio</button>
-    </div>
-  </div>
-  <button id="intensidad">Escala: 0.0 - 4.0</button>
-  <div id="caja_pisoSeleccionado" class="caja-texto">Piso: <span id="pisoSeleccionadoValor">B1</span></div>
-  <button id="mercalli" class="caja-texto">Intensidad: I</button>
-  <button id="verRecorrido" class="caja-texto" onclick="iniciarTourTutorial()">
-    <img src="images/ayuda.png" alt="Ver Recorrido" style="height: 24px;">
-  </button>
-  <a href="./../inicio.html"> <button id="boton_home" class="caja-texto"> <img src="images/home.png" alt="Inicio"
-        style="height: 24px;"> </button>
-  </a>
-
-  <button id="boton_configSim" class="caja-texto"> <img src="images/configuracion.png" alt="Configuración del Simulador"
-      style="height: 24px;"> </button>
-
-  <button id="boton_manualUsuario" class="caja-texto">
-    <img src="images/manualUsuario.png" alt="Manual de Usuario" style="height: 24px;">
-  </button>
-
-  <button id="boton_sonido" class="caja-texto">
-    <img id="iconoSonido" src="images/sonido_activado.png" alt="Sonido activado" style="height:24px;">
-  </button>
-
-  </a>
-  <audio id="sonidoSismo">
-    <source src="../../../sound/inicio.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="sonidoAlerta">
-    <source src="../../../sound/alerta.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="sfxTimer">
-    <source src="../../../sound/cronometro_vr.mp3" type="audio/mpeg">
-  </audio>
-
-  <audio id="sfxFinish">
-    <source src="../../../sound/fin_cronometro_vr.mp3" type="audio/mpeg">
-  </audio>
-
-  <audio id="sfxFinSimulacion">
-    <source src="../../../sound/fin_simulacion.mp3" type="audio/mpeg">
-  </audio>
-
-  <button id="btnMasMercalli" class="caja-texto"> + </button>
-
-  <button id="btnMenosMercalli" class="caja-texto"> − </button>
-
-  <div id="directionIndicator" class="direction-indicator"></div>
-
-  <div id="modalMensajeSimulador"
-    style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:2000; justify-content:center; align-items:center;">
-    <div
-      style="background:#444; color:#fff; padding:24px 20px 16px 20px; border-radius:12px; max-width:400px; width:90%; text-align:center; box-shadow:0 4px 24px 0 rgba(0,0,0,0.25);">
-      <div id="mensajeSimuladorTexto" style="margin-bottom:18px; font-size:18px;"></div>
-      <button onclick="cerrarMensajeSimulador()"
-        style="background:#888; color:#fff; border:none; border-radius:8px; padding:8px 24px; font-size:16px; cursor:pointer;">Cerrar</button>
-    </div>
-  </div>
-
-  <div id="notificacionTrofeo"></div>
-  <div id="modoIndicador" class="caja-texto">Modo: Simulación</div>
-  <div id="alertaIndicador">
-    <img id="alertaImg" src="images/alerta.png" alt="Alerta" />
-  </div>
-
-  <div id="modalDistractor"
-    style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:2500; justify-content:center; align-items:center;">
-    <div
-      style="background:#fff; color:#222; padding:32px 24px 24px 24px; border-radius:16px; max-width:380px; width:90%; text-align:center; box-shadow:0 4px 24px 0 rgba(0,0,0,0.25); font-size:1.2rem;">
-      <div id="distractorTexto" style="margin-bottom:18px;"></div>
-    </div>
-  </div>
-
-  <div id="modalManualUsuario"
-    style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); z-index:5000; justify-content:center; align-items:center;">
-    <div id="manualUsuarioContent"
-      style="background:#fff; border-radius:18px; max-width:98vw; width:1200px; max-height:96vh; overflow:auto; position:relative; box-shadow:0 8px 32px 0 rgba(0,0,0,0.35); padding:24px;">
-      <button id="cerrarManualUsuarioBtn"
-        style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:32px; color:#888; cursor:pointer; z-index:10;">&times;</button>
-      <h3 style="text-align:center; margin-bottom:1rem;">SimUAM: Manual de Usuario</h3>
-      <audio id="sonido-pagina" src="./../../sound/manualUsuario.mp3" preload="auto"></audio>
-      <div id="contenedor-libro"
-        style="background:#ccc; box-shadow:0 8px 20px rgba(0,0,0,0.3); overflow:hidden; display:flex; justify-content:center; align-items:center; width:100%; margin-bottom:1rem;">
-        <div class="pagina"
-          style="width:48%; height:800px; background:white; box-shadow:inset 0 0 5px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center;">
-          <canvas id="lienzo-izquierdo"></canvas>
-        </div>
-        <div class="pagina"
-          style="width:48%; height:800px; background:white; box-shadow:inset 0 0 5px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center;">
-          <canvas id="lienzo-derecho"></canvas>
-        </div>
-      </div>
-      <div class="controles" style="text-align:center; margin-top:1rem;">
-        <button id="boton-anterior" disabled>← Anterior</button>
-        <button id="boton-siguiente" disabled>Siguiente →</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
-  <script>
-    let horaInicio;
-    let intervaloCronometro;
-    let intervaloSacudida;
-    let intensidad = 0.0;
-    let selectedFloor = "B1";
-    const safeDirection = 270;
-
-    let pisoPrueba = null;
-    let mercalliPrueba = null;
-    let richterPrueba = null;
-
-    let partePisoSeleccionada = null;
-
-    document.addEventListener("DOMContentLoaded", function () {
-      const safeArrow = document.getElementById("safePointArrow");
-      if (safeArrow) {
-        safeArrow.style.transform = "translateX(-50%) rotate(" + safeDirection + "deg)";
-      }
-    });
-
-    const nivelesMercalli = [
-      { richterMin: 0.0, richterMax: 4.0, etiqueta: 'I' },
-      { richterMin: 4.1, richterMax: 5.0, etiqueta: 'IV' },
-      { richterMin: 5.1, richterMax: 6.0, etiqueta: 'V' },
-      { richterMin: 6.1, richterMax: 7.0, etiqueta: 'VI' },
-      { richterMin: 7.1, richterMax: 8.0, etiqueta: 'VII' },
-      { richterMin: 8.1, richterMax: 9.0, etiqueta: 'VIII' },
-      { richterMin: 9.1, richterMax: 9.9, etiqueta: 'IX' },
-    ];
-    let indiceMercalliActual = 0;
-    const escalaMercalli = (richter) => {
-      for (let i = 0; i < nivelesMercalli.length; i++) {
-        if (richter >= nivelesMercalli[i].richterMin && richter <= nivelesMercalli[i].richterMax) {
-          return nivelesMercalli[i].etiqueta;
-        }
-      }
-      return 'X - Desastroso';
-    };
-
-    function fadeOut(element) {
-      element.style.transition = "opacity 0.5s ease";
-      element.style.opacity = "0";
-      setTimeout(() => { element.style.display = "none"; }, 500);
-    }
-    function fadeIn(element, displayStyle) {
-      element.style.display = displayStyle || "inline-block";
-      setTimeout(() => {
-        element.style.transition = "opacity 0.5s ease";
-        element.style.opacity = "1";
-      }, 10);
-    }
-
-    function mostrarMensajeSimulador(mensaje) {
-      document.getElementById('mensajeSimuladorTexto').textContent = mensaje;
-      document.getElementById('modalMensajeSimulador').style.display = 'flex';
-    }
-    function cerrarMensajeSimulador() {
-      document.getElementById('modalMensajeSimulador').style.display = 'none';
-    }
-
-    function mostrarNotificacionTrofeo(mensaje, callback) {
-      const notif = document.getElementById('notificacionTrofeo');
-      notif.textContent = mensaje;
-      notif.style.display = 'flex';
-      notif.style.animation = 'trofeoFadeIn 6s forwards';
-      setTimeout(() => {
-        notif.style.display = 'none';
-        notif.style.animation = 'none';
-        if (typeof callback === 'function') callback();
-      }, 6000);
-    }
-
-    function mostrarGifCronometro(mostrar) {
-      const gif = document.getElementById('gifCronometro');
-      const png = document.getElementById('pngCronometro');
-      if (mostrar) {
-
-        const baseSrc = gif.getAttribute('src').split('?')[0];
-        const newSrc = baseSrc + '?t=' + Date.now();
-        gif.setAttribute('src', newSrc);
-        gif.style.display = 'inline-block';
-        png.style.display = 'none';
-      } else {
-        gif.style.display = 'none';
-        png.style.display = 'inline-block';
-      }
-    }
-
-    function comenzarSimulacion() {
-      const cronometroEl = document.getElementById('cronometro');
-      document.getElementById('textoCronometro').textContent = '0.000 segundos';
-      mostrarGifCronometro(true);
-      cronometroEl.style.backgroundColor = "rgba(34, 139, 34, 0.8)";
-      cronometroEl.style.color = "#ffffff";
-      let mensajeSimulacion = "";
-      if (selectedFloor === "B1" || selectedFloor === "B2" || selectedFloor === "B3") {
-        mensajeSimulacion = "¡Simulación en progreso!";
-      } else {
-        mensajeSimulacion = "¡Simulación en progreso!";
-      }
-
-      const barraMensaje = document.getElementById('mensaje');
-      barraMensaje.textContent = '';
-      barraMensaje.classList.remove('animado');
-      mostrarNotificacionTrofeo(mensajeSimulacion, function () {
-        barraMensaje.textContent = mensajeSimulacion;
-        barraMensaje.classList.remove('animado');
-
-        void barraMensaje.offsetWidth;
-        barraMensaje.classList.add('animado');
-      });
-      fadeOut(document.getElementById('botonIniciar'));
-      fadeIn(document.getElementById('botonDetener'), "inline-block");
-      horaInicio = new Date().getTime();
-      intervaloCronometro = setInterval(actualizarCronometro, 10);
-      qrSacudidaDetenida = false;
-      qrScanEnabled = false;
-      iniciarSacudida();
-
-      setTimeout(() => {
-        if (intervaloCronometro) {
-          detenerSacudidaPorQR();
-          qrScanEnabled = true;
-          iniciarEscaneoQR();
-          mostrarNotificacionTrofeo("Escanea el QR para finalizar el ejercicio");
-        }
-      }, 50000);
-
-      if (alertaActiva) {
-        if (alertaImg) {
-          alertaImg.src = "images/alerta.gif";
-          alertaImg.alt = "Alertamiento activado";
-        }
-        if (alertaImgIzq) {
-          alertaImgIzq.src = "images/alerta.gif";
-          alertaImgIzq.alt = "Alertamiento activado";
-        }
-        if (alertaImgDer) {
-          alertaImgDer.src = "images/alerta.gif";
-          alertaImgDer.alt = "Alertamiento activado";
-        }
-      } else {
-        if (alertaImg) {
-          alertaImg.src = "images/alerta.png";
-          alertaImg.alt = "Alertamiento desactivado";
-        }
-        if (alertaImgIzq) {
-          alertaImgIzq.src = "images/alerta.png";
-          alertaImgIzq.alt = "Alertamiento desactivado";
-        }
-        if (alertaImgDer) {
-          alertaImgDer.src = "images/alerta.png";
-          alertaImgDer.alt = "Alertamiento desactivado";
-        }
-      }
-    }
-
-    function iniciarSimulacionConAlerta() {
-      if (alertaActiva) {
-        var sonidoAlerta = document.getElementById('sonidoAlerta');
-        var sonidoSismo = document.getElementById('sonidoSismo');
-        if (sonidoAlerta) {
-          sonidoAlerta.currentTime = 0;
-          sonidoAlerta.play();
-        }
-        setTimeout(function () {
-          if (sonidoSismo) {
-            sonidoSismo.currentTime = 0;
-            sonidoSismo.play();
-          }
-          comenzarSimulacion();
-        }, 4000);
-      } else {
-        var sonidoSismo = document.getElementById('sonidoSismo');
-        if (sonidoSismo) {
-          sonidoSismo.currentTime = 0;
-          sonidoSismo.play();
-        }
-        comenzarSimulacion();
-      }
-    }
-
-    let ubicacionActual = 'dentro';
-
-    const btnDentroUAM = document.getElementById('btnDentroUAM');
-    const btnFueraUAM = document.getElementById('btnFueraUAM');
-    const tipoEvaluacionContainer = document.getElementById('tipoEvaluacionContainer');
-    const seleccionPisoContainer = document.getElementById('seleccionPisoContainer');
-    const alertaContainer = document.getElementById('alertaContainer');
-
-    function actualizarUIUbicacion() {
-      if (ubicacionActual === 'dentro') {
-        if (tipoEvaluacionContainer) tipoEvaluacionContainer.style.display = '';
-        if (seleccionPisoContainer) seleccionPisoContainer.style.display = '';
-        if (alertaContainer) alertaContainer.style.display = '';
-        if (btnDentroUAM) {
-          btnDentroUAM.style.background = '#4682B4';
-          btnDentroUAM.style.color = '#fff';
-        }
-        if (btnFueraUAM) {
-          btnFueraUAM.style.background = '#e0e0e0';
-          btnFueraUAM.style.color = '#222';
-        }
-      } else {
-        if (tipoEvaluacionContainer) tipoEvaluacionContainer.style.display = '';
-        if (seleccionPisoContainer) seleccionPisoContainer.style.display = 'none';
-        if (alertaContainer) alertaContainer.style.display = '';
-        if (btnDentroUAM) {
-          btnDentroUAM.style.background = '#e0e0e0';
-          btnDentroUAM.style.color = '#222';
-        }
-        if (btnFueraUAM) {
-          btnFueraUAM.style.background = '#4682B4';
-          btnFueraUAM.style.color = '#fff';
-        }
-      }
-    }
-
-    if (btnDentroUAM) {
-      btnDentroUAM.onclick = function () {
-        ubicacionActual = 'dentro';
-        actualizarUIUbicacion();
-        mostrarNotificacionTrofeo("Ubicación seleccionada: Dentro de la UAM-C");
-      };
-    }
-    if (btnFueraUAM) {
-      btnFueraUAM.onclick = function () {
-        ubicacionActual = 'fuera';
-        actualizarUIUbicacion();
-        mostrarNotificacionTrofeo("Ubicación seleccionada: Fuera de la UAM-C");
-      };
-    }
-
-    function abrirConfiguracionSimulador() {
-      document.getElementById("modalPiso").style.display = "flex";
-      setBotonesHabilitados(false);
-      actualizarUIUbicacion();
-    }
-
-    function cerrarMenuPausa() {
-      document.getElementById("modalPiso").style.display = "none";
-      setBotonesHabilitados(true);
-    }
-
-    function seleccionarPiso(piso) {
-      selectedFloor = piso;
-      localStorage.setItem('simuladorPiso', piso);
-      mostrarNotificacionTrofeo("Piso configurado: " + piso);
-      document.getElementById('pisoSeleccionadoValor').textContent = piso;
-      setBotonesHabilitados(true);
-
-      partePisoSeleccionada = null;
-      mostrarModalPartePiso(piso);
-    }
-
-    document.getElementById('boton_configSim').onclick = abrirConfiguracionSimulador;
-
-    function preguntarPiso() {
-      abrirConfiguracionSimulador();
-    }
-
-    let modoEvaluacion = 'simulacion';
-
-    const btnSimulacion = document.getElementById('modoSimulacionBtn');
-    const btnPrueba = document.getElementById('modoPruebaBtn');
-    const botonesPiso = document.getElementById('botonesPiso');
-    const modoIndicador = document.getElementById('modoIndicador');
-    if (btnSimulacion && btnPrueba) {
-      btnSimulacion.onclick = function () {
-        modoEvaluacion = 'simulacion';
-        btnSimulacion.style.background = '#4682B4';
-        btnSimulacion.style.color = '#fff';
-        btnPrueba.style.background = '#bfa000';
-        btnPrueba.style.color = '#222';
-        if (modoIndicador) modoIndicador.textContent = 'Modo: Simulación';
-        if (botonesPiso) {
-          Array.from(botonesPiso.getElementsByTagName('button')).forEach(btn => {
-            btn.disabled = false;
-            btn.style.opacity = '1';
-            btn.style.pointerEvents = 'auto';
-          });
-        }
-        mostrarNotificacionTrofeo("¡Modo de Entrenamiento activado!, selecciona tu configuracion personal.");
-        actualizarBotonAlertaPorModo();
-      };
-      btnPrueba.onclick = function () {
-        modoEvaluacion = 'prueba';
-        btnPrueba.style.background = '#4682B4';
-        btnPrueba.style.color = '#fff';
-        btnSimulacion.style.background = '#bfa000';
-        btnSimulacion.style.color = '#222';
-        if (modoIndicador) modoIndicador.textContent = 'Modo: Prueba';
-        if (botonesPiso) {
-          Array.from(botonesPiso.getElementsByTagName('button')).forEach(btn => {
-            btn.disabled = true;
-            btn.style.opacity = '0.5';
-            btn.style.pointerEvents = 'none';
-          });
-        }
-        mostrarNotificacionTrofeo("¡Modo de Prueba activado! Piso, intensidad y tiempo serán aleatorios.");
-        actualizarBotonAlertaPorModo();
-      };
-    }
-
-    const botonIniciar = document.getElementById('botonIniciar');
-    botonIniciar.onclick = function () {
-      if (modoEvaluacion === 'prueba') {
-        const pisos = ['B1', 'B2', 'B3', '4', '5', '6', '7', '8', 'G'];
-        const pisoAleatorio = pisos[Math.floor(Math.random() * pisos.length)];
-        selectedFloor = pisoAleatorio;
-        pisoPrueba = pisoAleatorio;
-        localStorage.setItem('simuladorPiso', pisoAleatorio);
-
-        indiceMercalliActual = Math.floor(Math.random() * nivelesMercalli.length);
-        const nuevoNivel = nivelesMercalli[indiceMercalliActual];
-        intensidad = nuevoNivel.richterMin;
-        mercalliPrueba = nuevoNivel.etiqueta;
-        richterPrueba = `${nuevoNivel.richterMin.toFixed(1)} - ${nuevoNivel.richterMax.toFixed(1)}`;
-
-        document.getElementById('pisoSeleccionadoValor').textContent = "?";
-        document.getElementById('mercalli').textContent = "Intensidad: ?";
-        document.getElementById('intensidad').textContent = "Mercalli: ?";
-
-
-        const tiempos = [30, 45, 60];
-        const tiempoAleatorio = tiempos[Math.floor(Math.random() * tiempos.length)];
-        mostrarNotificacionTrofeo('¡Modo Prueba! Piso, tiempo e intensidad aleatorios. Prepárate...');
-        setTimeout(function () {
-          seleccionarTiempoVR(tiempoAleatorio);
-          document.getElementById('modalVR').style.display = 'none';
-        }, 2000);
-      } else {
-        if (!selectedFloor) {
-          mostrarMensajeSimulador('Primero configura el simulador seleccionando el piso.');
-          return;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimUAM: Señaletica</title>
+    <link rel="icon" href="./../../images/ico/logo_azul.ico" type="image/x-icon">
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #faf9fb;
+            color: #222;
         }
 
-        mostrarMapaPiso(selectedFloor);
-        preguntarVRTiempo();
-      }
-    };
-
-    function preguntarVRTiempo() {
-      document.getElementById("modalVR").style.display = "flex";
-      document.getElementById("botonesVR").style.display = "block";
-      document.getElementById("contadorVR").textContent = "Tiempo restante: 0 seg.";
-    }
-
-    const distractores = [
-      "Te vas a reunir con un profesor en su cubiculo",
-      "Vas a saludar a un amigo en el pasillo",
-      "Estas preparando un cafe en la oficina",
-      "Recibes una llamada importante en tu celular",
-      "Te encuentras revisando tus correos",
-      "Estas buscando un documento en tu mochila.",
-      "Te detienes a observar un cuadro en la pared",
-      "Te encuentras platicando con un amigo",
-      "Estas organizando tus papeles en el escritorio",
-      "Te distraes viendo por la ventana",
-      "Estas leyendo un aviso en el pizarron",
-      "Te detienes a tomar agua en el bebedero",
-      "Estas acomodando tu silla",
-      "Te encuentras recogiendo algo que se cayo",
-      "Estas revisando tu cuaderno",
-      "Te detienes a escuchar una conversacion cercana",
-      "Estas poniendote tu mochila",
-      "Te encuentras esperando el elevador",
-      "Estas revisando mensajes en tu telefono",
-      "Te detienes a ver el reloj",
-      "Estas comiendo un sandwich",
-      "Estas en el agora tomando un descanso",
-      "Estas en la biblioteca buscando un libro",
-      "Estas en barra fria comprando un cafe",
-      "Estas formado en la fila del comedor",
-      "Estas en una conferencia en el aula magna",
-    ];
-
-    function mostrarModalDistractor(mensaje, duracion, callback) {
-      const modal = document.getElementById('modalDistractor');
-      document.getElementById('distractorTexto').textContent = mensaje;
-      modal.style.display = 'flex';
-      setTimeout(() => {
-        modal.style.display = 'none';
-        if (typeof callback === 'function') callback();
-      }, duracion);
-    }
-
-    function iniciarDistractorUnicoAntesSimulacion(tiempoTotal, callback) {
-      const idx = Math.floor(Math.random() * distractores.length);
-      const mensaje = distractores[idx];
-      mostrarModalDistractor(mensaje, tiempoTotal * 1000, callback);
-    }
-
-    function seleccionarTiempoVR(tiempoSeleccionado) {
-      document.getElementById("botonesVR").style.display = "none";
-
-      let timeLeft = tiempoSeleccionado;
-      document.getElementById("contadorVR").textContent = "Tiempo restante: " + timeLeft + " seg.";
-
-      let vrInterval = setInterval(function () {
-        timeLeft--;
-        if (timeLeft <= 0) {
-          document.getElementById("contadorVR").textContent = "Tiempo restante: 0 seg.";
-          playFinishSound();
-          clearInterval(vrInterval);
-          document.getElementById("modalVR").style.display = "none";
-          if (modoEvaluacion === 'simulacion' && alertaActiva) {
-            const idx = Math.floor(Math.random() * distractores.length);
-            const mensaje = distractores[idx];
-            const tiemposDistractor = [30, 45, 60];
-            const tiempoDistractor = tiemposDistractor[Math.floor(Math.random() * tiemposDistractor.length)];
-            mostrarModalDistractor(mensaje, tiempoDistractor * 1000, function () {
-              iniciarSimulacionConAlerta();
-            });
-          } else {
-            iniciarSimulacionConAlerta();
-          }
-        } else {
-          document.getElementById("contadorVR").textContent = "Tiempo restante: " + timeLeft + " seg.";
-
-          if (timeLeft > 10) {
-            if (timeLeft % 10 === 0) {
-              playSfxTimer();
-            }
-          } else {
-            if (timeLeft % 2 === 0) {
-              playSfxTimer();
-            }
-          }
-        }
-      }, 1000);
-    }
-
-    function playSfxTimer() {
-      if (modoEvaluacion === 'prueba') return;
-      var sfx = document.getElementById("sfxTimer");
-      if (sfx) {
-        sfx.play();
-      }
-    }
-
-    function playFinishSound() {
-      var finishSound = document.getElementById("sfxFinish");
-      if (finishSound) {
-        finishSound.play();
-      }
-    }
-
-    function finalizarEvacuacion() {
-      const horaFin = new Date().getTime();
-      const tiempoReaccion = (horaFin - horaInicio) / 1000;
-      const mensaje = "¡Sismo terminado! Tu tiempo de reacción fue de " + tiempoReaccion.toFixed(3) + " s.";
-
-      mostrarNotificacionTrofeo(mensaje);
-
-      document.getElementById('mensaje').textContent = '';
-      document.getElementById('modalMensajeSimulador').style.display = 'none';
-      document.getElementById('sonidoSismo').pause();
-      document.getElementById('sonidoSismo').currentTime = 0;
-      clearInterval(intervaloCronometro);
-      clearInterval(intervaloSacudida);
-      mostrarGifCronometro(false);
-      fadeOut(document.getElementById('botonDetener'));
-      fadeIn(document.getElementById('botonIniciar'), "inline-block");
-
-      if (alertaImg) {
-        alertaImg.src = "images/alerta.png";
-        alertaImg.alt = alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado";
-      }
-      if (alertaImgIzq) {
-        alertaImgIzq.src = "images/alerta.png";
-        alertaImgIzq.alt = alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado";
-      }
-      if (alertaImgDer) {
-        alertaImgDer.src = "images/alerta.png";
-        alertaImgDer.alt = alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado";
-      }
-
-      qrScanEnabled = false;
-      document.getElementById('botonEscanearQR').style.display = 'none';
-      cerrarModalQRScan();
-
-      var sfxFinSimulacion = document.getElementById("sfxFinSimulacion");
-      if (sfxFinSimulacion) {
-        sfxFinSimulacion.currentTime = 0;
-        sfxFinSimulacion.play();
-      }
-    }
-
-    function actualizarCronometro() {
-      const tiempoActual = new Date().getTime();
-      const tiempoTranscurrido = (tiempoActual - horaInicio) / 1000;
-      document.getElementById('textoCronometro').textContent = tiempoTranscurrido.toFixed(3) + " segundos";
-      const cronometroEl = document.getElementById('cronometro');
-      if (tiempoTranscurrido >= 40) {
-        cronometroEl.style.backgroundColor = "rgba(255, 0, 0, 0.8)"; // Rojo
-      } else if (tiempoTranscurrido >= 20) {
-        cronometroEl.style.backgroundColor = "rgba(255, 215, 0, 0.8)"; // Amarillo
-      } else {
-        cronometroEl.style.backgroundColor = "rgba(34, 139, 34, 0.8)"; // Verde
-      }
-      cronometroEl.style.color = "#ffffff";
-    }
-
-    function ajustarIntensidad() {
-      intensidad = (Math.round((intensidad + 0.1) * 10) / 10) % 10;
-      document.getElementById('intensidad').textContent = "Intensidad: " + intensidad.toFixed(1);
-      document.getElementById('mercalli').textContent = "Intensidad: " + escalaMercalli(intensidad) + " ";
-    }
-
-    function actualizarIntensidadTexto() {
-      const nivel = nivelesMercalli[indiceMercalliActual];
-      document.getElementById('intensidad').textContent = `Escala: ${nivel.richterMin.toFixed(1)} - ${nivel.richterMax.toFixed(1)}`;
-    }
-
-    function siguienteMercalli() {
-      indiceMercalliActual = (indiceMercalliActual + 1) % nivelesMercalli.length;
-      const nuevoNivel = nivelesMercalli[indiceMercalliActual];
-      intensidad = nuevoNivel.richterMin;
-      document.getElementById('mercalli').textContent = "Intensidad: " + nuevoNivel.etiqueta;
-      actualizarIntensidadTexto();
-    }
-
-    function iniciarSacudida() {
-      intervaloSacudida = setInterval(() => {
-        const nivelIntensidad = intensidad * 10;
-        const x = Math.random() * nivelIntensidad - nivelIntensidad / 2;
-        const y = Math.random() * nivelIntensidad - nivelIntensidad / 2;
-        document.getElementById('video').style.transform = `translate(${x}px, ${y}px) rotate(${rotacionActual}deg)`;
-      }, 50);
-    }
-
-    const tutorialSteps = [
-      {
-        title: "Bienvenido al Simulador de Sismos: SimUAM",
-        content: "En este recorrido te mostraremos la función de cada parte del simulador. Presiona 'Siguiente' para comenzar.",
-        bgColor: "#FFFFFF",
-        textColor: "#000000"
-      },
-      {
-        title: "Botón *Iniciar Simulación*",
-        content: "Este botón inicia la simulación. Se activa el sonido, el cronómetro y el movimiento del video.",
-        bgColor: "rgba(30, 144, 255, 0.8)",
-        textColor: "#FFFFFF"
-      },
-      {
-        title: "Cronómetro (Botón de Tiempo)",
-        content: "Muestra el tiempo transcurrido. Se mantiene verde (<20 s), se vuelve amarillo (20-40 s) y rojo (≥40 s).",
-        bgColor: "rgba(34, 139, 34, 0.8)",
-        textColor: "#FFFFFF"
-      },
-      {
-        title: "Escala de Mercalli e Intensidad",
-        content: "Estos botones ajustan la magnitud del sismo. 'Intensidad' incrementa el valor y 'Escala de Mercalli' lo traduce.",
-        bgColor: "rgba(138, 43, 226, 0.8)",
-        textColor: "#FFFFFF"
-      },
-      {
-        title: "Botón *Finalizar Simulacion*",
-        content: "Al finalizar, detienes el sonido, el cronómetro y el movimiento del video, mostrando tu tiempo de reacción.",
-        bgColor: "rgba(255, 69, 0, 0.8)",
-        textColor: "#FFFFFF"
-      },
-      {
-        title: "¡Listo para comenzar!",
-        content: "Ahora conoce cada parte del simulador. Disfruta la experiencia y mantente alerta.",
-        bgColor: "#FFFFFF",
-        textColor: "#000000"
-      }
-    ];
-    let currentStep = 0;
-    function showTutorialStep() {
-      const step = tutorialSteps[currentStep];
-      document.getElementById("tutorialTitle").innerText = step.title;
-      document.getElementById("tutorialContent").innerText = step.content;
-      document.getElementById("tutorialModalContent").style.backgroundColor = step.bgColor;
-      document.getElementById("tutorialModalContent").style.color = step.textColor;
-      document.getElementById("tutorialButton").innerText = (currentStep === tutorialSteps.length - 1) ? "Comenzar" : "Siguiente";
-
-      if (currentStep === 0) {
-        document.getElementById("tutorialPrevButton").style.display = "none";
-      } else {
-        document.getElementById("tutorialPrevButton").style.display = "inline-block";
-      }
-      setBotonesHabilitados(false);
-    }
-    function nextTutorialStep() {
-      currentStep++;
-      if (currentStep >= tutorialSteps.length) {
-        document.getElementById("modalTutorial").style.display = "none";
-        setBotonesHabilitados(true);
-      } else {
-        showTutorialStep();
-      }
-    }
-    function prevTutorialStep() {
-      if (currentStep > 0) {
-        currentStep--;
-        showTutorialStep();
-      }
-    }
-    function cerrarTutorial() {
-      document.getElementById("modalTutorial").style.display = "none";
-      setBotonesHabilitados(true);
-    }
-
-    function setBotonesHabilitados(habilitado) {
-      document.getElementById('botonIniciar').disabled = !habilitado;
-      document.getElementById('botonDetener').disabled = !habilitado;
-      document.getElementById('intensidad').disabled = !habilitado;
-      document.getElementById('mercalli').disabled = !habilitado;
-      document.getElementById('verRecorrido').disabled = !habilitado;
-
-      const botones = ['botonIniciar', 'botonDetener', 'intensidad', 'mercalli', 'verRecorrido'];
-      botones.forEach(id => {
-        const btn = document.getElementById(id);
-        if (btn) {
-          if (habilitado) {
-            btn.style.opacity = '1';
-            btn.style.pointerEvents = 'auto';
-          } else {
-            btn.style.opacity = '0.5';
-            btn.style.pointerEvents = 'none';
-          }
-        }
-      });
-    }
-
-    function mostrarMapaPiso(piso) {
-      const cont = document.getElementById('mapaPisoContainer');
-      const img = document.getElementById('mapaPisoImg');
-      if (!piso) {
-        cont.style.display = 'none';
-        img.src = '';
-        return;
-      }
-
-      if (partePisoSeleccionada) {
-        img.src = 'mapas/png/' + piso + '_' + partePisoSeleccionada + '.png';
-        img.alt = 'Mapa de ' + piso + ' ' + partePisoSeleccionada;
-        cont.style.display = 'block';
-        return;
-      }
-
-      if (typeof ubicacionActual !== 'undefined' && ubicacionActual === 'fuera') {
-        img.src = 'mapas/png/prueba.png';
-        img.alt = 'Mapa fuera de la UAM';
-      } else if (typeof modoEvaluacion !== 'undefined' && modoEvaluacion === 'prueba') {
-        img.src = 'mapas/png/prueba.png';
-        img.alt = 'Mapa del modo prueba';
-      } else {
-        const nombreArchivo = piso + '.png';
-        img.src = 'mapas/png/' + nombreArchivo;
-        img.alt = 'Mapa del piso ' + piso;
-      }
-      cont.style.display = 'block';
-    }
-
-    let alertaActiva = false;
-
-    const alertaToggleBtn = document.getElementById('alertaToggleBtn');
-    const alertaImg = document.getElementById('alertaImg');
-    const alertaImgIzq = document.getElementById('alertaImgIzq');
-    const alertaImgDer = document.getElementById('alertaImgDer');
-
-    if (alertaToggleBtn) {
-      alertaToggleBtn.onclick = function () {
-        alertaActiva = !alertaActiva;
-        actualizarEstadoAlerta();
-      };
-    }
-
-    function actualizarEstadoAlerta() {
-      if (alertaToggleBtn) {
-        alertaToggleBtn.textContent = alertaActiva ? "Activada" : "Desactivada";
-        alertaToggleBtn.style.background = alertaActiva ? "#bfa000" : "#e0e0e0";
-        alertaToggleBtn.style.color = alertaActiva ? "#fff" : "#222";
-
-        mostrarNotificacionTrofeo(alertaActiva ? "Alertamiento activado" : "Alertamiento desactivado");
-      }
-
-      const simulacionActiva = typeof intervaloCronometro !== 'undefined' && intervaloCronometro;
-      if (alertaImgIzq) {
-        if (alertaActiva && simulacionActiva) {
-          alertaImgIzq.src = "images/alerta.gif";
-          alertaImgIzq.alt = "Alerta activa";
-        } else {
-          alertaImgIzq.src = "images/alerta.png";
-          alertaImgIzq.alt = alertaActiva ? "Alerta activa" : "Alerta desactivada";
-        }
-      }
-      if (alertaImgDer) {
-        if (alertaActiva && simulacionActiva) {
-          alertaImgDer.src = "images/alerta.gif";
-          alertaImgDer.alt = "Alerta activa";
-        } else {
-          alertaImgDer.src = "images/alerta.png";
-          alertaImgDer.alt = alertaActiva ? "Alerta activa" : "Alerta desactivada";
-        }
-      }
-      if (alertaImg) {
-        if (alertaActiva && simulacionActiva) {
-          alertaImg.src = "images/alerta.gif";
-          alertaImg.alt = "Alerta activa";
-        } else {
-          alertaImg.src = "images/alerta.png";
-          alertaImg.alt = alertaActiva ? "Alerta activa" : "Alerta desactivada";
-        }
-      }
-    }
-
-    function actualizarBotonAlertaPorModo() {
-      if (typeof modoEvaluacion !== 'undefined' && modoEvaluacion === 'prueba') {
-        alertaToggleBtn.disabled = true;
-        alertaToggleBtn.style.opacity = '0.5';
-        alertaToggleBtn.style.pointerEvents = 'none';
-      } else {
-        alertaToggleBtn.disabled = false;
-        alertaToggleBtn.style.opacity = '1';
-        alertaToggleBtn.style.pointerEvents = 'auto';
-      }
-    }
-
-    if (btnSimulacion && btnPrueba) {
-      btnSimulacion.onclick = function () {
-        modoEvaluacion = 'simulacion';
-        btnSimulacion.style.background = '#4682B4';
-        btnSimulacion.style.color = '#fff';
-        btnPrueba.style.background = '#bfa000';
-        btnPrueba.style.color = '#222';
-        if (modoIndicador) modoIndicador.textContent = 'Modo: Entrenamiento';
-        if (botonesPiso) {
-          Array.from(botonesPiso.getElementsByTagName('button')).forEach(btn => {
-            btn.disabled = false;
-            btn.style.opacity = '1';
-            btn.style.pointerEvents = 'auto';
-          });
-        }
-        mostrarNotificacionTrofeo("¡Modo de Entrenamiento activado!, selecciona tu configuracion personal.");
-        actualizarBotonAlertaPorModo();
-      };
-      btnPrueba.onclick = function () {
-        modoEvaluacion = 'prueba';
-        btnPrueba.style.background = '#4682B4';
-        btnPrueba.style.color = '#fff';
-        btnSimulacion.style.background = '#bfa000';
-        btnSimulacion.style.color = '#222';
-        if (modoIndicador) modoIndicador.textContent = 'Modo: Prueba';
-        if (botonesPiso) {
-          Array.from(botonesPiso.getElementsByTagName('button')).forEach(btn => {
-            btn.disabled = true;
-            btn.style.opacity = '0.5';
-            btn.style.pointerEvents = 'none';
-          });
-        }
-        mostrarNotificacionTrofeo("¡Modo de Prueba activado! Piso, intensidad y tiempo serán aleatorios.");
-        actualizarBotonAlertaPorModo();
-      };
-    }
-
-    window.onload = async function () {
-      selectedFloor = "B1";
-      localStorage.setItem('simuladorPiso', "B1");
-      document.getElementById('pisoSeleccionadoValor').textContent = "B1";
-      showTutorialStep();
-      mostrarGifCronometro(false);
-      actualizarIntensidadTexto();
-      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Entrenamiento');
-      mostrarMapaPiso(selectedFloor);
-
-      alertaActiva = false;
-      actualizarEstadoAlerta();
-      actualizarBotonAlertaPorModo();
-      await inicializarCamara();
-    };
-
-    let camaraActual = 'environment';
-    let dispositivosVideo = [];
-    let streamActual = null;
-
-    async function obtenerDispositivosVideo() {
-      try {
-        const dispositivos = await navigator.mediaDevices.enumerateDevices();
-        dispositivosVideo = dispositivos.filter(d => d.kind === 'videoinput');
-      } catch (e) {
-        dispositivosVideo = [];
-      }
-    }
-
-
-    async function cambiarCamara(nuevaCamara) {
-      await obtenerDispositivosVideo();
-      if (streamActual) {
-        streamActual.getTracks().forEach(track => track.stop());
-        streamActual = null;
-      }
-      try {
-        let constraints = { video: { facingMode: { exact: nuevaCamara } } };
-        let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (e) {
-          constraints = { video: { facingMode: nuevaCamara } };
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        }
-        streamActual = stream;
-        video.srcObject = stream;
-        video.style.transform = `rotate(${rotacionActual}deg)`;
-        mostrarNotificacionTrofeo(
-          nuevaCamara === 'user' ? "Cámara frontal activada." : "Cámara trasera activada."
-        );
-      } catch (e) {
-        mostrarNotificacionTrofeo("No se pudo cambiar la cámara.");
-      }
-    }
-
-    async function inicializarCamara() {
-      const videoElem = document.getElementById('video');
-      const videoLeft = document.getElementById('videoLeft');
-      const videoRight = document.getElementById('videoRight');
-      const botonCamara = document.getElementById('toggleCamaraBtn');
-
-      function esperar(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-      }
-
-      const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-      try {
-        let stream;
-
-        if (esMovil) {
-          try {
-            stream = await navigator.mediaDevices.getUserMedia({
-              video: { facingMode: { exact: "environment" } }
-            });
-            mostrarNotificacionTrofeo("Cámara trasera abierta (móvil)");
-          } catch (err) {
-            console.warn("No se pudo abrir cámara trasera (móvil), usando predeterminada", err);
-            stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            mostrarNotificacionTrofeo("Usando cámara predeterminada (móvil)");
-          }
-        } else {
-          await navigator.mediaDevices.getUserMedia({ video: true });
-          await esperar(500);
-
-          const dispositivos = await navigator.mediaDevices.enumerateDevices();
-          const camaras = dispositivos.filter(d => d.kind === 'videoinput');
-          const camaraTrasera = camaras.find(d => /back|rear|environment/i.test(d.label));
-
-          if (camaraTrasera) {
-            try {
-              stream = await navigator.mediaDevices.getUserMedia({
-                video: { deviceId: { exact: camaraTrasera.deviceId } }
-              });
-              mostrarNotificacionTrofeo("Cámara trasera abierta: " + camaraTrasera.label);
-            } catch (err) {
-              console.warn("No se pudo abrir cámara trasera (PC), usando predeterminada", err);
-              stream = await navigator.mediaDevices.getUserMedia({ video: true });
-              mostrarNotificacionTrofeo("Usando cámara predeterminada (PC)");
-            }
-          } else {
-            stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            mostrarNotificacionTrofeo("Usando cámara predeterminada (no se detectó trasera)");
-          }
+        .container {
+            max-width: 600px;
+            margin: 40px auto 0 auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 24px rgba(140, 0, 255, 0.08), 0 1.5px 6px rgba(0, 0, 0, 0.04);
+            padding: 32px 36px 24px 36px;
+            position: relative;
+            min-height: 500px;
         }
 
-        // Asignar el mismo stream a todos los videos
-        if (videoElem) videoElem.srcObject = stream;
-        if (videoLeft) videoLeft.srcObject = stream;
-        if (videoRight) videoRight.srcObject = stream;
-
-        // Ajustar estilo para VR (recorte lado izquierdo y derecho)
-        if (videoLeft) {
-          videoLeft.style.objectFit = "cover";
-          videoLeft.style.objectPosition = "left center";
-        }
-        if (videoRight) {
-          videoRight.style.objectFit = "cover";
-          videoRight.style.objectPosition = "right center";
-        }
-
-        if (botonCamara) {
-          botonCamara.style.display = 'none';
-        }
-
-      } catch (err) {
-        document.getElementById('mensaje').textContent =
-          'No fue posible acceder a la cámara. Verifica permisos.';
-        console.error("Error general al abrir cámara:", err);
-      }
-    }
-
-
-
-    window.onload = async function () {
-      selectedFloor = "B1";
-      localStorage.setItem('simuladorPiso', "B1");
-      document.getElementById('pisoSeleccionadoValor').textContent = "B1";
-      showTutorialStep();
-      mostrarGifCronometro(false);
-      actualizarIntensidadTexto();
-      if (modoIndicador) modoIndicador.textContent = 'Modo: ' + (modoEvaluacion === 'prueba' ? 'Prueba' : 'Entrenamiento');
-      mostrarMapaPiso(selectedFloor);
-
-      alertaActiva = false;
-      actualizarEstadoAlerta();
-      actualizarBotonAlertaPorModo();
-      await inicializarCamara();
-    };
-
-    const coordenadasPorPiso = {
-      B1: [
-        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 136, 158] },
-        { parte: 'SC', nombre: 'Superior Central', coords: [138, 0, 273, 159] },
-        { parte: 'SD', nombre: 'Superior Derecha', coords: [276, 1, 400, 159] },
-        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 158, 137, 317] },
-        { parte: 'CC', nombre: 'Central Central', coords: [138, 159, 273, 316] },
-        { parte: 'CD', nombre: 'Central Derecha', coords: [274, 160, 400, 315] },
-        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 318, 135, 464] },
-        { parte: 'IC', nombre: 'Inferior Central', coords: [136, 317, 273, 465] },
-        { parte: 'ID', nombre: 'Inferior Derecha', coords: [274, 316, 400, 464] }
-      ],
-      B2: [
-        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 142, 125] },
-        { parte: 'SC', nombre: 'Superior Central', coords: [143, 0, 264, 125] },
-        { parte: 'SD', nombre: 'Superior Derecha', coords: [265, 1, 395, 125] },
-        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 126, 142, 262] },
-        { parte: 'CC', nombre: 'Central Central', coords: [143, 126, 266, 261] },
-        { parte: 'CD', nombre: 'Central Derecha', coords: [265, 126, 396, 261] },
-        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 263, 142, 417] },
-        { parte: 'IC', nombre: 'Inferior Central', coords: [143, 262, 266, 417] },
-        { parte: 'ID', nombre: 'Inferior Derecha', coords: [266, 262, 395, 417] }
-      ],
-      B3: [
-        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 214, 236] },
-        { parte: 'SC', nombre: 'Superior Central', coords: [214, 2, 439, 235] },
-        { parte: 'SD', nombre: 'Superior Derecha', coords: [440, 0, 654, 206] },
-        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 236, 213, 476] },
-        { parte: 'CC', nombre: 'Central Central', coords: [213, 237, 436, 476] },
-        { parte: 'CD', nombre: 'Central Derecha', coords: [437, 237, 653, 476] },
-        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 477, 214, 690] },
-        { parte: 'IC', nombre: 'Inferior Central', coords: [215, 477, 435, 690] },
-        { parte: 'ID', nombre: 'Inferior Derecha', coords: [436, 475, 653, 689] }
-      ],
-      '4': [
-        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 141, 149] },
-        { parte: 'SC', nombre: 'Superior Central', coords: [142, 0, 285, 148] },
-        { parte: 'SD', nombre: 'Superior Derecha', coords: [286, 2, 426, 147] },
-        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 148, 139, 293] },
-        { parte: 'CC', nombre: 'Central Central', coords: [140, 148, 286, 292] },
-        { parte: 'CD', nombre: 'Central Derecha', coords: [286, 147, 428, 292] },
-        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 294, 143, 439] },
-        { parte: 'IC', nombre: 'Inferior Central', coords: [143, 293, 284, 440] },
-        { parte: 'ID', nombre: 'Inferior Derecha', coords: [284, 293, 428, 441] }
-        // se omitio el agora del mapa
-      ],
-      '5': [
-        { parte: 'SI', nombre: 'Superior Izquierda', coords: [1, 0, 257, 255] },
-        { parte: 'SC', nombre: 'Superior Central', coords: [258, 4, 499, 256] },
-        { parte: 'SD', nombre: 'Superior Derecha', coords: [499, 1, 738, 256] },
-        { parte: 'CI', nombre: 'Central Izquierda', coords: [1, 256, 248, 504] },
-        { parte: 'CC', nombre: 'Central Central', coords: [253, 257, 499, 505] },
-        { parte: 'CD', nombre: 'Central Derecha', coords: [500, 258, 737, 505] },
-        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 506, 253, 772] },
-        { parte: 'IC', nombre: 'Inferior Central', coords: [254, 507, 498, 772] },
-        { parte: 'ID', nombre: 'Inferior Derecha', coords: [498, 505, 738, 771] }
-      ],
-      '6': [
-        { parte: 'SI', nombre: 'Superior Izquierda', coords: [1, 2, 161, 166] },
-        { parte: 'SC', nombre: 'Superior Central', coords: [161, 2, 327, 166] },
-        { parte: 'SD', nombre: 'Superior Derecha', coords: [325, 1, 492, 165] },
-        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 167, 163, 326] },
-        { parte: 'CC', nombre: 'Central Central', coords: [164, 166, 325, 327] },
-        { parte: 'CD', nombre: 'Central Derecha', coords: [326, 166, 491, 326] },
-        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 327, 162, 497] },
-        { parte: 'IC', nombre: 'Inferior Central', coords: [172, 326, 328, 498] },
-        { parte: 'ID', nombre: 'Inferior Derecha', coords: [329, 326, 492, 498] }
-      ],
-      '7': [
-        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 221, 260] },
-        { parte: 'SC', nombre: 'Superior Central', coords: [223, 0, 456, 260] },
-        { parte: 'SD', nombre: 'Superior Derecha', coords: [458, 0, 673, 262] },
-        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 261, 223, 486] },
-        { parte: 'CC', nombre: 'Central Central', coords: [223, 261, 454, 485] },
-        { parte: 'CD', nombre: 'Central Derecha', coords: [456, 262, 676, 484] },
-        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 487, 222, 697] },
-        { parte: 'IC', nombre: 'Inferior Central', coords: [223, 486, 452, 701] },
-        { parte: 'ID', nombre: 'Inferior Derecha', coords: [453, 484, 674, 700] }
-      ],
-      '8': [
-        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 238, 260] },
-        { parte: 'SC', nombre: 'Superior Central', coords: [238, 0, 452, 259] },
-        { parte: 'SD', nombre: 'Superior Derecha', coords: [454, 49, 682, 260] },
-        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 260, 236, 480] },
-        { parte: 'CC', nombre: 'Central Central', coords: [237, 259, 453, 480] },
-        { parte: 'CD', nombre: 'Central Derecha', coords: [454, 261, 682, 479] },
-        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 482, 236, 722] },
-        { parte: 'IC', nombre: 'Inferior Central', coords: [237, 481, 453, 721] },
-        { parte: 'ID', nombre: 'Inferior Derecha', coords: [454, 479, 681, 722] }
-      ],
-      G: [
-        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 135, 145] },
-        { parte: 'SC', nombre: 'Superior Central', coords: [136, 0, 273, 145] },
-        { parte: 'SD', nombre: 'Superior Derecha', coords: [274, 0, 416, 146] },
-        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 146, 134, 280] },
-        { parte: 'CC', nombre: 'Central Central', coords: [134, 147, 274, 280] },
-        { parte: 'CD', nombre: 'Central Derecha', coords: [274, 147, 416, 280] },
-        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 281, 133, 427] },
-        { parte: 'IC', nombre: 'Inferior Central', coords: [134, 281, 275, 427] },
-        { parte: 'ID', nombre: 'Inferior Derecha', coords: [274, 281, 415, 427] }
-      ]
-    };
-
-    function mostrarModalPartePiso(piso) {
-      partePisoSeleccionada = null;
-      const modal = document.getElementById('modalPartePiso');
-      const img = document.getElementById('imagenPisoParte');
-      const resaltado = document.getElementById('resaltadoPartePiso');
-      if (modal && img) {
-        img.src = 'mapas/png/' + piso + '.png';
-        img.alt = 'Plano del piso ' + piso;
-        modal.style.display = 'flex';
-
-        const zonas = coordenadasPorPiso[piso] || [];
-        img.onmousemove = function (e) {
-          const rect = img.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          const w = rect.width;
-          const h = rect.height;
-          let zona = null;
-          for (const z of zonas) {
-            const [x1, y1, x2, y2] = z.coords;
-            const scaleX = w / img.naturalWidth;
-            const scaleY = h / img.naturalHeight;
-            const sx1 = x1 * scaleX;
-            const sy1 = y1 * scaleY;
-            const sx2 = x2 * scaleX;
-            const sy2 = y2 * scaleY;
-            if (x >= sx1 && x <= sx2 && y >= sy1 && y <= sy2) {
-              zona = z;
-              if (resaltado) {
-                resaltado.style.display = 'block';
-                resaltado.style.left = sx1 + 'px';
-                resaltado.style.top = sy1 + 'px';
-                resaltado.style.width = (sx2 - sx1) + 'px';
-                resaltado.style.height = (sy2 - sy1) + 'px';
-              }
-              break;
-            }
-          }
-          if (!zona && resaltado) {
-            resaltado.style.display = 'none';
-          }
-          const hover = document.getElementById('hoverPartePiso');
-          if (zona) {
-            hover.style.display = 'block';
-            hover.textContent = zona.nombre + ' (' + zona.parte + ')';
-            hover.style.left = (x + 10) + 'px';
-            hover.style.top = (y + 10) + 'px';
-          } else {
-            hover.style.display = 'none';
-          }
-        };
-        img.onmouseleave = function () {
-          const hover = document.getElementById('hoverPartePiso');
-          hover.style.display = 'none';
-          if (resaltado) resaltado.style.display = 'none';
-        };
-        img.onclick = function (e) {
-          const rect = img.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          const w = rect.width;
-          const h = rect.height;
-          let zona = null;
-          for (const z of zonas) {
-            const [x1, y1, x2, y2] = z.coords;
-            const scaleX = w / img.naturalWidth;
-            const scaleY = h / img.naturalHeight;
-            const sx1 = x1 * scaleX;
-            const sy1 = y1 * scaleY;
-            const sx2 = x2 * scaleX;
-            const sy2 = y2 * scaleY;
-            if (x >= sx1 && x <= sx2 && y >= sy1 && y <= sy2) {
-              zona = z;
-              break;
-            }
-          }
-          if (zona) {
-            seleccionarPartePiso(zona.parte);
-          }
-        };
-      }
-    }
-
-    function seleccionarPartePiso(parte) {
-      partePisoSeleccionada = parte;
-      cerrarModalPartePiso();
-      mostrarMapaPiso(selectedFloor);
-    }
-    function cerrarModalPartePiso() {
-      const modal = document.getElementById('modalPartePiso');
-      if (modal) modal.style.display = 'none';
-    }
-
-    let qrScanEnabled = false;
-    let qrSacudidaDetenida = false;
-    let qrScanner = null;
-
-    function detenerSacudidaPorQR() {
-      if (!qrSacudidaDetenida) {
-        clearInterval(intervaloSacudida);
-        document.getElementById('video').style.transform = `rotate(${rotacionActual}deg)`;
-        qrSacudidaDetenida = true;
-      }
-    }
-
-    function iniciarEscaneoQR() {
-      mostrarModalQRScan();
-    }
-
-
-    function mostrarModalQRScan() {
-      if (document.getElementById('modalQRScan')) return;
-      const modal = document.createElement('div');
-      modal.id = 'modalQRScan';
-      modal.style.position = 'fixed';
-      modal.style.top = '0';
-      modal.style.left = '0';
-      modal.style.right = '0';
-      modal.style.bottom = '0';
-      modal.style.background = 'transparent';
-      modal.style.zIndex = '4000';
-      modal.style.display = 'flex';
-      modal.style.justifyContent = 'center';
-      modal.style.alignItems = 'center';
-
-
-      modal.innerHTML = `
-        <video id="qrVideo"
-          style="
+        .slide {
+            display: none;
+            width: 100%;
+            min-height: 420px;
+            box-sizing: border-box;
+            text-align: center;
+            background-color: #fff;
             position: absolute;
             top: 0;
             left: 0;
-            width: 0vw;
-            height: 0vh;
-            object-fit: contain;
-            z-index: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease;
+            opacity: 0;
+            transform: scale(0.98);
+            transform-origin: center center;
+            border-radius: 10px;
+            padding: 0 10px;
+        }
+
+        .slide.active {
             display: block;
-          ">
-        </video>
-      `;
+            opacity: 1;
+            transform: scale(1);
+            position: relative;
+        }
 
-      document.body.appendChild(modal);
+        .slide img {
+            max-width: 80%;
+            height: auto;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(140, 0, 255, 0.08);
+            animation: fadeInUp 1s ease-out;
+            background: #f7f6fa;
+        }
 
-      iniciarQRScanner();
-    }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 40px, 0);
+            }
 
-    function cerrarModalQRScan() {
-      if (qrScanner) {
-        qrScanner.stop();
-        qrScanner = null;
-      }
-      const modal = document.getElementById('modalQRScan');
-      if (modal) modal.remove();
-    }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
 
-    function iniciarQRScanner() {
-      const videoElem = document.getElementById('qrVideo');
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        document.getElementById('qrScanMsg').textContent = 'No se puede acceder a la cámara.';
-        return;
-      }
-      navigator.mediaDevices
-        .getUserMedia({ video: { facingMode: 'environment' } })
-        .then(function (stream) {
-          videoElem.srcObject = stream;
-          videoElem.setAttribute('playsinline', true);
-          videoElem.play();
-          videoElem.style.transform = `rotate(${rotacionActual}deg)`;
-          qrScanner = { stop: () => { stream.getTracks().forEach(t => t.stop()); } };
-          escanearFrameQR(videoElem, stream);
-        })
-        .catch(function () {
-          document.getElementById('qrScanMsg').textContent =
-            'No se pudo acceder a la cámara.';
+        .slide h1,
+        .slide h2 {
+            color: rgb(55, 0, 255);
+            font-weight: 600;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .slide p {
+            animation: fadeIn 1s ease-in;
+            font-size: 1.05em;
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+        }
+
+        .nav-button {
+            background: none;
+            border: 1.5px solid rgb(55, 0, 255);
+            color: rgb(55, 0, 255);
+            padding: 8px 22px;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-button:hover {
+            background: rgb(55, 0, 255);
+            color: #fff;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 18px 8px 16px 8px;
+                min-height: 350px;
+            }
+
+            .slide img {
+                max-width: 98%;
+            }
+        }
+
+        /* Estilos para el modal del juego */
+        #gameModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(40, 0, 80, 0.18);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #gameModal > div {
+            background: #fff;
+            border-radius: 12px;
+            max-width: 420px;
+            margin: auto;
+            padding: 32px 24px;
+            box-shadow: 0 8px 32px rgba(55, 0, 255, 0.13);
+            position: relative;
+        }
+
+        #closeGameBtn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: #888;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="sym:.container">
+        <section class="slide active" id="slide1">
+            <h1>Señaletica</h1>
+            <img src="señaletica/360_logo.png" alt="Imagen de señalización">
+            <p>Explora la importancia de las señaleticas y su impacto en diversas áreas en la UAM Cuajimalpa.</p>
+        </section>
+
+        <section class="slide" id="slide2">
+            <h2>Señal de Extintores</h2>
+            <img src="señaletica/señal_extintor.jpg" alt="Conceptos básicos">
+            <p>Marcador que informa sobre la presencia de un extintor cercano.</p>
+        </section>
+
+        <section class="slide" id="slide3">
+            <h2>Extintores</h2>
+            <img src="señaletica/extintor.jpg" alt="Conceptos básicos">
+            <p>Ubicación de un extintor para combatir incendios de manera rápida.</p>
+        </section>
+
+        <section class="slide" id="slide4">
+            <h2>Zonas de Menor Riesgo</h2>
+            <img src="señaletica/zona_menor.jpg" alt="Conceptos básicos">
+            <p>Señal que delimita un área con menor riesgo o acceso restringido.</p>
+        </section>
+
+        <section class="slide" id="slide5">
+            <h2>En caso de incendio...</h2>
+            <img src="señaletica/caso_incendio.jpg" alt="Conceptos básicos">
+            <p>Kit de herramientas a utilizar en caso de incendio, contiene un extintor, y manguera para apagar el fuego.</p>
+        </section>
+
+        <section class="slide" id="slide6">
+            <h2>Ruta de Evacuacion</h2>
+            <img src="señaletica/ruta_evacuacion.jpg" alt="Conceptos básicos">
+            <p>Indica el camino seguro para evacuar en caso de emergencia.</p>
+        </section>
+
+        <section class="slide" id="slide7">
+            <h2>Espacio libre de humo de tabaco</h2>
+            <img src="señaletica/humo_tabaco.jpg" alt="Conceptos básicos">
+            <p>Restricción o advertencia sobre zonas donde está prohibido fumar.</p>
+        </section>
+
+        <section class="slide" id="slide8">
+            <h2>Plafones</h2>
+            <img src="señaletica/plafones.jpg" alt="Conceptos básicos">
+            <p>Los espacios de la UAM Cuajimalpa estan mayormente compuestos por plafones en los techos, estos no presentan un riesgo en caso de siniestro, sin embargo, es mejor prevenir un accidente en caso de caida de uno.</p>
+        </section>
+
+        <div class="nav-buttons">
+            <button class="nav-button" id="prevBtn">&larr; Anterior</button>
+            <button class="nav-button" id="nextBtn">Siguiente &rarr;</button>
+        </div>
+        <div style="text-align:center; margin-top: 20px;">
+            <a href="./../inicio/simulador.html"><button class="nav-button">Regresar</button></a>
+            <button class="nav-button" id="gameModeBtn" style="margin-left:10px;">Modo de Juego</button>
+        </div>
+    </div>
+
+    <!-- Juego -->
+    <div id="gameModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(40,0,80,0.18); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:12px; max-width:420px; margin:auto; padding:32px 24px; box-shadow:0 8px 32px rgba(55,0,255,0.13); position:relative;">
+            <button id="closeGameBtn" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:1.5em; color:#888; cursor:pointer;">&times;</button>
+            <div id="rouletteContainer" style="display:none; text-align:center;">
+                <h2 style="color:rgb(55,0,255);">¡Gira la ruleta para elegir el modo de juego!</h2>
+                <canvas id="rouletteCanvas" width="260" height="260" style="margin:20px auto; display:block;"></canvas>
+                <button class="nav-button" id="spinRouletteBtn">Girar Ruleta</button>
+                <div id="rouletteResult" style="margin-top:18px; font-size:1.1em; color:#222;"></div>
+            </div>
+            <div id="gameContent">
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            let currentIndex = 0;
+
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    if (i === index) {
+                        slide.classList.add('active');
+                    } else {
+                        slide.classList.remove('active');
+                    }
+                });
+            }
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % slides.length;
+                showSlide(currentIndex);
+            });
+
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                showSlide(currentIndex);
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    currentIndex = (currentIndex + 1) % slides.length;
+                    showSlide(currentIndex);
+                }
+                if (e.key === 'ArrowLeft') {
+                    currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                    showSlide(currentIndex);
+                }
+            });
         });
-    }
 
+        const modosJuego = [
+            { nombre: "Simulación", color: "#4682B4" },
+            { nombre: "Prueba", color: "#bfa000" },
+            { nombre: "Reto rápido", color: "#7c003e" }
+        ];
+        let modoJuegoSeleccionado = null;
 
-    function escanearFrameQR(videoElem, stream) {
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
+        function drawRoulette(angle = 0) {
+            const canvas = document.getElementById('rouletteCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const size = canvas.width;
+            const center = size / 2;
+            const radius = center - 10;
+            ctx.clearRect(0, 0, size, size);
 
-      function scan() {
-        if (!videoElem || videoElem.readyState !== videoElem.HAVE_ENOUGH_DATA) {
-          return requestAnimationFrame(scan);
+            const slice = 2 * Math.PI / modosJuego.length;
+            for (let i = 0; i < modosJuego.length; i++) {
+                ctx.beginPath();
+                ctx.moveTo(center, center);
+                ctx.arc(center, center, radius, angle + i * slice, angle + (i + 1) * slice);
+                ctx.closePath();
+                ctx.fillStyle = modosJuego[i].color;
+                ctx.fill();
+                ctx.save();
+                ctx.translate(center, center);
+                ctx.rotate(angle + (i + 0.5) * slice);
+                ctx.textAlign = "right";
+                ctx.font = "bold 18px Arial";
+                ctx.fillStyle = "#fff";
+                ctx.fillText(modosJuego[i].nombre, radius - 18, 8);
+                ctx.restore();
+            }
+
+            ctx.beginPath();
+            ctx.moveTo(center, center - radius + 4);
+            ctx.lineTo(center - 12, center - radius - 18);
+            ctx.lineTo(center + 12, center - radius - 18);
+            ctx.closePath();
+            ctx.fillStyle = "#222";
+            ctx.fill();
         }
-        canvas.width = videoElem.videoWidth;
-        canvas.height = videoElem.videoHeight;
-        context.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
 
-        let code = null;
-        try {
-          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-          code = window.jsQR(imageData.data, canvas.width, canvas.height);
-        } catch (e) { }
+        function spinRoulette() {
 
-        if (code && code.data) {
-          stream.getTracks().forEach(t => t.stop());
-          detenerSacudidaPorQR();
-          cerrarModalQRScan();
-          finalizarEvacuacion();
-          return;
+            const vueltas = 8 + Math.floor(Math.random() * 3);
+            let angle = 0;
+            let step = 0;
+            let spinning = true;
+            let lastFrame = null;
+            let selectedIdx = null;
+
+            const idxAleatorio = Math.floor(Math.random() * modosJuego.length);
+            const slice = 2 * Math.PI / modosJuego.length;
+            const targetAngle = vueltas * 2 * Math.PI + (modosJuego.length - idxAleatorio) * slice + slice / 2;
+
+            function animateRoulette(ts) {
+                if (!lastFrame) lastFrame = ts;
+                const delta = ts - lastFrame;
+                lastFrame = ts;
+                if (spinning) {
+
+                    angle += 0.12 + Math.max(0, 0.8 - step / 30);
+                    step++;
+                    drawRoulette(angle);
+
+                    if (angle >= targetAngle) {
+                        spinning = false;
+                        selectedIdx = idxAleatorio;
+                        modoJuegoSeleccionado = modosJuego[selectedIdx].nombre;
+                        drawRoulette(angle);
+                        document.getElementById('rouletteResult').innerHTML = `<b>Modo seleccionado: ${modoJuegoSeleccionado}</b>`;
+                        setTimeout(() => {
+                            document.getElementById('rouletteContainer').style.display = 'none';
+                            document.getElementById('gameContent').style.display = '';
+                            iniciarJuegoModoSeleccionado();
+                        }, 1200);
+                    } else {
+                        requestAnimationFrame(animateRoulette);
+                    }
+                }
+            }
+            document.getElementById('rouletteResult').innerHTML = '';
+            requestAnimationFrame(animateRoulette);
         }
-        if (document.getElementById('modalQRScan')) {
-          requestAnimationFrame(scan);
+
+        function mostrarRuleta() {
+            document.getElementById('gameContent').style.display = 'none';
+            document.getElementById('rouletteContainer').style.display = '';
+            drawRoulette();
+            document.getElementById('rouletteResult').innerHTML = '';
         }
-      }
 
-      scan();
-    }
+        document.getElementById('spinRouletteBtn').onclick = spinRoulette;
 
+        const preguntasSimulador = [
+            {
+                pregunta: "¿Qué color indica el cronómetro cuando el tiempo es mayor a 40 segundos en el simulador?",
+                opciones: [
+                    "Verde",
+                    "Amarillo",
+                    "Rojo",
+                    "Azul"
+                ],
+                respuesta: 2
+            },
+            {
+                pregunta: "¿Qué botón debes presionar para cambiar la intensidad del sismo en el simulador?",
+                opciones: [
+                    "Finalizar Ejercicio",
+                    "Intensidad",
+                    "Ver Recorrido",
+                    "Configuración"
+                ],
+                respuesta: 1
+            },
+            {
+                pregunta: "¿Qué sucede si seleccionas el modo 'Prueba' en el simulador?",
+                opciones: [
+                    "Puedes elegir piso e intensidad",
+                    "Todo es aleatorio: piso, intensidad y tiempo",
+                    "Solo puedes cambiar la cámara",
+                    "No puedes iniciar el simulador"
+                ],
+                respuesta: 1
+            },
+            {
+                pregunta: "¿Qué indica la escala de Mercalli en el simulador?",
+                opciones: [
+                    "El tiempo de evacuación",
+                    "La intensidad del sismo según daños observados",
+                    "El piso seleccionado",
+                    "El modo de juego"
+                ],
+                respuesta: 1
+            },
+            {
+                pregunta: "¿Qué debes hacer si ves la alerta activada (icono animado) en el simulador?",
+                opciones: [
+                    "Ignorarla",
+                    "Prepararte para evacuar",
+                    "Cambiar de piso",
+                    "Cerrar el simulador"
+                ],
+                respuesta: 1
+            }
+        ];
 
-    function iniciarTourTutorial() {
-      currentStep = 0;
-      document.getElementById("modalTutorial").style.display = "flex";
-      showTutorialStep();
-    }
+        const preguntasOriginales = [
+            {
+                pregunta: "¿Qué indica la señal con un extintor?",
+                opciones: [
+                    "Zona de fumar",
+                    "Ubicación de un extintor",
+                    "Salida de emergencia",
+                    "Área restringida"
+                ],
+                respuesta: 1
+            },
+            {
+                pregunta: "¿Qué representa la escala de Mercalli?",
+                opciones: [
+                    "Intensidad de un sismo según daños observados",
+                    "Cantidad de lluvia",
+                    "Temperatura ambiente",
+                    "Nivel de ruido"
+                ],
+                respuesta: 0
+            },
+            {
+                pregunta: "¿Qué debes hacer si ves la señal de 'Ruta de evacuación'?",
+                opciones: [
+                    "Ignorarla",
+                    "Seguir la ruta en caso de emergencia",
+                    "Cerrar la puerta",
+                    "Buscar un extintor"
+                ],
+                respuesta: 1
+            },
+            {
+                pregunta: "¿Qué significa una zona marcada como 'Espacio libre de humo de tabaco'?",
+                opciones: [
+                    "Se permite fumar",
+                    "No se permite fumar",
+                    "Zona de extintores",
+                    "Área de juegos"
+                ],
+                respuesta: 1
+            }
+        ];
 
-    document.getElementById('generaQRBtn').onclick = function () {
-      const qr = new QRious({
-        element: document.getElementById('qrFinalizar'),
-        value: '¡Ejercicio terminado!',
-        size: 200
+        let preguntas = [];
+        function mezclarPreguntas() {
+            preguntas = [...preguntasOriginales, ...preguntasSimulador]
+                .map(p => ({ sort: Math.random(), value: p }))
+                .sort((a, b) => a.sort - b.sort)
+                .map(p => p.value);
+        }
 
-      });
-      mostrarNotificacionTrofeo("Coloca el QR en tu punto de reunión.");
-    };
+        let preguntaActual = 0;
+        let respuestasCorrectas = 0;
 
-    document.getElementById('boton_manualUsuario').onclick = function () {
-      document.getElementById('modalManualUsuario').style.display = 'flex';
-      setBotonesHabilitados(false);
-      inicializarManualUsuarioPDF();
-    };
+        function mostrarPregunta() {
+            if (preguntaActual < preguntas.length) {
+                const p = preguntas[preguntaActual];
+                let html = `<h2 style="color:rgb(55,0,255);">${p.pregunta}</h2><form id="quizForm">`;
+                p.opciones.forEach((op, idx) => {
+                    html += `<div style="margin:8px 0;">
+                        <label>
+                            <input type="radio" name="opcion" value="${idx}" required>
+                            ${op}
+                        </label>
+                    </div>`;
+                });
+                html += `<button type="submit" class="nav-button" style="margin-top:16px;">Responder</button></form>`;
+                document.getElementById('gameContent').innerHTML = html;
+                document.getElementById('quizForm').onsubmit = function(e) {
+                    e.preventDefault();
+                    const seleccion = parseInt(document.querySelector('input[name="opcion"]:checked').value);
+                    if (seleccion === p.respuesta) respuestasCorrectas++;
+                    preguntaActual++;
+                    mostrarPregunta();
+                };
+            } else {
+                mostrarResultado();
+            }
+        }
 
-    document.getElementById('cerrarManualUsuarioBtn').onclick = function () {
-      document.getElementById('modalManualUsuario').style.display = 'none';
-      setBotonesHabilitados(true);
+        function mostrarResultado() {
+            let html = `<h2 style="color:rgb(55,0,255);">¡Juego terminado!</h2>
+                <p>Modo jugado: <b>${modoJuegoSeleccionado || "No seleccionado"}</b></p>
+                <p>Respuestas correctas: <b>${respuestasCorrectas}</b> de <b>${preguntas.length}</b></p>
+                <button class="nav-button" id="retryBtn">Intentar de nuevo</button>`;
+            document.getElementById('gameContent').innerHTML = html;
+            document.getElementById('retryBtn').onclick = () => {
+                preguntaActual = 0;
+                respuestasCorrectas = 0;
+                mostrarRuleta();
+            };
+        }
 
-      document.getElementById('lienzo-izquierdo').getContext('2d').clearRect(0, 0, document.getElementById('lienzo-izquierdo').width, document.getElementById('lienzo-izquierdo').height);
-      document.getElementById('lienzo-derecho').getContext('2d').clearRect(0, 0, document.getElementById('lienzo-derecho').width, document.getElementById('lienzo-derecho').height);
-    };
+        function iniciarJuegoModoSeleccionado() {
+            preguntaActual = 0;
+            respuestasCorrectas = 0;
+            mezclarPreguntas();
+            mostrarPregunta();
+        }
 
+        document.getElementById('gameModeBtn').onclick = () => {
+            document.getElementById('gameModal').style.display = 'flex';
+            mostrarRuleta();
+        };
+        document.getElementById('closeGameBtn').onclick = () => {
+            document.getElementById('gameModal').style.display = 'none';
+        };
 
-    let docPDF = null;
-    let parActual = 0;
-    let parMaximo = 0;
-    let escala = 1.2;
-
-    function inicializarManualUsuarioPDF() {
-      if (docPDF) {
-        actualizarVistaManualUsuario();
-        actualizarBotonesManualUsuario();
-        return;
-      }
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.worker.min.js';
-      pdfjsLib.getDocument('SimUAM - Manual de Usuario.pdf')
-        .promise
-        .then(async documento => {
-          docPDF = documento;
-          parMaximo = Math.ceil((docPDF.numPages + 1) / 2) - 1;
-          const primera = await docPDF.getPage(1);
-          const vp = primera.getViewport({ scale: escala });
-          const anchoPag = vp.width;
-          const altoPag = vp.height;
-
-          ['lienzo-izquierdo', 'lienzo-derecho'].forEach(id => {
-            const canvas = document.getElementById(id);
-            canvas.width = anchoPag;
-            canvas.height = altoPag;
-            canvas.style.width = "100%";
-            canvas.style.height = "auto";
-          });
-          actualizarVistaManualUsuario();
-          actualizarBotonesManualUsuario();
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('gameModal').style.display = 'none';
+            }
         });
-
-      document.getElementById('boton-siguiente').onclick = function () {
-        if (parActual < parMaximo) {
-          parActual++;
-          const sonidoPagina = document.getElementById('sonido-pagina');
-          sonidoPagina.currentTime = 0;
-          sonidoPagina.play();
-          actualizarVistaManualUsuario();
-          actualizarBotonesManualUsuario();
-        }
-      };
-      document.getElementById('boton-anterior').onclick = function () {
-        if (parActual > 0) {
-          parActual--;
-          const sonidoPagina = document.getElementById('sonido-pagina');
-          sonidoPagina.currentTime = 0;
-          sonidoPagina.play();
-          actualizarVistaManualUsuario();
-          actualizarBotonesManualUsuario();
-        }
-      };
-    }
-
-    function actualizarVistaManualUsuario() {
-      const lienzoIzquierdo = document.getElementById('lienzo-izquierdo');
-      const lienzoDerecho = document.getElementById('lienzo-derecho');
-      const ctxIzq = lienzoIzquierdo.getContext('2d');
-      const ctxDer = lienzoDerecho.getContext('2d');
-      const numIzq = parActual * 2;
-      const numDer = numIzq + 1;
-
-      if (numIzq > 0 && docPDF) {
-        docPDF.getPage(numIzq).then(p => {
-          const vp = p.getViewport({ scale: escala });
-          lienzoIzquierdo.width = vp.width;
-          lienzoIzquierdo.height = vp.height;
-          p.render({ canvasContext: ctxIzq, viewport: vp });
-        });
-      } else {
-        ctxIzq.clearRect(0, 0, lienzoIzquierdo.width, lienzoIzquierdo.height);
-      }
-
-      if (numDer <= docPDF.numPages && docPDF) {
-        docPDF.getPage(numDer).then(p => {
-          const vp = p.getViewport({ scale: escala });
-          lienzoDerecho.width = vp.width;
-          lienzoDerecho.height = vp.height;
-          p.render({ canvasContext: ctxDer, viewport: vp });
-        });
-      } else {
-        ctxDer.clearRect(0, 0, lienzoDerecho.width, lienzoDerecho.height);
-      }
-    }
-
-    function actualizarBotonesManualUsuario() {
-      document.getElementById('boton-anterior').disabled = parActual <= 0;
-      document.getElementById('boton-siguiente').disabled = parActual >= parMaximo;
-    }
-
-    let sonidoActivado = true;
-    const botonSonido = document.getElementById('boton_sonido');
-    const iconoSonido = document.getElementById('iconoSonido');
-    const audios = [
-      document.getElementById('sonidoSismo'),
-      document.getElementById('sonidoAlerta'),
-      document.getElementById('sfxTimer'),
-      document.getElementById('sfxFinish'),
-      document.getElementById('sfxFinSimulacion'),
-      document.getElementById('sonido-pagina')
-    ];
-
-    function actualizarEstadoSonido() {
-      audios.forEach(audio => {
-        if (audio) audio.muted = !sonidoActivado;
-      });
-      if (iconoSonido) {
-        iconoSonido.src = sonidoActivado ? "images/sonido_activado.png" : "images/sonido_desactivado.png";
-        iconoSonido.alt = sonidoActivado ? "Sonido activado" : "Sonido desactivado";
-      }
-    }
-
-    if (botonSonido) {
-      botonSonido.onclick = function () {
-        sonidoActivado = !sonidoActivado;
-        actualizarEstadoSonido();
-        mostrarNotificacionTrofeo(sonidoActivado ? "Sonido activado" : "Sonido desactivado");
-      };
-    }
-
-    actualizarEstadoSonido();
-
-    let rotacionActual = 0;
-    const rotarCamaraBtn = document.getElementById('rotarCamaraBtn');
-    if (rotarCamaraBtn) {
-      rotarCamaraBtn.onclick = function () {
-        rotacionActual = (rotacionActual + 90) % 360;
-        const videoElem = document.getElementById('video');
-        if (videoElem) {
-          videoElem.style.transform = `rotate(${rotacionActual}deg)`;
-        }
-      };
-    }
-
-    document.getElementById('btnMasMercalli').onclick = function () {
-      siguienteMercalli();
-    };
-    document.getElementById('btnMenosMercalli').onclick = function () {
-      indiceMercalliActual = (indiceMercalliActual - 1 + nivelesMercalli.length) % nivelesMercalli.length;
-      const nuevoNivel = nivelesMercalli[indiceMercalliActual];
-      intensidad = nuevoNivel.richterMin;
-      document.getElementById('mercalli').textContent = "Intensidad: " + nuevoNivel.etiqueta + " ";
-      actualizarIntensidadTexto();
-    };
-  </script>
+    </script>
 </body>
 
 </html>
