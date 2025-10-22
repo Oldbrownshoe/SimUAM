@@ -1,16 +1,23 @@
-* {
-    box-sizing: border-box;
-    margin: 0px;
-    padding: 0px;
-    box-sizing: border-box;
-    font-family: sans-serif;
-  }
+    @font-face {
+      font-family: "Aptos";
+      src: url("./../font/Aptos.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
 
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-  }
+    * {
+      box-sizing: border-box;
+      margin: 0px;
+      padding: 0px;
+      box-sizing: border-box;
+      font-family: "Aptos", Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Aptos", Arial, sans-serif;
+    }
 
   .container {
     max-width: 1200px;
