@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimUAM: Evaluación Física y Emocional</title>
+  <link rel="icon" href="./../../images/ico/logo_morado.ico" type="image/x-icon">
+  <style>
+    @font-face {
+      font-family: "Aptos";
+      src: url("./../../font/Aptos.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    * {
+      font-family: "Aptos", Arial, sans-serif;
+    }
+
+    body {
+      font-family: "Aptos", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #e5cbff;
+      color: #222;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto 0 auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 24px rgba(140, 0, 255, 0.08), 0 1.5px 6px rgba(0, 0, 0, 0.04);
+      padding: 32px 36px 24px 36px;
+    }
+
+    h2,
+    h3 {
+      color: rgb(140, 0, 255);
+      font-weight: 600;
+      margin-bottom: 18px;
+      letter-spacing: 0.5px;
+    }
+
+    h3 {
+      font-size: 1.1em;
+      margin-top: 28px;
+    }
+
+    form {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 6px 0;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      margin: 0 0 10px 0;
+      border: 1.2px solid #ccc;
+      border-radius: 6px;
+      font-size: 1em;
+      background: #f7f6fa;
+      transition: border 0.2s;
+      box-sizing: border-box;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      border-color: rgb(140, 0, 255);
+      outline: none;
+      background: #f3eaff;
+    }
+
+    input[type="submit"],
+    .export-button {
+      background-color: rgb(140, 0, 255);
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1.05em;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-top: 12px;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px rgba(140, 0, 255, 0.08);
+    }
+
+    input[type="submit"]:hover,
+    .export-button:hover {
+      background-color: rgba(140, 0, 255, 0.85);
+    }
+
+    #resultados {
+      margin-top: 24px;
+      padding: 18px 20px;
+      border: 1.2px solid #ccc;
+      border-radius: 8px;
+      background: #f7f6fa;
+      min-height: 40px;
+      font-size: 1em;
+    }
+
+    .redirect-button {
+      background: none;
+      border: 1.5px solid rgb(140, 0, 255);
+      color: rgb(140, 0, 255);
+      padding: 8px 22px;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .redirect-button:hover {
+      background: rgb(140, 0, 255);
+      color: #fff;
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        padding: 18px 8px 16px 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Evaluación Física y Emocional</h2>
+    <form id="formularioConjunto">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required><br><br>
+      <label for="edad">Edad:</label>
+      <input type="number" id="edad" name="edad" required><br><br>
+      <label for="genero">Género:</label>
+      <select id="genero" name="genero" required>
+        <option value="">Seleccione...</option>
+        <option value="masculino">Masculino</option>
+        <option value="femenino">Femenino</option>
+        <option value="otro">Otro</option>
+        <option value="prefiere_no_decir">Prefiere no decir</option>
+      </select><br><br>
+      <h3>Condiciones Fisiológicas</h3>
+      <label for="altura">Altura (cm):</label>
+      <input type="number" id="altura" name="altura" required><br><br>
+      <label for="peso">Peso (kg):</label>
+      <input type="number" id="peso" name="peso" required><br><br>
+      <label for="usaLentes">¿Usa lentes?</label>
+      <select id="usaLentes" name="usaLentes" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+      <label for="problemasVision">¿Tiene problemas de visión?</label>
+      <select id="problemasVision" name="problemasVision" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+      <label for="problemasAuditivos">¿Tiene problemas auditivos?</label>
+      <select id="problemasAuditivos" name="problemasAuditivos" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+      <label for="problemasMovilidad">¿Tiene problemas de movilidad?</label>
+      <select id="problemasMovilidad" name="problemasMovilidad" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+      <label for="sillaRuedas">¿Usa silla de ruedas?</label>
+      <select id="sillaRuedas" name="sillaRuedas" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+      <label for="enfermedades">¿Tiene alguna enfermedad crónica?</label>
+      <select id="enfermedades" name="enfermedades" required>
+        <option value="">Seleccione...</option>
+        <option value="diabetes">Diabetes</option>
+        <option value="hipertension">Hipertensión</option>
+        <option value="asma">Asma</option>
+        <option value="artritis">Artritis</option>
+        <option value="otra">Otra</option>
+        <option value="ninguna">Ninguna</option>
+      </select><br><br>
+      <label for="medicamentos">¿Está tomando algún medicamento?</label>
+      <select id="medicamentos" name="medicamentos" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+      <label for="alergias">¿Tiene alguna alergia?</label>
+      <select id="alergias" name="alergias" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+      <h3>Condiciones Emocionales</h3>
+      <label for="calma">¿Mantiene la calma durante un sismo?</label>
+      <select id="calma" name="calma" required>
+        <option value="">Seleccione...</option>
+        <option value="siempre">Siempre</option>
+        <option value="a_veces">A veces</option>
+        <option value="nunca">Nunca</option>
+      </select><br><br>
+      <label for="lider">¿Suele liderar a otras personas en situaciones de emergencia?</label>
+      <select id="lider" name="lider" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+      <label for="sigue">¿Prefiere seguir indicaciones en vez de liderar?</label>
+      <select id="sigue" name="sigue" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+      <label for="estres">¿Se estresa fácilmente en situaciones de crisis?</label>
+      <select id="estres" name="estres" required>
+        <option value="">Seleccione...</option>
+        <option value="siempre">Siempre</option>
+        <option value="a_veces">A veces</option>
+        <option value="nunca">Nunca</option>
+      </select><br><br>
+      <label for="decisiones">¿Puede tomar decisiones rápidas bajo presión?</label>
+      <select id="decisiones" name="decisiones" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+
+      <h3>Configuración de Simulador</h3>
+      <label for="ubicacion">¿Dónde te encuentras?</label>
+      <select id="ubicacion" name="ubicacion" required>
+        <option value="">Seleccione...</option>
+        <option value="dentro">Dentro de la UAM</option>
+        <option value="fuera">Fuera de la UAM</option>
+      </select><br><br>
+
+      <label for="piso">¿En qué piso te encuentras?</label>
+      <select id="piso" name="piso" required>
+        <option value="">Seleccione...</option>
+        <option value="G">G</option>
+        <option value="8">8</option>
+        <option value="7">7</option>
+        <option value="6">6</option>
+        <option value="5">5</option>
+        <option value="4">4</option>
+        <option value="B3">B3</option>
+        <option value="B2">B2</option>
+        <option value="B1">B1</option>
+      </select><br><br>
+
+      <label for="partePiso">¿En qué parte del piso estás?</label>
+      <select id="partePiso" name="partePiso" required>
+        <option value="">Seleccione...</option>
+        <option value="SI">Superior Izquierda</option>
+        <option value="SC">Superior Central</option>
+        <option value="SD">Superior Derecha</option>
+        <option value="CI">Central Izquierda</option>
+        <option value="CC">Central Central</option>
+        <option value="CD">Central Derecha</option>
+        <option value="II">Inferior Izquierda</option>
+        <option value="IC">Inferior Central</option>
+        <option value="ID">Inferior Derecha</option>
+      </select><br><br>
+
+      <label for="alerta">¿Quieres activar el alertamiento sísmico?</label>
+      <select id="alerta" name="alerta" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+
+      <label for="modoSimulador">¿Qué modo prefieres?</label>
+      <select id="modoSimulador" name="modoSimulador" required>
+        <option value="">Seleccione...</option>
+        <option value="simulacion">Entrenamiento</option>
+        <option value="prueba">Prueba</option>
+      </select><br><br>
+
+      <label for="tiempoVR">¿Cuánto tiempo necesitas para colocarte el dispositivo VR?</label>
+      <select id="tiempoVR" name="tiempoVR" required>
+        <option value="">Seleccione...</option>
+        <option value="30">30 segundos</option>
+        <option value="45">45 segundos</option>
+        <option value="60">60 segundos</option>
+      </select><br><br>
+
+      <label for="distractores">¿Quieres activar distractores durante la simulación?</label>
+      <select id="distractores" name="distractores" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+
+      <label for="camara">¿Prefieres usar la cámara trasera o frontal?</label>
+      <select id="camara" name="camara" required>
+        <option value="">Seleccione...</option>
+        <option value="trasera">Trasera</option>
+        <option value="frontal">Frontal</option>
+      </select><br><br>
+
+      <label for="sonido">¿Quieres activar el sonido?</label>
+      <select id="sonido" name="sonido" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select><br><br>
+      <input type="submit" value="Enviar">
+    </form>
+    <h2>Resultados y Recomendaciones</h2>
+    <div id="resultados"></div>
+    <button class="export-button" id="exportarIni" style="display:none;">Exportar configuración</button>
+    <button class="export-button" id="importarIni">Importar configuración</button>
+    <input type="file" id="fileImportIni" accept=".ini" style="display:none;">
+    <input type="file" id="filePicker" style="display:none;" webkitdirectory directory>
+    <div style="text-align:center; margin-top: 20px;">
+      <a href="./../inicio/formulario.html"><button class="redirect-button">Regresar</button></a>
+    </div>
+  </div>
+  <script>
+    const form = document.getElementById('formularioConjunto');
+    const resultadosDiv = document.getElementById('resultados');
+    let iniContent = '';
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const nombre = document.getElementById('nombre').value;
+      const edad = document.getElementById('edad').value;
+      const genero = document.getElementById('genero').value;
+      const altura = document.getElementById('altura').value;
+      const peso = document.getElementById('peso').value;
+      const usaLentes = document.getElementById('usaLentes').value;
+      const problemasVision = document.getElementById('problemasVision').value;
+      const problemasAuditivos = document.getElementById('problemasAuditivos').value;
+      const problemasMovilidad = document.getElementById('problemasMovilidad').value;
+      const sillaRuedas = document.getElementById('sillaRuedas').value;
+      const enfermedades = document.getElementById('enfermedades').value;
+      const medicamentos = document.getElementById('medicamentos').value;
+      const alergias = document.getElementById('alergias').value;
+      const calma = document.getElementById('calma').value;
+      const lider = document.getElementById('lider').value;
+      const sigue = document.getElementById('sigue').value;
+      const estres = document.getElementById('estres').value;
+      const decisiones = document.getElementById('decisiones').value;
+
+      const ubicacion = document.getElementById('ubicacion').value;
+      const piso = document.getElementById('piso').value;
+      const partePiso = document.getElementById('partePiso').value;
+      const alerta = document.getElementById('alerta').value;
+      const modoSimulador = document.getElementById('modoSimulador').value;
+      const tiempoVR = document.getElementById('tiempoVR').value;
+      const distractores = document.getElementById('distractores').value;
+      const camara = document.getElementById('camara').value;
+      const sonido = document.getElementById('sonido').value;
+
+      let resultado = `<p>Nombre: ${nombre}</p>`;
+      resultado += `<p>Edad: ${edad}</p>`;
+      resultado += `<p>Género: ${genero}</p>`;
+      resultado += `<p>Altura: ${altura} cm</p>`;
+      resultado += `<p>Peso: ${peso} kg</p>`;
+
+      if (usaLentes === 'si') {
+        resultado += `<p>Recomendación: Uso de lentes durante la simulación. Entrenamiento en reconocimiento de rutas de escape visuales.</p>`;
+      } else {
+        resultado += `<p>Recomendación: Entrenamiento estándar en rutas de escape visuales.</p>`;
+      }
+      if (problemasVision === 'si') {
+        resultado += `<p>Recomendación: Entrenamiento en uso de señales auditivas durante la simulación.</p>`;
+      }
+      if (problemasAuditivos === 'si') {
+        resultado += `<p>Recomendación: Entrenamiento en uso de señales visuales durante la simulación.</p>`;
+      }
+      if (problemasMovilidad === 'si') {
+        resultado += `<p>Recomendación: Entrenamiento en procedimientos de evacuación asistida.</p>`;
+      }
+      if (sillaRuedas === 'si') {
+        resultado += `<p>Recomendación: Entrenamiento en maniobras de emergencia con silla de ruedas y reconocimiento de rutas accesibles.</p>`;
+      }
+      if (enfermedades !== 'ninguna') {
+        resultado += `<p>Recomendación: Consulta médica antes de la simulación y entrenamiento adaptado a la condición específica.</p>`;
+      }
+      if (medicamentos === 'si') {
+        resultado += `<p>Recomendación: Llevar medicación necesaria durante la simulación.</p>`;
+      }
+      if (alergias === 'si') {
+        resultado += `<p>Recomendación: Tener a la mano tratamientos para alergias en caso de emergencia.</p>`;
+      }
+      if (usaLentes === 'no' && problemasVision === 'no' && problemasAuditivos === 'no' && problemasMovilidad === 'no' && sillaRuedas === 'no' && enfermedades === 'ninguna') {
+        resultado += `<p>Participante apto para la simulación estándar sin adaptaciones.</p>`;
+      }
+
+      if (calma === 'siempre') {
+        resultado += `<p>Recomendación: Perfecto para liderar grupos en simulaciones de sismos.</p>`;
+      } else if (calma === 'a_veces') {
+        resultado += `<p>Recomendación: Participar en ejercicios de respiración y manejo del estrés.</p>`;
+      } else {
+        resultado += `<p>Recomendación: Entrenamiento intensivo en manejo de crisis.</p>`;
+      }
+      if (lider === 'si') {
+        resultado += `<p>Recomendación: Capacitación adicional para liderar evacuaciones.</p>`;
+      }
+      if (sigue === 'si') {
+        resultado += `<p>Recomendación: Enfocarse en seguir instrucciones claras durante simulaciones.</p>`;
+      }
+      if (estres === 'siempre') {
+        resultado += `<p>Recomendación: Realizar simulaciones progresivas para acostumbrarse al entorno.</p>`;
+      } else if (estres === 'a_veces') {
+        resultado += `<p>Recomendación: Entrenamiento en identificación de puntos seguros rápidamente.</p>`;
+      }
+      if (decisiones === 'si') {
+        resultado += `<p>Recomendación: Entrenamiento para escenarios complejos y rápidos.</p>`;
+      } else {
+        resultado += `<p>Recomendación: Prácticas de toma de decisiones bajo presión.</p>`;
+      }
+
+      resultado += `<hr><h3>Configuración de Simulador</h3>`;
+      resultado += `<p>Ubicación: ${ubicacion}</p>`;
+      resultado += `<p>Piso: ${piso}</p>`;
+      resultado += `<p>Parte del piso: ${partePiso}</p>`;
+      resultado += `<p>Alertamiento: ${alerta}</p>`;
+      resultado += `<p>Modo: ${modoSimulador}</p>`;
+      resultado += `<p>Tiempo para VR: ${tiempoVR} segundos</p>`;
+      resultado += `<p>Distractores: ${distractores}</p>`;
+      resultado += `<p>Cámara: ${camara}</p>`;
+      resultado += `<p>Sonido: ${sonido}</p>`;
+
+      if (alerta === 'si') {
+        resultado += `<p>Recomendación: Practica con alertamiento activado para mayor realismo.</p>`;
+      }
+      if (modoSimulador === 'prueba') {
+        resultado += `<p>Recomendación: Prepárate para condiciones aleatorias en el simulador.</p>`;
+      }
+      if (distractores === 'si') {
+        resultado += `<p>Recomendación: Mantén la concentración ante distractores inesperados.</p>`;
+      }
+      if (sonido === 'no') {
+        resultado += `<p>Recomendación: Considera activar el sonido para una experiencia más inmersiva.</p>`;
+      }
+
+      resultadosDiv.innerHTML = resultado;
+      document.getElementById('exportarIni').style.display = 'inline-block';
+
+      iniContent =
+        `nombre=${nombre}\n` +
+        `edad=${edad}\n` +
+        `genero=${genero}\n` +
+        `altura_cm=${altura}\n` +
+        `peso_kg=${peso}\n` +
+        `usaLentes=${usaLentes}\n` +
+        `problemasVision=${problemasVision}\n` +
+        `problemasAuditivos=${problemasAuditivos}\n` +
+        `problemasMovilidad=${problemasMovilidad}\n` +
+        `sillaRuedas=${sillaRuedas}\n` +
+        `enfermedades=${enfermedades}\n` +
+        `medicamentos=${medicamentos}\n` +
+        `alergias=${alergias}\n` +
+        `calma=${calma}\n` +
+        `lider=${lider}\n` +
+        `sigue=${sigue}\n` +
+        `estres=${estres}\n` +
+        `decisiones=${decisiones}\n` +
+        `ubicacion=${ubicacion}\n` +
+        `piso=${piso}\n` +
+        `partePiso=${partePiso}\n` +
+        `alerta=${alerta}\n` +
+        `modoSimulador=${modoSimulador}\n` +
+        `tiempoVR=${tiempoVR}\n` +
+        `distractores=${distractores}\n` +
+        `camara=${camara}\n` +
+        `sonido=${sonido}\n`;
+    });
+
+    document.getElementById('exportarIni').addEventListener('click', function () {
+      // Obtener la primera palabra del nombre
+      const nombreValor = document.getElementById('nombre').value.trim();
+      const primeraPalabra = nombreValor.split(' ')[0] || 'Usuario';
+      let filename = `Configuracion - ${primeraPalabra}.ini`;
+      filename = prompt('¿Cómo desea llamar el archivo de configuración?', filename);
+      if (!filename) return;
+      const blob = new Blob([iniContent], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    document.getElementById('importarIni').addEventListener('click', function () {
+      document.getElementById('fileImportIni').click();
+    });
+
+    document.getElementById('fileImportIni').addEventListener('change', function (event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const lines = e.target.result.split('\n');
+        const values = {};
+        lines.forEach(line => {
+          const [key, value] = line.split('=');
+          if (key && value !== undefined) {
+            values[key.trim()] = value.trim();
+          }
+        });
+
+        const campos = [
+          'nombre', 'edad', 'genero', 'usaLentes', 'problemasVision',
+          'problemasAuditivos', 'problemasMovilidad', 'sillaRuedas', 'enfermedades',
+          'medicamentos', 'alergias', 'calma', 'lider', 'sigue', 'estres', 'decisiones',
+          'ubicacion', 'piso', 'partePiso', 'alerta', 'modoSimulador', 'tiempoVR',
+          'distractores', 'camara', 'sonido'
+        ];
+        campos.forEach(id => {
+          if (values.hasOwnProperty(id)) {
+            const el = document.getElementById(id);
+            if (el) el.value = values[id];
+          }
+        });
+        if (values.hasOwnProperty('altura_cm')) {
+          const el = document.getElementById('altura');
+          if (el) el.value = values['altura_cm'];
+        }
+        if (values.hasOwnProperty('peso_kg')) {
+          const el = document.getElementById('peso');
+          if (el) el.value = values['peso_kg'];
+        }
+        actualizarCamposUbicacion();
+      };
+      reader.readAsText(file);
+    });
+
+    const ubicacionSelect = document.getElementById('ubicacion');
+    const pisoSelect = document.getElementById('piso');
+    const partePisoSelect = document.getElementById('partePiso');
+    function actualizarCamposUbicacion() {
+      if (ubicacionSelect.value === 'fuera') {
+        pisoSelect.disabled = true;
+        pisoSelect.value = '';
+        partePisoSelect.disabled = true;
+        partePisoSelect.value = '';
+      } else {
+        pisoSelect.disabled = false;
+        partePisoSelect.disabled = false;
+      }
+    }
+    ubicacionSelect.addEventListener('change', actualizarCamposUbicacion);
+
+    document.getElementById('fileImportIni').addEventListener('change', function (event) {
+      campos.forEach(id => {
+        if (values.hasOwnProperty(id)) {
+          const el = document.getElementById(id);
+          if (el) el.value = values[id];
+        }
+      });
+      actualizarCamposUbicacion();
+    });
+  </script>
+</body>
+
+</html>
