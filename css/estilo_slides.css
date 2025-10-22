@@ -1,101 +1,125 @@
-* {box-sizing: border-box;}
+    @font-face {
+      font-family: "Aptos";
+      src: url("./../font/Aptos.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
 
-body {
-  font-family: Verdana, sans-serif;
-  margin: 0;
-}
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Aptos", Arial, sans-serif;
+    }
 
-.slideshow-container {
-  position: relative;
-  margin: auto;
-}
+    * {
+      box-sizing: border-box;
+      font-family: "Aptos", Arial, sans-serif;
+    }
 
-.mySlides {
-  display: none;
-}
+    body {
+      font-family: "Aptos", Arial, sans-serif;
+      margin: 0;
+    }
 
-img {
-  vertical-align: middle;
-}
+    .slideshow-container {
+      position: relative;
+      margin: auto;
+    }
 
-.fade {
-  animation-name: fade;
-  animation-duration: 1.5s;
-}
+    .mySlides {
+      display: none;
+    }
 
-@keyframes fade {
-  from {opacity: .4} 
-  to {opacity: 1}
-}
+    img {
+      vertical-align: middle;
+    }
 
-.numbertext {
-  color: #000000;
-  font-size: 12px;
-  padding: 8px 12px;
-  position: absolute;
-  top: 0;
-}
+    .fade {
+      animation-name: fade;
+      animation-duration: 1.5s;
+    }
 
-.text {
-  color: #000000;
-  font-size: 15px;
-  padding: 8px 12px;
-  position: absolute;
-  bottom: 8px;
-  width: 100%;
-  text-align: center;
-}
+    @keyframes fade {
+      from {
+        opacity: .4
+      }
 
-.prev, .next {
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  width: auto;
-  margin-top: -22px;
-  padding: 16px;
-  color: rgb(0, 0, 0);
-  font-weight: bold;
-  font-size: 18px;
-  transition: 0.6s ease;
-  border-radius: 0 3px 3px 0;
-  user-select: none;
-}
+      to {
+        opacity: 1
+      }
+    }
 
-.next {
-  right: 0;
-  border-radius: 3px 0 0 3px;
-}
+    .numbertext {
+      color: #000000;
+      font-size: 12px;
+      padding: 8px 12px;
+      position: absolute;
+      top: 0;
+    }
 
-.prev:hover, .next:hover {
-  background-color: rgba(231, 173, 13, 0.8);
-}
+    .text {
+      color: #000000;
+      font-size: 15px;
+      padding: 8px 12px;
+      position: absolute;
+      bottom: 8px;
+      width: 100%;
+      text-align: center;
+    }
 
-.dot {
-  cursor: pointer;
-  height: 15px;
-  width: 15px;
-  margin: 0 2px;
-  background-color: #bbbbbb;
-  border-radius: 50%;
-  display: inline-block;
-  transition: background-color 0.6s ease;
-}
+    .prev,
+    .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      width: auto;
+      margin-top: -22px;
+      padding: 16px;
+      color: rgb(0, 0, 0);
+      font-weight: bold;
+      font-size: 18px;
+      transition: 0.6s ease;
+      border-radius: 0 3px 3px 0;
+      user-select: none;
+    }
 
-.active, .dot:hover {
-  background-color: #717171;
-}
+    .next {
+      right: 0;
+      border-radius: 3px 0 0 3px;
+    }
 
-.redirect-button {
-  padding: 10px 20px;
-  background-color: #af4c4c;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 20px;
-}
+    .prev:hover,
+    .next:hover {
+      background-color: rgba(231, 173, 13, 0.8);
+    }
 
-.redirect-button:hover {
-  background-color: #a04545;
-}
+    .dot {
+      cursor: pointer;
+      height: 15px;
+      width: 15px;
+      margin: 0 2px;
+      background-color: #bbbbbb;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.6s ease;
+    }
+
+    .active,
+    .dot:hover {
+      background-color: #717171;
+    }
+
+    .redirect-button {
+      padding: 10px 20px;
+      background-color: #af4c4c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
+    .redirect-button:hover {
+      background-color: #a04545;
+    }
