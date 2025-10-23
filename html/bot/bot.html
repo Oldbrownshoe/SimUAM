@@ -5,8 +5,15 @@
   <meta charset="UTF-8">
   <title>Chat Bot - SimUAM</title>
   <style>
+        @font-face {
+      font-family: "Aptos";
+      src: url("./../../font/Aptos.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
     #chat-bot {
-      font-family: Arial, sans-serif;
+      font-family: "Aptos", Arial, sans-serif;
       width: 100%;
       max-width: 400px;
       margin: auto;
@@ -63,7 +70,7 @@
     #boton-enviar {
       padding: 8px 12px;
       border: none;
-      background-color: #337ab7;
+      background-color: #ec7711;
       color: white;
       cursor: pointer;
       border-radius: 4px;
@@ -71,7 +78,7 @@
     }
 
     #boton-enviar:hover {
-      background-color: #286090;
+      background-color: #d46b0f;
     }
 
     #contenedor-entrada-chat {
@@ -207,8 +214,28 @@
         return { texto: "Parece que has detectado un problema. Te recomiendo revisar la configuración, permisos, y la conexión de los sensores. Si el problema persiste, consulta la documentación técnica o nuestro soporte.", emocion: "cara_consternada" };
       } else if (entrada.includes("simulación avanzada") || entrada.includes("caso de uso") || entrada.includes("detalle avanzado")) {
         return { texto: "La simulación avanzada incluye parámetros como la variación de intensidad, respuesta de sensores y análisis de datos en tiempo real. ¿Quieres saber cómo se integra toda esta tecnología en el simulador?", emocion: "cara_curiosa" };
+      } else if (entrada.includes("piso") || entrada.includes("nivel") || entrada.includes("edificio")) {
+        return { texto: "Puedes seleccionar el piso donde te encuentras abriendo el menú de configuración. Allí eliges G, 8, 7… B1, B2, B3 y luego ves el mapa correspondiente.", emocion: "cara_curiosa" };
+      } else if (entrada.includes("ubicación") || entrada.includes("dentro") || entrada.includes("fuera")) {
+        return { texto: "Indica si estás dentro o fuera de la UAM; así el simulador ajusta el escenario. Usa los botones ‘Dentro de la UAM’ o ‘Fuera de la UAM’ en el menú de pausa.", emocion: "cara_feliz" };
+      } else if (entrada.includes("modo entrenamiento") || entrada.includes("entrenamiento")) {
+        return { texto: "El modo Entrenamiento te permite elegir piso, intensidad y tiempo. Ideal para practicar sin aleatoriedad.", emocion: "cara_feliz" };
+      } else if (entrada.includes("modo prueba") || (entrada.includes("prueba") && !entrada.includes("entrenamiento"))) {
+        return { texto: "En el modo Prueba, piso, intensidad y tiempo se asignan aleatoriamente. No ves la configuración previa: ¡pon a prueba tus reflejos!", emocion: "cara_consternada" };
+      } else if (entrada.includes("alerta") || entrada.includes("alertamiento")) {
+        return { texto: "Activa o desactiva el alertamiento para simular la alerta sísmica. Cuando está activado, ves un gif de alerta antes de empezar.", emocion: "cara_feliz" };
+      } else if (entrada.includes("qr") || entrada.includes("código qr")) {
+        return { texto: "Puedes generar un QR al finalizar el ejercicio y luego escanearlo para detener la simulación. Está en la sección ‘Genera QR de Finalizar’.", emocion: "cara_feliz" };
+      } else if (entrada.includes("distractor") || entrada.includes("distrae")) {
+        return { texto: "Antes de iniciar la simulación, aparece un mensaje distractor (como ‘Preparando tu café’). Busca concentrarte para reaccionar rápido.", emocion: "cara_confundida" };
+      } else if (entrada.includes("manual") || entrada.includes("pdf") || entrada.includes("página")) {
+        return { texto: "El Manual de Usuario es un PDF interactivo con audio. Navega con los botones ‘Anterior’ y ‘Siguiente’ y escucha la guía en cada página.", emocion: "cara_curiosa" };
+      } else if (entrada.includes("rotar cámara") || entrada.includes("rotar camara") || entrada.includes("rotar")) {
+        return { texto: "Puedes rotar la vista del video 90° cada vez que pulses ‘Rotar Cámara’. Útil para adaptar la orientación de tu dispositivo.", emocion: "cara_curiosa" };
+      } else if (entrada.includes("mapa") || entrada.includes("plano")) {
+        return { texto: "Tras seleccionar piso y parte, aparece el mapa correspondiente en pantalla. Te ayuda a ubicar tu ruta de evacuación en el edificio.", emocion: "cara_feliz" };
       } else {
-        return { texto: "Interesante, ¿podrías especificar un poco más a qué aspecto del simulador de sismos te refieres o qué duda tienes exactamente?", emocion: "cara_confundida" };
+        return { texto: "Interesante, ¿podrías especificar un poco más a qué aspecto del simulador te refieres o qué duda tienes exactamente?", emocion: "cara_confundida" };
       }
     }
   </script>
