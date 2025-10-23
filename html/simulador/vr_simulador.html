@@ -793,13 +793,12 @@
     </div>
   </div>
 
-<video id="video" autoplay playsinline muted style="z-index:0; width:100vw; height:100vh; object-fit:cover;"></video>
+  <video id="video" autoplay style="z-index:0; width:100vw; height:auto; aspect-ratio: 16/9;"></video>
   <div id="vrVideoContainer"
-    style="display:none; position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:0; justify-content:center; align-items:center;">
-    <div style="display:flex; width:100vw; height:100vh; align-items:center; justify-content:space-between; gap:0;">
-      <!-- cada ojo usa un video cuadrado (1:1). usamos width:50vw y height:50vw para mantener 1:1 -->
-      <video id="videoLeft" autoplay playsinline muted style="flex:0 0 50vw; width:50vw; height:50vw; object-fit:cover; background:#000; border-right: none; border-radius:0;"></video>
-      <video id="videoRight" autoplay playsinline muted style="flex:0 0 50vw; width:50vw; height:50vw; object-fit:cover; background:#000; border-left: none; border-radius:0;"></video>
+    style="display:none; position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:0;">
+    <div style="display:flex; width:100vw; height:100vh;">
+      <video id="videoLeft" autoplay style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
+      <video id="videoRight" autoplay style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
     </div>
   </div>
 
@@ -1771,7 +1770,7 @@
       }
     }
 
-     async function inicializarCamara() {
+    async function inicializarCamara() {
       const videoElem = document.getElementById('video');
       const videoLeft = document.getElementById('videoLeft');
       const videoRight = document.getElementById('videoRight');
@@ -1786,77 +1785,74 @@
       try {
         let stream;
 
-        // preferir constraints con tamaño y fallback cuando facingMode exact falle
-        const tryGetUserMedia = async (constraints) => {
-          try {
-            return await navigator.mediaDevices.getUserMedia(constraints);
-          } catch (err) {
-            return null;
-          }
-        };
+        // intento razonable: usar facingMode ideal en vez de exact, y fallback a cualquier cámara disponible
+        const preferencias = esMovil
+          ? { video: { facingMode: { ideal: "environment" } } }
+          : { video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } } };
 
-        if (esMovil) {
-          // primer intento: trasera con ideal resolution
-          stream = await tryGetUserMedia({ video: { facingMode: { exact: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } } });
-          if (!stream) {
-            // fallback: facingMode environment no exact
-            stream = await tryGetUserMedia({ video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } } });
-          }
-          if (!stream) {
-            stream = await tryGetUserMedia({ video: true });
-          }
-        } else {
-          // desktop: intentar elegir deviceId de trasera si existe
-          await navigator.mediaDevices.getUserMedia({ video: true }).catch(()=>{});
-          await esperar(300);
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(preferencias);
+          console.log('getUserMedia con facingMode ideal OK');
+        } catch (err) {
+          console.warn('getUserMedia facingMode ideal falló, intentando default:', err);
+          // fallback: pedir cualquier cámara
+          stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        }
+
+        // si aún no hay stream, intentar por deviceId (enumerar)
+        if (!stream) {
           const dispositivos = await navigator.mediaDevices.enumerateDevices();
           const camaras = dispositivos.filter(d => d.kind === 'videoinput');
-          const camaraTrasera = camaras.find(d => /back|rear|environment/i.test(d.label));
-
-          if (camaraTrasera) {
-            stream = await tryGetUserMedia({ video: { deviceId: { exact: camaraTrasera.deviceId }, width: { ideal: 1280 }, height: { ideal: 720 } } });
-            if (!stream) stream = await tryGetUserMedia({ video: true });
-          } else {
-            stream = await tryGetUserMedia({ video: true });
+          if (camaras.length > 0) {
+            try {
+              stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: camaras[0].deviceId } } });
+            } catch (err2) {
+              console.error('Fallback por deviceId falló:', err2);
+              stream = null;
+            }
           }
         }
 
-        if (!stream) throw new Error('No se obtuvo stream de cámara');
+        if (!stream) {
+          document.getElementById('mensaje').textContent = 'No fue posible acceder a la cámara. Verifica permisos y que el sitio use HTTPS.';
+          return;
+        }
 
-        // asignar stream y forzar reproducción compatible con políticas de autoplay
+        // asignar stream a videos (usar playsinline/muted en HTML para evitar bloqueos)
         if (videoElem) {
           videoElem.srcObject = stream;
-          videoElem.playsInline = true;
-          videoElem.muted = true; // importante para autoplay en móviles
-          videoElem.style.objectFit = 'cover';
-          try { await videoElem.play(); } catch (e) { console.warn('video.play() bloqueado:', e); }
+          videoElem.setAttribute('playsinline', '');
+          videoElem.muted = true;
+          videoElem.play().catch(e => console.warn('play videoElem:', e));
         }
         if (videoLeft) {
           videoLeft.srcObject = stream;
-          videoLeft.playsInline = true;
+          videoLeft.setAttribute('playsinline', '');
           videoLeft.muted = true;
-          videoLeft.style.objectFit = "cover";
-          try { await videoLeft.play(); } catch (e) { /* no crítico */ }
         }
         if (videoRight) {
           videoRight.srcObject = stream;
-          videoRight.playsInline = true;
+          videoRight.setAttribute('playsinline', '');
           videoRight.muted = true;
-          videoRight.style.objectFit = "cover";
-          try { await videoRight.play(); } catch (e) { /* no crítico */ }
         }
 
-        // guardar referencia del stream para cambiar cámara / detener
-        streamActual = stream;
+        if (videoLeft) {
+          videoLeft.style.objectFit = "cover";
+          videoLeft.style.objectPosition = "left center";
+        }
+        if (videoRight) {
+          videoRight.style.objectFit = "cover";
+          videoRight.style.objectPosition = "right center";
+        }
 
         if (botonCamara) {
           botonCamara.style.display = 'none';
         }
 
       } catch (err) {
-        document.getElementById('mensaje').textContent =
-          'No fue posible acceder a la cámara. Verifica permisos y que la página use HTTPS.';
         console.error("Error general al abrir cámara:", err);
+        document.getElementById('mensaje').textContent =
+          'No fue posible acceder a la cámara. Verifica permisos y consola remota.';
       }
     }
 
