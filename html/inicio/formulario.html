@@ -149,7 +149,6 @@
   <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
 
   <script>
-
     (function () {
       const btnAbrir = document.getElementById('btnVerificarQR');
       const modal = document.getElementById('modalVerificarQR');
@@ -167,6 +166,20 @@
       let rafId = null;
       let cerradoTimeout = null;
       let escaneado = false;
+      let invalidCooldownUntil = 0;
+
+      function normalizeText(s) {
+        return String(s || '')
+          .trim()
+          .replace(/\r?\n/g, '')
+          .replace(/\u00A0/g, ' ')
+          .replace(/\uFEFF/g, '')
+          .replace(/[\u200B-\u200F\u202A-\u202E]/g, '')
+          .replace(/\p{Cf}/gu, '')
+          .normalize("NFC");
+      }
+
+      const EXPECTED_QR_TEXT = normalizeText('Ejercicio finalizado');
 
       function setStatusWaiting() {
         if (statusImg) statusImg.src = './../../images/formulario/QR_check.png';
@@ -187,6 +200,7 @@
       function abrirModal(e) {
         if (e) e.preventDefault();
         escaneado = false;
+        invalidCooldownUntil = 0;
         msg.textContent = 'Apunta la cámara al código QR generado.';
         setStatusWaiting();
         modal.style.display = 'flex';
@@ -203,7 +217,6 @@
           msg.textContent = 'No se pudo acceder a la cámara. Verifica permisos.';
           console.error('Error cámara QR:', err);
           setStatusError();
-
           try { audioError.currentTime = 0; audioError.play().catch(() => { }); } catch (e) { }
         }
       }
@@ -241,25 +254,36 @@
         try {
           imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         } catch (e) {
-
           rafId = requestAnimationFrame(scanLoop);
           return;
         }
 
         const code = window.jsQR(imageData.data, canvas.width, canvas.height);
         if (code && code.data && !escaneado) {
-          escaneado = true;
+          const raw = String(code.data);
+          const text = normalizeText(raw);
+          console.info('QR RAW:', JSON.stringify(raw));
+          console.info('QR normalizado:', text, 'len:', text.length);
+          console.log("Esperado:", [...EXPECTED_QR_TEXT].map(c => c.codePointAt(0)));
+          console.log("Leído:", [...text].map(c => c.codePointAt(0)));
 
-          msg.textContent = 'QR funciona correctamente';
-          console.info('QR data:', code.data);
-          setStatusOk();
-
-          stopCamera();
-
-          cerradoTimeout = setTimeout(() => {
-            closeModalCleanup();
-          }, 5000);
-          return;
+          if (text === EXPECTED_QR_TEXT) {
+            escaneado = true;
+            msg.textContent = 'QR funciona correctamente';
+            setStatusOk();
+            stopCamera();
+            cerradoTimeout = setTimeout(() => {
+              closeModalCleanup();
+            }, 5000);
+            return;
+          } else {
+            if (Date.now() > invalidCooldownUntil) {
+              invalidCooldownUntil = Date.now() + 3000;
+              msg.textContent = 'QR inválido.';
+              setStatusError();
+              try { audioError.currentTime = 0; audioError.play().catch(() => { }); } catch (e) { }
+            }
+          }
         }
         rafId = requestAnimationFrame(scanLoop);
       }
