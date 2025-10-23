@@ -793,12 +793,13 @@
     </div>
   </div>
 
-  <video id="video" autoplay style="z-index:0; width:100vw; height:auto; aspect-ratio: 16/9;"></video>
+<video id="video" autoplay playsinline muted style="z-index:0; width:100vw; height:100vh; object-fit:cover;"></video>
   <div id="vrVideoContainer"
-    style="display:none; position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:0;">
-    <div style="display:flex; width:100vw; height:100vh;">
-      <video id="videoLeft" autoplay style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
-      <video id="videoRight" autoplay style="width:50vw; height:100vh; object-fit:contain; background:#000;"></video>
+    style="display:none; position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:0; justify-content:center; align-items:center;">
+    <div style="display:flex; width:100vw; height:100vh; align-items:center; justify-content:space-between; gap:0;">
+      <!-- cada ojo usa un video cuadrado (1:1). usamos width:50vw y height:50vw para mantener 1:1 -->
+      <video id="videoLeft" autoplay playsinline muted style="flex:0 0 50vw; width:50vw; height:50vw; object-fit:cover; background:#000; border-right: none; border-radius:0;"></video>
+      <video id="videoRight" autoplay playsinline muted style="flex:0 0 50vw; width:50vw; height:50vw; object-fit:cover; background:#000; border-left: none; border-radius:0;"></video>
     </div>
   </div>
 
@@ -1844,6 +1845,9 @@
           videoRight.style.objectFit = "cover";
           try { await videoRight.play(); } catch (e) { /* no crítico */ }
         }
+
+        // guardar referencia del stream para cambiar cámara / detener
+        streamActual = stream;
 
         if (botonCamara) {
           botonCamara.style.display = 'none';
