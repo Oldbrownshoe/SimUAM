@@ -4,17 +4,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SimUAM: Simulador de Sismos para la Prevención de Accidentes</title> 
+  <title>SimUAM: Simulador de Sismos para la Prevención de Accidentes</title>
   <link rel="icon" href="../images/ico/logo_mix.ico" type="image/x-icon">
   <style>
-  @font-face {
-      font-family: 'Aptos';
-      src: local ('Aptos'),
-      url ('./../../font/Aptos.ttf') format('truetype');
+    @font-face {
+      font-family: "Aptos";
+      src: url("./font/Aptos.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    * {
+      font-family: "Aptos", Arial, sans-serif;
     }
 
     body {
-      font-family: 'Aptos', sans-serif;
+      font-family: "Aptos", Arial, sans-serif;
     }
 
     #boot-screen {
@@ -51,7 +56,7 @@
     .progress-bar {
       width: 0%;
       height: 20px;
-      background: linear-gradient(90deg, rgba(255, 166, 0, 0.486), rgba(0, 0, 255, 0.486), rgba(128, 0, 128, 0.486));
+      background: linear-gradient(90deg, rgba(255, 51, 0, 0.486), rgba(0, 0, 255, 0.486), rgba(128, 0, 128, 0.486));
       animation: load 5s linear forwards;
     }
 
@@ -67,7 +72,7 @@
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: "Aptos", Arial, sans-serif;
     }
 
     #simulator {
