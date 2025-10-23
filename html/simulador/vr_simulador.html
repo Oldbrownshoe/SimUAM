@@ -1770,7 +1770,7 @@
       }
     }
 
-    async function inicializarCamara() {
+     async function inicializarCamara() {
       const videoElem = document.getElementById('video');
       const videoLeft = document.getElementById('videoLeft');
       const videoRight = document.getElementById('videoRight');
@@ -1785,54 +1785,64 @@
       try {
         let stream;
 
-        if (esMovil) {
+        // preferir constraints con tamaño y fallback cuando facingMode exact falle
+        const tryGetUserMedia = async (constraints) => {
           try {
-            stream = await navigator.mediaDevices.getUserMedia({
-              video: { facingMode: { exact: "environment" } }
-            });
-            mostrarNotificacionTrofeo("Cámara trasera abierta (móvil)");
+            return await navigator.mediaDevices.getUserMedia(constraints);
           } catch (err) {
-            console.warn("No se pudo abrir cámara trasera (móvil), usando predeterminada", err);
-            stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            mostrarNotificacionTrofeo("Usando cámara predeterminada (móvil)");
+            return null;
+          }
+        };
+
+        if (esMovil) {
+          // primer intento: trasera con ideal resolution
+          stream = await tryGetUserMedia({ video: { facingMode: { exact: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } } });
+          if (!stream) {
+            // fallback: facingMode environment no exact
+            stream = await tryGetUserMedia({ video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } } });
+          }
+          if (!stream) {
+            stream = await tryGetUserMedia({ video: true });
           }
         } else {
-          await navigator.mediaDevices.getUserMedia({ video: true });
-          await esperar(500);
-
+          // desktop: intentar elegir deviceId de trasera si existe
+          await navigator.mediaDevices.getUserMedia({ video: true }).catch(()=>{});
+          await esperar(300);
           const dispositivos = await navigator.mediaDevices.enumerateDevices();
           const camaras = dispositivos.filter(d => d.kind === 'videoinput');
           const camaraTrasera = camaras.find(d => /back|rear|environment/i.test(d.label));
 
           if (camaraTrasera) {
-            try {
-              stream = await navigator.mediaDevices.getUserMedia({
-                video: { deviceId: { exact: camaraTrasera.deviceId } }
-              });
-              mostrarNotificacionTrofeo("Cámara trasera abierta: " + camaraTrasera.label);
-            } catch (err) {
-              console.warn("No se pudo abrir cámara trasera (PC), usando predeterminada", err);
-              stream = await navigator.mediaDevices.getUserMedia({ video: true });
-              mostrarNotificacionTrofeo("Usando cámara predeterminada (PC)");
-            }
+            stream = await tryGetUserMedia({ video: { deviceId: { exact: camaraTrasera.deviceId }, width: { ideal: 1280 }, height: { ideal: 720 } } });
+            if (!stream) stream = await tryGetUserMedia({ video: true });
           } else {
-            stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            mostrarNotificacionTrofeo("Usando cámara predeterminada (no se detectó trasera)");
+            stream = await tryGetUserMedia({ video: true });
           }
         }
 
-        // video
-        if (videoElem) videoElem.srcObject = stream;
-        if (videoLeft) videoLeft.srcObject = stream;
-        if (videoRight) videoRight.srcObject = stream;
+        if (!stream) throw new Error('No se obtuvo stream de cámara');
 
+        // asignar stream y forzar reproducción compatible con políticas de autoplay
+        if (videoElem) {
+          videoElem.srcObject = stream;
+          videoElem.playsInline = true;
+          videoElem.muted = true; // importante para autoplay en móviles
+          videoElem.style.objectFit = 'cover';
+          try { await videoElem.play(); } catch (e) { console.warn('video.play() bloqueado:', e); }
+        }
         if (videoLeft) {
+          videoLeft.srcObject = stream;
+          videoLeft.playsInline = true;
+          videoLeft.muted = true;
           videoLeft.style.objectFit = "cover";
-          videoLeft.style.objectPosition = "left center";
+          try { await videoLeft.play(); } catch (e) { /* no crítico */ }
         }
         if (videoRight) {
+          videoRight.srcObject = stream;
+          videoRight.playsInline = true;
+          videoRight.muted = true;
           videoRight.style.objectFit = "cover";
-          videoRight.style.objectPosition = "right center";
+          try { await videoRight.play(); } catch (e) { /* no crítico */ }
         }
 
         if (botonCamara) {
@@ -1841,7 +1851,7 @@
 
       } catch (err) {
         document.getElementById('mensaje').textContent =
-          'No fue posible acceder a la cámara. Verifica permisos.';
+          'No fue posible acceder a la cámara. Verifica permisos y que la página use HTTPS.';
         console.error("Error general al abrir cámara:", err);
       }
     }
