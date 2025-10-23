@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es-MX">
+
 <head>
   <meta charset="UTF-8" />
   <title>SimUAM: Formulario</title>
@@ -13,54 +14,93 @@
       background-size: cover;
       background-repeat: no-repeat;
     }
+
+    * {
+      font-family: "Aptos", Arial, sans-serif;
+    }
+
+    #boton_home img {
+      height: 50px;
+      position: absolute;
+      align-items: center;
+      top: 10px;
+      left: 10px;
+      transition: opacity 0.3s ease;
+    }
+
+    #boton_home img:hover {
+      content: url("../../images/anterior_hover.png");
+    }
+
+    #boton_manual img {
+      height: 50px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      transition: opacity 0.3s ease;
+    }
+
+    #boton_manual img:hover {
+      content: url("../../images/manualUsuario_hover.png");
+    }
   </style>
 </head>
+
 <body>
 
   <p>&nbsp;</p>
   <p>&nbsp;</p>
-  
+
   <div class="container-clock">
     <h2>Bienvenid@ a SimUAM:</h2>
     <h3>Formulario</h3>
     <p>&nbsp;</p>
     <h4 class="container-clock" align="center">Elige una opción:</h4>
   </div>
-  
+
+  <a href="./index.html" id="boton_home">
+    <img src="../../images/anterior.png" alt="Inicio">
+  </a>
+
+  <a href="./../simulador/SimUAM - Manual de Usuario.pdf" id="boton_manual" target="_blank">
+    <img src="../../images/manualUsuario.png" alt="Inicio">
+  </a>
+
   <div class="content">
     <div class="card-container">
 
-      <!-- Tarjeta de Evaluación Física -->
       <div class="card">
         <div class="face front">
-          <img src="./../../images/index/index_4.jpg" alt="">
-          <h3 align="center">Evaluación Física</h3>
+          <img src="./../../images/index/Evaluacion_F.png" alt="">
+          <h3 align="center">Evaluación Física y Emocional</h3>
         </div>
         <div class="face back">
-          <h3>Evaluación Física</h3>
+          <h3>Evaluación Física y Emocional</h3>
           <p>&nbsp;</p>
           <p><strong>Descripción:</strong></p>
-          <p>Evalúa tu debilidad visual o física en el simulador de sismos. Información confidencial para recomendaciones personalizadas.</p>
+          <p>Evalúa tus habilidades físicas y emocionales en el simulador de sismos. Información confidencial para
+            recomendaciones personalizadas.</p>
           <p>&nbsp;</p>
           <div class="link">
-            <a href="./../forms/fisico.html">Responder</a>
+            <a href="./../forms/conjunto.html">Responder</a>
           </div>
         </div>
       </div>
 
       <div class="card">
         <div class="face front">
-          <img src="./../../images/index/index_2.jpg" alt="">
-          <h3 align="center">Evaluación Emocional</h3>
+          <img src="./../../images/index/escaneaQR_F.png" alt="">
+          <h3 align="center">Verifica tu QR</h3>
         </div>
         <div class="face back">
-          <h3>Evaluación Emocional</h3>
+          <h3>Verifica tu QR</h3>
           <p>&nbsp;</p>
           <p><strong>Descripción:</strong></p>
-          <p>Evalúa tu estado emocional en el simulador de sismos. Información confidencial para recomendaciones personalizadas.</p>
+          <p>Aquí podrás verificar si tu QR generado por el Simulador de Sismos funciona correctamente para su uso
+            práctico.</p>
           <p>&nbsp;</p>
           <div class="link">
-            <a href="./../forms/emocional.html">Responder</a>
+            <a href="#" id="btnVerificarQR">Continuar</a>
           </div>
         </div>
       </div>
@@ -80,34 +120,165 @@
     </div>
   </div>
 
+  <div id="modalVerificarQR"
+    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:6000; justify-content:center; align-items:center;">
+    <div
+      style="background:#fff; padding:18px; border-radius:12px; max-width:420px; width:90%; text-align:center; position:relative;">
+      <button id="closeQrModal"
+        style="position:absolute; top:8px; right:10px; background:transparent; border:none; font-size:20px; cursor:pointer;">&times;</button>
+      <h3 id="qrModalTitle" style="margin:0 0 8px;">Escanea el QR</h3>
+      <p id="qrModalMsg" style="margin:0 0 12px; color:#333;">Apunta la cámara al código QR generado.</p>
+
+      <img id="qrStatusImg" src="./../../images/soporte/QR_espera.png" alt="estado QR"
+        style="position:absolute; left:12px; top:14px; width:50px; height:50px;">
+
+      <video id="qrVideoModal" autoplay playsinline
+        style="width:100%; max-height:360px; background:#000; border-radius:8px;"></video>
+      <canvas id="qrCanvasModal" style="display:none;"></canvas>
+
+      <div style="margin-top:12px;">
+        <button id="btnCerrarModal"
+          style="background:#8c00ff; color:#fff; border:2px solid #4c008a; padding:8px 16px; border-radius:8px; cursor:pointer;">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="audioSuccess" src="./../../sound/QR_exito.mp3" preload="auto"></audio>
+  <audio id="audioError" src="./../../sound/QR_error.mp3" preload="auto"></audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+
   <script>
-    // Código para asignar un fondo aleatorio
-    const imagenes = [
-      './../../images/bg/bg_1.png',
-      './../../images/bg/bg_2.png',
-      './../../images/bg/bg_3.png',
-      './../../images/bg/bg_4.png',
-      './../../images/bg/bg_5.png',
-      './../../images/bg/bg_6.png',
-      './../../images/bg/bg_7.png',
-      './../../images/bg/bg_8.png',
-      './../../images/bg/bg_9.png',
-      './../../images/bg/bg_10.png',
-      './../../images/bg/bg_11.png',
-      './../../images/bg/bg_12.png',
-      './../../images/bg/bg_13.png',
-      './../../images/bg/bg_14.png',
-      './../../images/bg/bg_15.png',
-      './../../images/bg/bg_16.png',
-      './../../images/bg/bg_17.png',
-      './../../images/bg/bg_19.png',
-      './../../images/bg/bg_20.png',
-      './../../images/bg/bg_21.png',
-      './../../images/bg/bg_22.png',
-      './../../images/bg/bg_23.png',
-      './../../images/bg/bg_24.png',
-      './../../images/bg/bg_25.png'
-    ];
+
+    (function () {
+      const btnAbrir = document.getElementById('btnVerificarQR');
+      const modal = document.getElementById('modalVerificarQR');
+      const closeBtn = document.getElementById('closeQrModal');
+      const btnCerrar = document.getElementById('btnCerrarModal');
+      const video = document.getElementById('qrVideoModal');
+      const canvas = document.getElementById('qrCanvasModal');
+      const ctx = canvas.getContext('2d');
+      const msg = document.getElementById('qrModalMsg');
+      const statusImg = document.getElementById('qrStatusImg');
+      const audioSuccess = document.getElementById('audioSuccess');
+      const audioError = document.getElementById('audioError');
+
+      let stream = null;
+      let rafId = null;
+      let cerradoTimeout = null;
+      let escaneado = false;
+
+      function setStatusWaiting() {
+        if (statusImg) statusImg.src = './../../images/formulario/QR_check.png';
+      }
+      function setStatusOk() {
+        if (statusImg) statusImg.src = './../../images/formulario/QR_exito.png';
+        if (audioSuccess) {
+          try { audioSuccess.currentTime = 0; audioSuccess.play().catch(() => { }); } catch (e) { }
+        }
+      }
+      function setStatusError() {
+        if (statusImg) statusImg.src = './../../images/formulario/QR_error.png';
+        if (audioError) {
+          try { audioError.currentTime = 0; audioError.play().catch(() => { }); } catch (e) { }
+        }
+      }
+
+      function abrirModal(e) {
+        if (e) e.preventDefault();
+        escaneado = false;
+        msg.textContent = 'Apunta la cámara al código QR generado.';
+        setStatusWaiting();
+        modal.style.display = 'flex';
+        startCameraAndScan();
+      }
+
+      async function startCameraAndScan() {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+          video.srcObject = stream;
+          video.play();
+          scanLoop();
+        } catch (err) {
+          msg.textContent = 'No se pudo acceder a la cámara. Verifica permisos.';
+          console.error('Error cámara QR:', err);
+          setStatusError();
+
+          try { audioError.currentTime = 0; audioError.play().catch(() => { }); } catch (e) { }
+        }
+      }
+
+      function stopCamera() {
+        if (stream) {
+          stream.getTracks().forEach(t => t.stop());
+          stream = null;
+        }
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+      }
+
+      function closeModalCleanup() {
+        stopCamera();
+        if (cerradoTimeout) {
+          clearTimeout(cerradoTimeout);
+          cerradoTimeout = null;
+        }
+        modal.style.display = 'none';
+      }
+
+      function scanLoop() {
+        if (!video || video.readyState !== video.HAVE_ENOUGH_DATA) {
+          rafId = requestAnimationFrame(scanLoop);
+          return;
+        }
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        let imageData;
+        try {
+          imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        } catch (e) {
+
+          rafId = requestAnimationFrame(scanLoop);
+          return;
+        }
+
+        const code = window.jsQR(imageData.data, canvas.width, canvas.height);
+        if (code && code.data && !escaneado) {
+          escaneado = true;
+
+          msg.textContent = 'QR funciona correctamente';
+          console.info('QR data:', code.data);
+          setStatusOk();
+
+          stopCamera();
+
+          cerradoTimeout = setTimeout(() => {
+            closeModalCleanup();
+          }, 5000);
+          return;
+        }
+        rafId = requestAnimationFrame(scanLoop);
+      }
+
+      btnAbrir && btnAbrir.addEventListener('click', abrirModal);
+      closeBtn && closeBtn.addEventListener('click', closeModalCleanup);
+      btnCerrar && btnCerrar.addEventListener('click', closeModalCleanup);
+
+      window.addEventListener('beforeunload', () => {
+        stopCamera();
+      });
+    })();
+  </script>
+
+  <script>
+
+    const imagenes = Array.from({ length: 40 }, (_, i) =>
+      `./../../images/bg/bg_${i + 1}.jpg`
+    );
 
     const imagenRandom = imagenes[Math.floor(Math.random() * imagenes.length)];
     document.body.style.backgroundImage = `url('./../../images/bg/difuminados/morado.png'), url(${imagenRandom})`;
@@ -116,8 +287,8 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script>
-    $(document).ready(function() {
-      $("#chat-bot-container").load("./../bot/bot.html", function(response, status, xhr) {
+    $(document).ready(function () {
+      $("#chat-bot-container").load("./../bot/bot.html", function (response, status, xhr) {
         if (status === "error") {
           console.error("Error al cargar bot.html: " + xhr.status + " " + xhr.statusText);
         }
@@ -126,4 +297,5 @@
   </script>
 
 </body>
+
 </html>

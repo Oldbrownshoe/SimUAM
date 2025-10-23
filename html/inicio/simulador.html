@@ -14,12 +14,36 @@
       background-size: cover, cover;
       background-repeat: no-repeat, no-repeat;
     }
+
+    #boton_home img {
+      height: 50px;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      transition: opacity 0.3s ease;
+    }
+
+    #boton_home img:hover {
+      content: url("../../images/anterior_hover.png");
+    }
+
+    #boton_manual img {
+      height: 50px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      transition: opacity 0.3s ease;
+    }
+
+    #boton_manual img:hover {
+      content: url("../../images/manualUsuario_hover.png");
+    }
   </style>
 </head>
 
 <body>
 
-  <p>&nbsp;</p> <!-- Etiqueta de espaciado invisible-->
+  <p>&nbsp;</p>
   <p>&nbsp;</p>
   <div class="container-clock">
     <h2>Bienvenid@ a SimUAM:</h2>
@@ -28,9 +52,12 @@
     <h4 class="container-clock" align="center">Elige una opción:</h4>
   </div>
 
-      <a href="./index.html"> 
-      <button id="boton_home"> <img src="../../images/anterior.png" alt="Inicio"
-        style="height: 50px; position: absolute; top: 10px; left: 10px; color: black;"> </button>
+  <a href="./index.html" id="boton_home">
+    <img src="../../images/anterior.png" alt="Inicio">
+  </a>
+
+  <a href="./../simulador/SimUAM - Manual de Usuario.pdf" id="boton_manual" target="_blank">
+    <img src="../../images/manualUsuario.png" alt="Inicio">
   </a>
 
   <div class="content">
@@ -38,7 +65,7 @@
     <div class="card-container">
       <div class="card">
         <div class="face front">
-          <img src="./../../images/simulacro/index_3.jpg" alt="">
+          <img src="./../../images/index/Señaletica_F.png" alt="">
           <h3 align="center">Señalética</h3>
         </div>
 
@@ -57,7 +84,7 @@
 
       <div class="card">
         <div class="face front">
-          <img src="./../../images/simulacro/simulacro_2.png" alt="">
+          <img src="./../../images/index/Simulador_.png" alt="">
           <h3 align="center">Simulador de Sismos</h3>
         </div>
 
@@ -94,43 +121,21 @@
     </div>
   </div>
 
-      <script>
-        const imagenes = [
-          './../../images/bg/bg_1.png',
-          './../../images/bg/bg_2.png',
-          './../../images/bg/bg_3.png',
-          './../../images/bg/bg_4.png',
-          './../../images/bg/bg_5.png',
-          './../../images/bg/bg_6.png',
-          './../../images/bg/bg_7.png',
-          './../../images/bg/bg_8.png',
-          './../../images/bg/bg_9.png',
-          './../../images/bg/bg_10.png',
-          './../../images/bg/bg_11.png',
-          './../../images/bg/bg_12.png',
-          './../../images/bg/bg_13.png',
-          './../../images/bg/bg_14.png',
-          './../../images/bg/bg_15.png',
-          './../../images/bg/bg_16.png',
-          './../../images/bg/bg_17.png',
-          './../../images/bg/bg_19.png',
-          './../../images/bg/bg_20.png',
-          './../../images/bg/bg_21.png',
-          './../../images/bg/bg_22.png',
-          './../../images/bg/bg_23.png',
-          './../../images/bg/bg_24.png',
-          './../../images/bg/bg_25.png'
-        ];
-
-        const imagenRandom = imagenes[Math.floor(Math.random() * imagenes.length)];
-
-        document.body.style.backgroundImage = `url('./../../images/bg/difuminados/azul.png'), url(${imagenRandom})`;
-      </script>
-
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    $(document).ready(function() {
-      $("#chat-bot-container").load("./../bot/bot.html", function(response, status, xhr) {
+    const imagenes = Array.from({ length: 40 }, (_, i) =>
+      `./../../images/bg/bg_${i + 1}.jpg`
+    );
+
+    const imagenRandom = imagenes[Math.floor(Math.random() * imagenes.length)];
+
+    document.body.style.backgroundImage = `url('./../../images/bg/difuminados/azul.png'), url(${imagenRandom})`;
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      $("#chat-bot-container").load("./../bot/bot.html", function (response, status, xhr) {
         if (status === "error") {
           console.error("Error al cargar bot.html: " + xhr.status + " " + xhr.statusText);
         }
