@@ -1785,56 +1785,46 @@
       try {
         let stream;
 
-        // intento razonable: usar facingMode ideal en vez de exact, y fallback a cualquier cámara disponible
-        const preferencias = esMovil
-          ? { video: { facingMode: { ideal: "environment" } } }
-          : { video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } } };
+        if (esMovil) {
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({
+              video: { facingMode: { exact: "environment" } }
+            });
+            mostrarNotificacionTrofeo("Cámara trasera abierta (móvil)");
+          } catch (err) {
+            console.warn("No se pudo abrir cámara trasera (móvil), usando predeterminada", err);
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            mostrarNotificacionTrofeo("Usando cámara predeterminada (móvil)");
+          }
+        } else {
+          await navigator.mediaDevices.getUserMedia({ video: true });
+          await esperar(500);
 
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(preferencias);
-          console.log('getUserMedia con facingMode ideal OK');
-        } catch (err) {
-          console.warn('getUserMedia facingMode ideal falló, intentando default:', err);
-          // fallback: pedir cualquier cámara
-          stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        }
-
-        // si aún no hay stream, intentar por deviceId (enumerar)
-        if (!stream) {
           const dispositivos = await navigator.mediaDevices.enumerateDevices();
           const camaras = dispositivos.filter(d => d.kind === 'videoinput');
-          if (camaras.length > 0) {
+          const camaraTrasera = camaras.find(d => /back|rear|environment/i.test(d.label));
+
+          if (camaraTrasera) {
             try {
-              stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: camaras[0].deviceId } } });
-            } catch (err2) {
-              console.error('Fallback por deviceId falló:', err2);
-              stream = null;
+              stream = await navigator.mediaDevices.getUserMedia({
+                video: { deviceId: { exact: camaraTrasera.deviceId } }
+              });
+              mostrarNotificacionTrofeo("Cámara trasera abierta: " + camaraTrasera.label);
+            } catch (err) {
+              console.warn("No se pudo abrir cámara trasera (PC), usando predeterminada", err);
+              stream = await navigator.mediaDevices.getUserMedia({ video: true });
+              mostrarNotificacionTrofeo("Usando cámara predeterminada (PC)");
             }
+          } else {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            mostrarNotificacionTrofeo("Usando cámara predeterminada (no se detectó trasera)");
           }
         }
 
-        if (!stream) {
-          document.getElementById('mensaje').textContent = 'No fue posible acceder a la cámara. Verifica permisos y que el sitio use HTTPS.';
-          return;
-        }
-
-        // asignar stream a videos (usar playsinline/muted en HTML para evitar bloqueos)
-        if (videoElem) {
-          videoElem.srcObject = stream;
-          videoElem.setAttribute('playsinline', '');
-          videoElem.muted = true;
-          videoElem.play().catch(e => console.warn('play videoElem:', e));
-        }
-        if (videoLeft) {
-          videoLeft.srcObject = stream;
-          videoLeft.setAttribute('playsinline', '');
-          videoLeft.muted = true;
-        }
-        if (videoRight) {
-          videoRight.srcObject = stream;
-          videoRight.setAttribute('playsinline', '');
-          videoRight.muted = true;
-        }
+        // video
+        if (videoElem) videoElem.srcObject = stream;
+        if (videoLeft) videoLeft.srcObject = stream;
+        if (videoRight) videoRight.srcObject = stream;
 
         if (videoLeft) {
           videoLeft.style.objectFit = "cover";
@@ -1850,9 +1840,9 @@
         }
 
       } catch (err) {
-        console.error("Error general al abrir cámara:", err);
         document.getElementById('mensaje').textContent =
-          'No fue posible acceder a la cámara. Verifica permisos y consola remota.';
+          'No fue posible acceder a la cámara. Verifica permisos.';
+        console.error("Error general al abrir cámara:", err);
       }
     }
 
