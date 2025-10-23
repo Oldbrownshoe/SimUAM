@@ -1,0 +1,39 @@
+function actualizarEstadoSonido() {
+  // Mute/unmute global según el flag
+  audios.forEach(audio => {
+    if (audio) audio.muted = !sonidoActivado;
+  });
+
+  // Asegura que playsfxTimer siga el estado global de mute
+  if (playsfxTimer) playsfxTimer.muted = !sonidoActivado;
+
+  if (iconoSonido) {
+    iconoSonido.src = sonidoActivado ? "images/sonido_activado.png" : "images/sonido_desactivado.png";
+    iconoSonido.alt = sonidoActivado ? "Sonido activado" : "Sonido desactivado";
+  }
+}
+
+if (botonSonido) {
+  botonSonido.onclick = function () {
+    sonidoActivado = !sonidoActivado;
+    actualizarEstadoSonido();
+
+    // Al ACTIVAR sonido, reproducir el sfx (gesto del usuario)
+    if (sonidoActivado && playsfxTimer) {
+      try {
+        playsfxTimer.currentTime = 0;   // Reinicia al inicio
+        playsfxTimer.muted = false;     // Por si quedó muteado
+        const p = playsfxTimer.play();
+        if (p && typeof p.catch === 'function') p.catch(() => { /* ignorar bloqueo/autoplay */ });
+      } catch (_) { /* noop */ }
+    } else if (playsfxTimer) {
+      // Opcional: si desactivas sonido, detén y resetea el sfx
+      playsfxTimer.pause();
+      playsfxTimer.currentTime = 0;
+    }
+
+    mostrarNotificacionTrofeo(sonidoActivado ? "Sonido activado" : "Sonido desactivado");
+  };
+}
+
+actualizarEstadoSonido();

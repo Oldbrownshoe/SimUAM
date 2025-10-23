@@ -1,14 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>SimUAM: Manual de Usuario</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
   <style>
+    @font-face {
+      font-family: "Aptos";
+      src: url("./../../font/Aptos.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    * {
+      font-family: "Aptos", Arial, sans-serif;
+    }
+
     body {
       margin: 0;
       padding: 1rem;
-      font-family: Arial, sans-serif;
+      font-family: "Aptos", Arial, sans-serif;
       background: #f0f2f5;
       display: flex;
       flex-direction: column;
@@ -64,6 +76,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <audio id="sonido-pagina" src="./../../sound/manualUsuario.mp3" preload="auto"></audio>
@@ -87,38 +100,38 @@
       'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.worker.min.js';
 
     const lienzoIzquierdo = document.getElementById('lienzo-izquierdo');
-    const lienzoDerecho  = document.getElementById('lienzo-derecho');
-    const botonAnterior   = document.getElementById('boton-anterior');
-    const botonSiguiente  = document.getElementById('boton-siguiente');
-    const sonidoPagina    = document.getElementById('sonido-pagina');
+    const lienzoDerecho = document.getElementById('lienzo-derecho');
+    const botonAnterior = document.getElementById('boton-anterior');
+    const botonSiguiente = document.getElementById('boton-siguiente');
+    const sonidoPagina = document.getElementById('sonido-pagina');
 
     const ctxIzq = lienzoIzquierdo.getContext('2d');
     const ctxDer = lienzoDerecho.getContext('2d');
 
-    let docPDF    = null;
+    let docPDF = null;
     let parActual = 0;
     let parMaximo = 0;
-    let escala    = 1;
+    let escala = 1;
 
-    pdfjsLib.getDocument('Reporte de Actividades - Jorge.pdf')
+    pdfjsLib.getDocument('SimUAM - Manual de Usuario.pdf')
       .promise
       .then(async documento => {
-        docPDF    = documento;
+        docPDF = documento;
         parMaximo = Math.ceil((docPDF.numPages + 1) / 2) - 1;
 
         const primera = await docPDF.getPage(1);
-        const vp       = primera.getViewport({ scale: 1 });
+        const vp = primera.getViewport({ scale: 1 });
         const altoDeseado = 700;
         escala = altoDeseado / vp.height;
         const anchoPag = vp.width * escala;
-        const altoPag  = vp.height * escala;
+        const altoPag = vp.height * escala;
 
         const contLib = document.getElementById('contenedor-libro');
-        contLib.style.width  = (anchoPag * 2) + 'px';
+        contLib.style.width = (anchoPag * 2) + 'px';
         contLib.style.height = altoPag + 'px';
 
         [lienzoIzquierdo, lienzoDerecho].forEach(canvas => {
-          canvas.width  = anchoPag;
+          canvas.width = anchoPag;
           canvas.height = altoPag;
         });
 
@@ -133,7 +146,7 @@
       if (numIzq > 0) {
         docPDF.getPage(numIzq).then(p => {
           const vp = p.getViewport({ scale: escala });
-          lienzoIzquierdo.width  = vp.width;
+          lienzoIzquierdo.width = vp.width;
           lienzoIzquierdo.height = vp.height;
           p.render({ canvasContext: ctxIzq, viewport: vp });
         });
@@ -144,7 +157,7 @@
       if (numDer <= docPDF.numPages) {
         docPDF.getPage(numDer).then(p => {
           const vp = p.getViewport({ scale: escala });
-          lienzoDerecho.width  = vp.width;
+          lienzoDerecho.width = vp.width;
           lienzoDerecho.height = vp.height;
           p.render({ canvasContext: ctxDer, viewport: vp });
         });
@@ -180,4 +193,5 @@
   </script>
 
 </body>
+
 </html>

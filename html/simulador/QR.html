@@ -1,19 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>QR</title>
   <style>
+    @font-face {
+      font-family: "Aptos";
+      src: url("./../../font/Aptos.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    * {
+      font-family: "Aptos", Arial, sans-serif;
+    }
+
     body {
-      font-family: sans-serif;
+      font-family: "Aptos", Arial, sans-serif;
       text-align: center;
       padding: 40px;
     }
+
     #qr {
       margin-top: 20px;
     }
   </style>
 </head>
+
 <body>
   <button onclick="generarQR()">Genera QR</button>
   <canvas id="qr"></canvas>
@@ -24,9 +38,10 @@
       const qr = new QRious({
         element: document.getElementById('qr'),
         value: '¡Ejercicio terminado!',
-        size: 300
+        size: 400
       });
     }
   </script>
 </body>
+
 </html>

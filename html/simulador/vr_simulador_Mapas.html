@@ -1,601 +1,136 @@
-<!DOCTYPE html>
-<html lang="es">
+<!-- Mapa del B1 -->
+<img src="mapas/png/B1.png" usemap="#image-map">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapas</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background: #222;
-        }
+<map name="image-map">
+    <area target="" alt="Superior Izquierda" title="Superior Izquierda" href="google.com" coords="0,0,136,158" shape="rect">
+    <area target="" alt="Superior Central" title="Superior Central" href="google.com" coords="138,0,273,159" shape="rect">
+    <area target="" alt="Superior Derecha" title="Superior Derecha" href="google.com" coords="276,1,400,159" shape="rect">
+    <area target="" alt="Central Izquierda" title="Central Izquierda" href="google.com" coords="0,158,137,317" shape="rect">
+    <area target="" alt="Central Central" title="Central Central" href="google.com" coords="138,159,273,316" shape="rect">
+    <area target="" alt="Central Derecha" title="Central Derecha" href="google.com" coords="274,160,400,315" shape="rect">
+    <area target="" alt="Inferior Izquierda" title="Inferior Izquierda" href="google.com" coords="0,318,135,464" shape="rect">
+    <area target="" alt="Inferior Central" title="Inferior Central" href="google.com" coords="136,317,273,465" shape="rect">
+    <area target="" alt="Inferior Derecha" title="Inferior Derecha" href="google.com" coords="274,316,400,464" shape="rect">
+</map>
 
-        #mapa-container {
-            position: relative;
-            margin: 0 auto;
-            background: #222;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* El tamaño se ajustará dinámicamente */
-            width: 100vw;
-            height: 100vh;
-            max-width: 100vw;
-            max-height: 100vh;
-        }
+<!-- Mapa del B2 -->
+<img src="mapas/png/B2.png" usemap="#image-map">
 
-        #svg-mapa {
-            display: block;
-            max-width: 100vw;
-            max-height: 100vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-        }
+<map name="image-map">
+    <area target="" alt="Superior Izquierda" title="Superior Izquierda" href="google.com" coords="0,0,142,125" shape="rect">
+    <area target="" alt="Superior Central" title="Superior Central" href="google.com" coords="143,0,264,125" shape="rect">
+    <area target="" alt="Superior Derecha" title="Superior Derecha" href="google.com" coords="265,1,395,125" shape="rect">
+    <area target="" alt="Central Izquierda" title="Central Izquierda" href="google.com" coords="0,126,142,262" shape="rect">
+    <area target="" alt="Central Central" title="Central Central" href="google.com" coords="143,126,266,261" shape="rect">
+    <area target="" alt="Central Derecha" title="Central Derecha" href="google.com" coords="265,126,396,261" shape="rect">
+    <area target="" alt="Inferior Izquierda" title="Inferior Izquierda" href="google.com" coords="0,263,142,417" shape="rect">
+    <area target="" alt="Inferior Central" title="Inferior Central" href="google.com" coords="143,262,266,417" shape="rect">
+    <area target="" alt="Inferior Derecha" title="Inferior Derecha" href="google.com" coords="266,262,395,417" shape="rect">
+</map>
 
-        #usuario {
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            cursor: grab;
-            transition: transform 0.1s linear;
-            z-index: 2;
-        }
 
-        #rotador {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            background: #fff8;
-            padding: 10px 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px #0003;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+<!-- Mapa del B3 -->
+<img src="mapas/png/B3.png" usemap="#image-map">
 
-        #rotador input[type=range] {
-            width: 180px;
-        }
+<map name="image-map">
+    <area target="" alt="Superior Izquierda" title="Superior Izquierda" href="google.com" coords="0,0,214,236" shape="rect">
+    <area target="" alt="Superior Central" title="Superior Central" href="google.com" coords="214,2,439,235" shape="rect">
+    <area target="" alt="Superior Derecha" title="Superior Derecha" href="google.com" coords="440,0,654,206" shape="rect">
+    <area target="" alt="Central Izquierda" title="Central Izquierda" href="google.com" coords="0,236,213,476" shape="rect">
+    <area target="" alt="Central Central" title="Central Central" href="google.com" coords="213,237,436,476" shape="rect">
+    <area target="" alt="Central Derecha" title="Central Derecha" href="google.com" coords="437,237,653,476" shape="rect">
+    <area target="" alt="Inferior Izquierda" title="Inferior Izquierda" href="google.com" coords="0,477,214,690" shape="rect">
+    <area target="" alt="Inferior Central" title="Inferior Central" href="google.com" coords="215,477,435,690" shape="rect">
+    <area target="" alt="Inferior Derecha" title="Inferior Derecha" href="google.com" coords="436,475,653,689" shape="rect">
+</map>
 
-        #rotador .flecha {
-            width: 32px;
-            height: 32px;
-            display: inline-block;
-            background: url('./mapas/usuario.png') no-repeat center/contain;
-            transform: rotate(0deg);
-            transition: transform 0.1s linear;
-        }
 
-        /* Estilos para el canvas de la ruta */
-        #canvas-ruta {
-            position: absolute;
-            left: 0;
-            top: 0;
-            z-index: 1;
-            pointer-events: none;
-        }
+<!-- Mapa del Cuarto Piso -->
+<img src="mapas/png/4.png" usemap="#image-map">
+<map name="image-map">
+    <area target="_blank" alt="Superior Izquierda" title="Superior Izquierda" href="google.com" coords="141,0,0,149" shape="rect">
+    <area target="_blank" alt="Superior Central" title="Superior Central" href="google.com" coords="285,0,142,148" shape="rect">
+    <area target="_blank" alt="Superior Derecha" title="Superior Derecha" href="google.com" coords="286,2,426,147" shape="rect">
+    <area target="_blank" alt="Central Izquierda" title="Central Izquierda" href="google.com" coords="0,148,139,293" shape="rect">
+    <area target="_blank" alt="Central Central" title="Central Central" href="google.com" coords="140,148,286,292" shape="rect">
+    <area target="_blank" alt="Central Derecha" title="Central Derecha" href="google.com" coords="286,147,428,292" shape="rect">
+    <area target="_blank" alt="Inferior Izquierda" title="Inferior Izquierda" href="google.com" coords="0,294,143,439" shape="rect">
+    <area target="_blank" alt="Inferior Central" title="Inferior Central" href="google.com" coords="143,293,284,440" shape="rect">
+    <area target="_blank" alt="Inferior Derecha" title="Inferior Derecha" href="google.com" coords="284,293,428,441" shape="rect">
+    <area target="_blank" alt="Agora" title="Agora" href="google.com" coords="0,440,427,574" shape="rect">
+</map>
 
-        /* Estilos para los botones de control de ruta */
-        #controles-ruta {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            margin: 0;
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            z-index: 11;
-        }
+<!-- Mapa del Quinto Piso -->
+<img src="mapas/png/5.png" usemap="#image-map">
 
-        #controles-ruta button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            background: #fff8;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
+<map name="image-map">
+    <area target="_blank" alt="Superior Izquierda" title="Superior Izquierda" href="google.com" coords="1,0,257,255" shape="rect">
+    <area target="_blank" alt="Superior Central" title="Superior Central" href="google.com" coords="258,4,499,256" shape="rect">
+    <area target="_blank" alt="Superior Derecha" title="Superior Derecha" href="google.com" coords="499,1,738,256" shape="rect">
+    <area target="_blank" alt="Central Izquierda" title="Central Izquierda" coords="1,256,248,504" shape="rect">
+    <area target="_blank" alt="Central Central" title="Central Derecha" coords="253,257,499,505" shape="rect">
+    <area target="_blank" alt="Central Derecha" title="Central Central" coords="500,258,737,505" shape="rect">
+    <area target="_blank" alt="Inferior Izquierda" title="Inferior Izquierda" coords="0,506,253,772" shape="rect">
+    <area target="_blank" alt="Inferior Central" title="Inferior Central" coords="254,507,498,772" shape="rect">
+    <area target="_blank" alt="Inferior Derecha" coords="498,505,738,771" shape="rect">
+</map>
 
-        #controles-ruta button:hover {
-            background: #fff3;
-        }
+<!-- Mapa del Sexto Piso -->
+<img src="mapas/png/6.png" usemap="#image-map">
 
-        /* Estilos para la trivia */
-        #trivia-container {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #fff;
-            padding: 28px 24px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px #0003;
-            z-index: 100;
-        }
+<map name="image-map">
+    <area target="_blank" alt="Superior Izquierda" title="Superior Izquierda" href="google.com" coords="1,2,161,166" shape="rect">
+    <area target="_blank" alt="Superior Central" title="Superior Central" href="google.com" coords="161,2,327,166" shape="rect">
+    <area target="_blank" alt="Superior Derecha" title="Superior Derecha" href="google.com" coords="325,1,492,165" shape="rect">
+    <area target="_blank" alt="Central Izquierda" title="Central Izquierda" href="google.com" coords="0,167,163,326" shape="rect">
+    <area target="_blank" alt="Central Central" title="Central Central" href="google.com" coords="164,166,325,327" shape="rect">
+    <area target="_blank" alt="Central Derecha" title="Central Derecha" href="google.com" coords="326,166,491,326" shape="rect">
+    <area target="_blank" alt="Inferior Izquierda" title="Inferior Izquierda" href="google.com" coords="0,327,171,498,162,497" shape="rect">
+    <area target="_blank" alt="Inferior Central" title="Inferior Central" href="google.com" coords="172,326,328,498" shape="rect">
+    <area target="_blank" alt="Inferior Derecha" title="Inferior Derecha" href="google.com" coords="329,326,492,498" shape="rect">
+</map>
 
-        #trivia-pregunta {
-            font-size: 1.1em;
-            margin-bottom: 18px;
-        }
+<!-- Mapa del Septimo Piso -->
+<img src="mapas/png/7.png" usemap="#image-map">
 
-        #trivia-feedback {
-            margin-top: 12px;
-            font-weight: bold;
-        }
+<map name="image-map">
+    <area target="" alt="Superior Izquierda" title="Superior Izquierda" href="google.com" coords="221,260,0,0" shape="rect">
+    <area target="" alt="Superior Central" title="Superior Central" href="google.com" coords="223,0,456,260" shape="rect">
+    <area target="" alt="Superior Derecha" title="Superior Derecha" href="google.com" coords="458,0,673,262" shape="rect">
+    <area target="" alt="Central Izquierda" title="Central Izquierda" href="google.com" coords="0,261,223,486" shape="rect">
+    <area target="" alt="Central Central" title="Central Central" href="google.com" coords="223,261,454,485" shape="rect">
+    <area target="" alt="Central Derecha" title="Central Derecha" href="google.com" coords="456,262,676,484" shape="rect">
+    <area target="" alt="Inferior Izquierda" title="Inferior Izquierda" href="google.com" coords="0,487,222,697" shape="rect">
+    <area target="" alt="Inferior Central" title="Inferior Central" href="google.com" coords="223,486,452,701" shape="rect">
+    <area target="" alt="Inferior Derecha" title="Inferior Derecha" href="google.com" coords="453,484,674,700" shape="rect">
+</map>
 
-        #puntaje-container {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 30;
-            background: #fff8;
-            padding: 8px 16px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px #0003;
-        }
-    </style>
-</head>
+<!-- Mapa del Octavo Piso -->
+<img src="mapas/png/8.png" usemap="#image-map">
 
-<body>
-    <div id="mapa-container">
-        <div id="selector-piso"
-            style="position:absolute;top:10px;right:400px;z-index:20;background:#fff8;padding:8px 16px;border-radius:8px;box-shadow:0 2px 8px #0003;">
-            <label for="piso-select">Piso:</label>
-            <select id="piso-select">
-                <option value="B1.png">Estacionamiento 1</option>
-                <option value="B2.png">Estacionamiento 2</option>
-                <option value="B3.png">Estacionamiento 3</option>
-                <option value="4.png">Piso 4</option>
-                <option value="6.png">Piso 6</option>
-                <option value="7.png">Piso 7</option>
-                <option value="8.png">Piso 8</option>
-                <option value="G.png">Jardin de Abejas</option>
-            </select>
-        </div>
-        <img id="svg-mapa" src="./mapas/png/B1.png" alt="Mapa PNG">
-        <canvas id="canvas-ruta" style="position:absolute;left:0;top:0;z-index:1;pointer-events:none;"></canvas>
-        <img id="usuario" src="./mapas/usuario/B1.png" alt="Usuario" draggable="false" style="pointer-events:auto;">
-        <div id="mensaje"
-            style="position:absolute;top:10px;left:120%;transform:translateX(-50%);background:#fff;padding:10px 20px;border-radius:8px;z-index:10;font-size:1.1em;box-shadow:0 2px 8px #0003;">
-            Arrastra la flecha a tu ubicación inicial en el mapa</div>
-        <div id="rotador">
-            <span>Rotar flecha:</span>
-            <input id="slider-rotacion" type="range" min="0" max="359" value="0">
-            <span class="flecha" id="flecha-rotacion"></span>
-        </div>
-        <div id="controles-ruta">
-            <button id="btn-marcar-ruta">Marcar ruta</button>
-            <button id="btn-limpiar-ruta">Limpiar ruta</button>
-        </div>
-        <!-- Trivia y puntaje -->
-        <div id="trivia-container" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:28px 24px;border-radius:12px;box-shadow:0 2px 8px #0003;z-index:100;">
-            <div id="trivia-pregunta" style="font-size:1.1em;margin-bottom:18px;"></div>
-            <form id="trivia-form"></form>
-            <div id="trivia-feedback" style="margin-top:12px;font-weight:bold;"></div>
-            <button id="trivia-close" style="margin-top:16px;display:none;">Cerrar</button>
-        </div>
-        <div id="puntaje-container" style="position:absolute;top:10px;left:10px;z-index:30;background:#fff8;padding:8px 16px;border-radius:8px;box-shadow:0 2px 8px #0003;">
-            Puntaje: <span id="puntaje">0</span>
-        </div>
-    </div>
-    <script>
-        // Dimensiones de cada mapa por piso
-        const dimensionesMapas = {
-            "B1.png": { width: 384, height: 577 },
-            "B2.png": { width: 340, height: 418 },
-            "B3.png": { width: 340, height: 692 },
-            "4.png": { width: 384, height: 408 },
-            "5.png": { width: 900, height: 600 },
-            "6.png": { width: 457, height: 496 },
-            "7.png": { width: 357, height: 393 },
-            "8.png": { width: 546, height: 578 },
-            "G.png": { width: 371, height: 431 }
-        };
+<map name="image-map">
+    <area target="" alt="Superior Izquierda" title="Superior Izquierda" href="google.com" coords="0,0,238,260" shape="rect">
+    <area target="" alt="Superior Central" title="Superior Central" href="google.com" coords="238,0,452,259" shape="rect">
+    <area target="" alt="Superior Derecha" title="Superior Derecha" href="google.com" coords="454,49,682,260" shape="rect">
+    <area target="" alt="Central Izquierda" title="Central Izquierda" href="google.com" coords="0,260,236,480" shape="rect">
+    <area target="" alt="Central Central" title="Central Central" href="google.com" coords="237,259,453,480" shape="rect">
+    <area target="" alt="Central Derecha" title="Central Derecha" href="google.com" coords="454,261,682,479" shape="rect">
+    <area target="" alt="Inferior Izquierda" title="Inferior Izquierda" href="google.com" coords="0,482,236,722" shape="rect">
+    <area target="" alt="Inferior Central" title="Inferior Central" href="google.com" coords="237,481,453,721" shape="rect">
+    <area target="" alt="Inferior Derecha" title="Inferior Derecha" href="google.com" coords="454,479,681,722" shape="rect">
+</map>
 
-        const usuario = document.getElementById('usuario');
-        const mapa = document.getElementById('svg-mapa');
-        const container = document.getElementById('mapa-container');
-        const canvasRuta = document.getElementById('canvas-ruta');
-        const ctxRuta = canvasRuta.getContext('2d');
-        const btnMarcarRuta = document.getElementById('btn-marcar-ruta');
-        const btnLimpiarRuta = document.getElementById('btn-limpiar-ruta');
-        const pisoSelect = document.getElementById('piso-select');
-        const mensaje = document.getElementById('mensaje');
+<!-- Mapa del Jardin -->
+<img src="mapas/png/G.png" usemap="#image-map">
 
-        let dragging = false;
-        let offsetX = 0, offsetY = 0;
-        let pisoActual = pisoSelect.value;
-        let posX = dimensionesMapas[pisoActual]?.width ? dimensionesMapas[pisoActual].width / 2 : 200;
-        let posY = dimensionesMapas[pisoActual]?.height ? dimensionesMapas[pisoActual].height / 2 : 200;
-        let escala = 2.5;
-        let direccion = null;
-        let direccionVector = { x: 0, y: -1 };
-        let arrastrado = false;
-        let angulo = 0;
-        let modoMarcarRuta = false;
-        let puntosRuta = [];
-        const sliderRotacion = document.getElementById('slider-rotacion');
-        const flechaRotacion = document.getElementById('flecha-rotacion');
-
-        // --- Trivia de ruta de evacuación ---
-        let puntaje = 0;
-        const triviaContainer = document.getElementById('trivia-container');
-        const triviaPregunta = document.getElementById('trivia-pregunta');
-        const triviaForm = document.getElementById('trivia-form');
-        const triviaFeedback = document.getElementById('trivia-feedback');
-        const triviaClose = document.getElementById('trivia-close');
-        const puntajeSpan = document.getElementById('puntaje');
-
-        // Preguntas de ejemplo por piso (puedes personalizar)
-        const preguntasRuta = {
-            "B1.png": {
-                pregunta: "¿Cuál es la ruta de evacuación correcta desde el Estacionamiento 1?",
-                opciones: [
-                    "Salir por la rampa principal hacia la calle",
-                    "Subir al piso 4 y buscar la salida",
-                    "Esperar en el auto",
-                    "Ir al jardín de abejas"
-                ],
-                respuesta: 0
-            },
-            "B2.png": {
-                pregunta: "¿Por dónde debes evacuar desde Estacionamiento 2?",
-                opciones: [
-                    "Por la escalera de emergencia más cercana",
-                    "Por el elevador",
-                    "Esperar instrucciones",
-                    "Ir al piso 8"
-                ],
-                respuesta: 0
-            },
-            "B3.png": {
-                pregunta: "¿Cuál es la mejor ruta de evacuación desde Estacionamiento 3?",
-                opciones: [
-                    "Por la salida lateral señalada",
-                    "Por el elevador",
-                    "Subir al piso 4",
-                    "Esperar en el auto"
-                ],
-                respuesta: 0
-            },
-            "4.png": {
-                pregunta: "¿Cómo evacuarías desde el Piso 4?",
-                opciones: [
-                    "Bajar por la escalera de emergencia",
-                    "Esperar en el salón",
-                    "Usar el elevador",
-                    "Ir al jardín de abejas"
-                ],
-                respuesta: 0
-            },
-            "6.png": {
-                pregunta: "¿Cuál es la ruta de evacuación desde el Piso 6?",
-                opciones: [
-                    "Bajar por la escalera de emergencia",
-                    "Esperar en el salón",
-                    "Usar el elevador",
-                    "Ir al estacionamiento"
-                ],
-                respuesta: 0
-            },
-            "7.png": {
-                pregunta: "¿Por dónde evacuarías desde el Piso 7?",
-                opciones: [
-                    "Bajar por la escalera de emergencia",
-                    "Esperar en el salón",
-                    "Usar el elevador",
-                    "Ir al jardín de abejas"
-                ],
-                respuesta: 0
-            },
-            "8.png": {
-                pregunta: "¿Cuál es la mejor opción de evacuación desde el Piso 8?",
-                opciones: [
-                    "Bajar por la escalera de emergencia",
-                    "Esperar en el salón",
-                    "Usar el elevador",
-                    "Ir al estacionamiento"
-                ],
-                respuesta: 0
-            },
-            "G.png": {
-                pregunta: "¿Qué debes hacer en el Jardín de Abejas en caso de evacuación?",
-                opciones: [
-                    "Dirigirte a la zona de menor riesgo señalada",
-                    "Entrar al edificio",
-                    "Esperar en el jardín",
-                    "Ir al estacionamiento"
-                ],
-                respuesta: 0
-            }
-        };
-
-        function clamp(val, min, max) {
-            return Math.max(min, Math.min(max, val));
-        }
-
-        function getUsuarioRadius() {
-            return 16;
-        }
-
-        function clampUsuario(val, min, max) {
-            return val;
-        }
-
-        function actualizarRotacion() {
-            usuario.style.transform = `translate(-50%, -50%) translate(${posX}px, ${posY}px) rotate(${angulo}deg)`;
-            flechaRotacion.style.transform = `rotate(${angulo}deg)`;
-        }
-
-        function actualizarPosicion() {
-            usuario.style.transform = `translate(-50%, -50%) translate(${posX}px, ${posY}px) rotate(${angulo}deg)`;
-            if (modoMarcarRuta && puntosRuta.length > 0) {
-                puntosRuta[0] = { x: posX, y: posY };
-                dibujarRuta();
-            }
-        }
-
-        sliderRotacion.addEventListener('input', function () {
-            angulo = parseInt(this.value);
-            actualizarRotacion();
-        });
-        actualizarRotacion();
-
-        usuario.addEventListener('mousedown', startDrag);
-        usuario.addEventListener('touchstart', startDrag, { passive: false });
-        document.addEventListener('mousemove', onDrag);
-        document.addEventListener('touchmove', onDrag, { passive: false });
-        document.addEventListener('mouseup', endDrag);
-        document.addEventListener('touchend', endDrag);
-
-        function getEventPos(e) {
-            if (e.touches && e.touches.length > 0) {
-                return {
-                    x: e.touches[0].clientX - container.getBoundingClientRect().left,
-                    y: e.touches[0].clientY - container.getBoundingClientRect().top
-                };
-            } else {
-                return {
-                    x: e.clientX - container.getBoundingClientRect().left,
-                    y: e.clientY - container.getBoundingClientRect().top
-                };
-            }
-        }
-
-        function startDrag(e) {
-            e.preventDefault();
-            dragging = true;
-            arrastrado = true;
-            let pos = getEventPos(e);
-            offsetX = pos.x - posX;
-            offsetY = pos.y - posY;
-        }
-
-        function onDrag(e) {
-            if (!dragging) return;
-            let pos = getEventPos(e);
-            posX = pos.x - offsetX;
-            posY = pos.y - offsetY;
-            actualizarPosicion();
-        }
-
-        function endDrag(e) {
-            if (!dragging) return;
-            dragging = false;
-            if (mensaje) mensaje.style.display = 'none';
-        }
-
-        posX = container.offsetWidth / 2;
-        posY = container.offsetHeight / 2;
-        actualizarPosicion();
-
-        window.addEventListener('deviceorientation', function (event) {
-            if (!arrastrado) return;
-            let fuerza = event.beta * escala * 0.05;
-            let rad = angulo * Math.PI / 180;
-            let dx = Math.sin(rad) * fuerza;
-            let dy = -Math.cos(rad) * fuerza;
-            posX = posX + dx;
-            posY = posY + dy;
-            actualizarPosicion();
-        });
-
-        window.addEventListener('keydown', function (e) {
-            if (!arrastrado) return;
-            let paso = 10;
-            let rad = angulo * Math.PI / 180;
-            let dx = Math.sin(rad) * paso;
-            let dy = -Math.cos(rad) * paso;
-            if (e.key === 'ArrowUp') {
-                posX = posX + dx;
-                posY = posY + dy;
-            }
-            if (e.key === 'ArrowDown') {
-                posX = posX - dx;
-                posY = posY - dy;
-            }
-            actualizarPosicion();
-        });
-
-        btnMarcarRuta.addEventListener('click', function () {
-            modoMarcarRuta = !modoMarcarRuta;
-            btnMarcarRuta.textContent = modoMarcarRuta ? 'Terminar marcado' : 'Marcar ruta';
-            if (modoMarcarRuta) {
-                puntosRuta = [{ x: posX, y: posY }];
-                dibujarRuta();
-                canvasRuta.style.pointerEvents = 'auto';
-            } else {
-                canvasRuta.style.pointerEvents = 'none';
-                // Mostrar trivia solo si se marcó una ruta
-                if (puntosRuta.length > 1) {
-                    mostrarTriviaRuta(pisoActual);
-                }
-            }
-        });
-
-        btnLimpiarRuta.addEventListener('click', function () {
-            puntosRuta = [];
-            dibujarRuta();
-        });
-
-        canvasRuta.addEventListener('mousedown', function (e) {
-            if (!modoMarcarRuta) return;
-            const rect = canvasRuta.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            puntosRuta.push({ x, y });
-            dibujarRuta();
-        });
-
-        function dibujarRuta() {
-            ctxRuta.clearRect(0, 0, canvasRuta.width, canvasRuta.height);
-            if (puntosRuta.length < 2) return;
-            ctxRuta.strokeStyle = '#00ff00';
-            ctxRuta.lineWidth = 5;
-            ctxRuta.beginPath();
-            ctxRuta.moveTo(puntosRuta[0].x, puntosRuta[0].y);
-            for (let i = 1; i < puntosRuta.length; i++) {
-                ctxRuta.lineTo(puntosRuta[i].x, puntosRuta[i].y);
-            }
-            ctxRuta.stroke();
-            ctxRuta.fillStyle = '#00ff00';
-            for (let p of puntosRuta) {
-                ctxRuta.beginPath();
-                ctxRuta.arc(p.x, p.y, 6, 0, 2 * Math.PI);
-                ctxRuta.fill();
-            }
-        }
-
-        function ajustarCanvasYUsuario(centrar = false) {
-            const dims = dimensionesMapas[pisoActual];
-            if (!dims) return;
-
-            const maxW = window.innerWidth;
-            const maxH = window.innerHeight;
-            const escalaW = maxW / dims.width;
-            const escalaH = maxH / dims.height;
-            const escalaMapa = Math.min(escalaW, escalaH, 1);
-
-            const scaledWidth = dims.width * escalaMapa;
-            const scaledHeight = dims.height * escalaMapa;
-
-            container.style.width = scaledWidth + 'px';
-            container.style.height = scaledHeight + 'px';
-            canvasRuta.width = scaledWidth;
-            canvasRuta.height = scaledHeight;
-
-            mapa.style.width = scaledWidth + 'px';
-            mapa.style.height = scaledHeight + 'px';
-
-            if (centrar) {
-                posX = container.offsetWidth / 2;
-                posY = container.offsetHeight / 2;
-            } else {
-
-            }
-
-            if (puntosRuta.length > 0) {
-                puntosRuta = puntosRuta.map(p => ({
-                    x: clampUsuario(p.x, 0, scaledWidth),
-                    y: clampUsuario(p.y, 0, scaledHeight)
-                }));
-            }
-
-            actualizarPosicion();
-            dibujarRuta();
-        }
-
-        window.addEventListener('resize', function () {
-            ajustarCanvasYUsuario(false);
-        });
-
-        pisoSelect.addEventListener('change', function () {
-            const piso = pisoSelect.value;
-            pisoActual = piso;
-            mapa.src = `./mapas/png/${piso}`;
-            usuario.src = `./mapas/usuario/${piso}`;
-            flechaRotacion.style.backgroundImage = `url('./mapas/usuario/${piso}')`;
-            puntosRuta = [];
-            dibujarRuta();
-            ajustarCanvasYUsuario(false);
-        });
-
-        mapa.addEventListener('load', function () {
-            if (!arrastrado) {
-                ajustarCanvasYUsuario(true);
-            } else {
-                ajustarCanvasYUsuario(false);
-            }
-        });
-
-        flechaRotacion.style.backgroundImage = `url('./mapas/usuario/${pisoSelect.value}')`;
-
-        if (mapa.complete) {
-            ajustarCanvasYUsuario(true);
-        } else {
-            mapa.addEventListener('load', function () { ajustarCanvasYUsuario(true); });
-        }
-
-        function mostrarTriviaRuta(piso) {
-            const preguntaObj = preguntasRuta[piso];
-            if (!preguntaObj) return;
-            triviaPregunta.textContent = preguntaObj.pregunta;
-            triviaForm.innerHTML = '';
-            triviaFeedback.textContent = '';
-            triviaClose.style.display = 'none';
-
-            preguntaObj.opciones.forEach((op, idx) => {
-                const label = document.createElement('label');
-                label.style.display = 'block';
-                label.style.margin = '8px 0';
-                const input = document.createElement('input');
-                input.type = 'radio';
-                input.name = 'trivia-opcion';
-                input.value = idx;
-                input.required = true;
-                label.appendChild(input);
-                label.appendChild(document.createTextNode(' ' + op));
-                triviaForm.appendChild(label);
-            });
-
-            const submitBtn = document.createElement('button');
-            submitBtn.type = 'submit';
-            submitBtn.textContent = 'Responder';
-            submitBtn.className = 'nav-button';
-            submitBtn.style.marginTop = '14px';
-            triviaForm.appendChild(submitBtn);
-
-            triviaForm.onsubmit = function(e) {
-                e.preventDefault();
-                const seleccion = parseInt(triviaForm.querySelector('input[name="trivia-opcion"]:checked').value);
-                if (seleccion === preguntaObj.respuesta) {
-                    triviaFeedback.textContent = '¡Correcto! Has sumado un punto.';
-                    puntaje++;
-                    puntajeSpan.textContent = puntaje;
-                } else {
-                    triviaFeedback.textContent = 'Respuesta incorrecta. Intenta conocer mejor la ruta.';
-                }
-                triviaClose.style.display = '';
-                triviaForm.querySelectorAll('input').forEach(inp => inp.disabled = true);
-                submitBtn.disabled = true;
-            };
-
-            triviaClose.onclick = function() {
-                triviaContainer.style.display = 'none';
-            };
-
-            triviaContainer.style.display = '';
-        }
-    </script>
-</body>
-
-</html>
+<map name="image-map">
+    <area target="" alt="Superior Izquierda" title="Superior Izquierda" href="google.com" coords="0,0,135,145" shape="rect">
+    <area target="" alt="Superior Central" title="Superior Central" href="google.com" coords="136,0,273,145" shape="rect">
+    <area target="" alt="Superior Derecha" title="Superior Derecha" href="google.com" coords="274,0,416,146" shape="rect">
+    <area target="" alt="Central Izquierda" title="Central Izquierda" href="google.com" coords="0,146,134,280" shape="rect">
+    <area target="" alt="Central Central" title="Central Central" href="google.com" coords="134,147,274,280" shape="rect">
+    <area target="" alt="Central Derecha" title="Central Derecha" href="google.com" coords="274,147,416,280" shape="rect">
+    <area target="" alt="Inferior Izquierda" title="Inferior Izquierda" href="google.com" coords="0,281,133,427" shape="rect">
+    <area target="" alt="Inferior Central" title="Inferior Central" href="google.com" coords="134,281,275,427" shape="rect">
+    <area target="" alt="Inferior Derecha" title="Inferior Derecha" href="google.com" coords="274,281,415,427" shape="rect">
+</map>

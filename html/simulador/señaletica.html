@@ -7,8 +7,19 @@
     <title>SimUAM: Señaletica</title>
     <link rel="icon" href="./../../images/ico/logo_azul.ico" type="image/x-icon">
     <style>
+        @font-face {
+            font-family: "Aptos";
+            src: url("./../../font/Aptos.ttf") format("truetype");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            font-family: "Aptos", Arial, sans-serif;
+        }
+
         body {
-            font-family: 'Segoe UI', 'Arial', sans-serif;
+            font-family: "Aptos", Arial, sans-serif;
             margin: 0;
             padding: 0;
             background: #faf9fb;
@@ -146,7 +157,7 @@
             justify-content: center;
         }
 
-        #gameModal > div {
+        #gameModal>div {
             background: #fff;
             border-radius: 12px;
             max-width: 420px;
@@ -198,7 +209,8 @@
         <section class="slide" id="slide5">
             <h2>En caso de incendio...</h2>
             <img src="señaletica/caso_incendio.jpg" alt="Conceptos básicos">
-            <p>Kit de herramientas a utilizar en caso de incendio, contiene un extintor, y manguera para apagar el fuego.</p>
+            <p>Kit de herramientas a utilizar en caso de incendio, contiene un extintor, y manguera para apagar el
+                fuego.</p>
         </section>
 
         <section class="slide" id="slide6">
@@ -216,7 +228,9 @@
         <section class="slide" id="slide8">
             <h2>Plafones</h2>
             <img src="señaletica/plafones.jpg" alt="Conceptos básicos">
-            <p>Los espacios de la UAM Cuajimalpa estan mayormente compuestos por plafones en los techos, estos no presentan un riesgo en caso de siniestro, sin embargo, es mejor prevenir un accidente en caso de caida de uno.</p>
+            <p>Los espacios de la UAM Cuajimalpa estan mayormente compuestos por plafones en los techos, estos no
+                presentan un riesgo en caso de siniestro, sin embargo, es mejor prevenir un accidente en caso de caida
+                de uno.</p>
         </section>
 
         <div class="nav-buttons">
@@ -230,9 +244,12 @@
     </div>
 
     <!-- Juego -->
-    <div id="gameModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(40,0,80,0.18); z-index:1000; align-items:center; justify-content:center;">
-        <div style="background:#fff; border-radius:12px; max-width:420px; margin:auto; padding:32px 24px; box-shadow:0 8px 32px rgba(55,0,255,0.13); position:relative;">
-            <button id="closeGameBtn" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:1.5em; color:#888; cursor:pointer;">&times;</button>
+    <div id="gameModal"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(40,0,80,0.18); z-index:1000; align-items:center; justify-content:center;">
+        <div
+            style="background:#fff; border-radius:12px; max-width:420px; margin:auto; padding:32px 24px; box-shadow:0 8px 32px rgba(55,0,255,0.13); position:relative;">
+            <button id="closeGameBtn"
+                style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:1.5em; color:#888; cursor:pointer;">&times;</button>
             <div id="rouletteContainer" style="display:none; text-align:center;">
                 <h2 style="color:rgb(55,0,255);">¡Gira la ruleta para elegir el modo de juego!</h2>
                 <canvas id="rouletteCanvas" width="260" height="260" style="margin:20px auto; display:block;"></canvas>
@@ -498,7 +515,7 @@
                 });
                 html += `<button type="submit" class="nav-button" style="margin-top:16px;">Responder</button></form>`;
                 document.getElementById('gameContent').innerHTML = html;
-                document.getElementById('quizForm').onsubmit = function(e) {
+                document.getElementById('quizForm').onsubmit = function (e) {
                     e.preventDefault();
                     const seleccion = parseInt(document.querySelector('input[name="opcion"]:checked').value);
                     if (seleccion === p.respuesta) respuestasCorrectas++;
