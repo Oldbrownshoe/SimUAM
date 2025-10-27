@@ -128,11 +128,192 @@
       background: rgb(140, 0, 255);
       color: #fff;
     }
+    
+    .form-stage {
+      position: relative;
+      height: 520px;
+      overflow: visible;
+      perspective: 1200px;
+      margin-bottom: 12px;
+    }
+
+    .slides {
+      position: relative;
+      height: 100%;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 88%;
+      max-width: 560px;
+      transform: translateX(-50%);
+      background: #fff;
+      border-radius: 12px;
+      padding: 22px;
+      box-sizing: border-box;
+      box-shadow: 0 8px 30px rgba(140, 0, 255, 0.06);
+      transition: transform 420ms cubic-bezier(.2, .9, .3, 1), opacity 320ms ease, filter 320ms ease;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .slide-inner {
+      max-height: calc(100% - 8px);
+      overflow: auto;
+      padding-right: 6px;
+    }
+
+    .slide-inner::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .slide-inner::-webkit-scrollbar-thumb {
+      background: rgba(140, 0, 255, 0.14);
+      border-radius: 8px;
+    }
+
+    .slide-inner::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .slide-inner {
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateZ(0) scale(1);
+      z-index: 3;
+    }
+
+    .slide.next,
+    .slide.prev {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateX(-50%) translateZ(-80px) scale(0.98);
+      z-index: 1;
+      filter: none;
+    }
 
     @media (max-width: 700px) {
-      .container {
-        padding: 18px 8px 16px 8px;
+      .slide {
+        width: 92%;
+        padding: 18px;
       }
+
+      .form-stage {
+        height: 600px;
+      }
+    }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      background: rgb(140, 0, 255);
+      color: #fff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 6px 20px rgba(140, 0, 255, 0.08);
+    }
+
+    .nav-btn[disabled] {
+      opacity: 0.45;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .progress-dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .progress-dots .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #e6d6ff;
+      box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.03);
+    }
+
+    .progress-dots .dot.active {
+      background: rgb(140, 0, 255);
+    }
+
+    label {
+      margin: 6px 0 8px 0;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      margin-bottom: 12px;
+    }
+
+    #modalPartePiso {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 2100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #modalPartePiso .modal-inner {
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+      max-width: 90vw;
+      width: 420px;
+    }
+
+    #modalPartePiso img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      border: 2px solid #9c11ec;
+      border-radius: 12px;
+    }
+
+    #resaltadoPartePiso {
+      display: none;
+      position: absolute;
+      pointer-events: none;
+      background: rgba(159, 17, 236, 0.35);
+      border-radius: 8px;
+      z-index: 9;
+    }
+
+    #hoverPartePiso {
+      display: none;
+      position: absolute;
+      pointer-events: none;
+      background: #780fd4;
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      z-index: 10;
     }
   </style>
 </head>
@@ -141,189 +322,232 @@
   <div class="container">
     <h2>Evaluación Física y Emocional</h2>
     <form id="formularioConjunto">
-      <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" name="nombre" required><br><br>
-      <label for="edad">Edad:</label>
-      <input type="number" id="edad" name="edad" required><br><br>
-      <label for="genero">Género:</label>
-      <select id="genero" name="genero" required>
-        <option value="">Seleccione...</option>
-        <option value="masculino">Masculino</option>
-        <option value="femenino">Femenino</option>
-        <option value="otro">Otro</option>
-        <option value="prefiere_no_decir">Prefiere no decir</option>
-      </select><br><br>
-      <h3>Condiciones Fisiológicas</h3>
-      <label for="altura">Altura (cm):</label>
-      <input type="number" id="altura" name="altura" required><br><br>
-      <label for="peso">Peso (kg):</label>
-      <input type="number" id="peso" name="peso" required><br><br>
-      <label for="usaLentes">¿Usa lentes?</label>
-      <select id="usaLentes" name="usaLentes" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
-      <label for="problemasVision">¿Tiene problemas de visión?</label>
-      <select id="problemasVision" name="problemasVision" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
-      <label for="problemasAuditivos">¿Tiene problemas auditivos?</label>
-      <select id="problemasAuditivos" name="problemasAuditivos" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
-      <label for="problemasMovilidad">¿Tiene problemas de movilidad?</label>
-      <select id="problemasMovilidad" name="problemasMovilidad" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
-      <label for="sillaRuedas">¿Usa silla de ruedas?</label>
-      <select id="sillaRuedas" name="sillaRuedas" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
-      <label for="enfermedades">¿Tiene alguna enfermedad crónica?</label>
-      <select id="enfermedades" name="enfermedades" required>
-        <option value="">Seleccione...</option>
-        <option value="diabetes">Diabetes</option>
-        <option value="hipertension">Hipertensión</option>
-        <option value="asma">Asma</option>
-        <option value="artritis">Artritis</option>
-        <option value="otra">Otra</option>
-        <option value="ninguna">Ninguna</option>
-      </select><br><br>
-      <label for="medicamentos">¿Está tomando algún medicamento?</label>
-      <select id="medicamentos" name="medicamentos" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
-      <label for="alergias">¿Tiene alguna alergia?</label>
-      <select id="alergias" name="alergias" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
-      <h3>Condiciones Emocionales</h3>
-      <label for="calma">¿Mantiene la calma durante un sismo?</label>
-      <select id="calma" name="calma" required>
-        <option value="">Seleccione...</option>
-        <option value="siempre">Siempre</option>
-        <option value="a_veces">A veces</option>
-        <option value="nunca">Nunca</option>
-      </select><br><br>
-      <label for="lider">¿Suele liderar a otras personas en situaciones de emergencia?</label>
-      <select id="lider" name="lider" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
-      <label for="sigue">¿Prefiere seguir indicaciones en vez de liderar?</label>
-      <select id="sigue" name="sigue" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
-      <label for="estres">¿Se estresa fácilmente en situaciones de crisis?</label>
-      <select id="estres" name="estres" required>
-        <option value="">Seleccione...</option>
-        <option value="siempre">Siempre</option>
-        <option value="a_veces">A veces</option>
-        <option value="nunca">Nunca</option>
-      </select><br><br>
-      <label for="decisiones">¿Puede tomar decisiones rápidas bajo presión?</label>
-      <select id="decisiones" name="decisiones" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
+      <div class="form-stage">
+        <div class="slides">
+          <!-- Slide 0: Datos personales -->
+          <div class="slide active" data-index="0">
+            <div class="slide-inner">
+              <label for="nombre">Nombre:</label>
+              <input type="text" id="nombre" name="nombre" required>
+              <label for="edad">Edad:</label>
+              <input type="number" id="edad" name="edad" required>
+              <label for="genero">Género:</label>
+              <select id="genero" name="genero" required>
+                <option value="">Seleccione...</option>
+                <option value="masculino">Masculino</option>
+                <option value="femenino">Femenino</option>
+                <option value="otro">Otro</option>
+                <option value="prefiere_no_decir">Prefiere no decir</option>
+              </select>
+            </div>
+          </div>
 
-      <h3>Configuración de Simulador</h3>
-      <label for="ubicacion">¿Dónde te encuentras?</label>
-      <select id="ubicacion" name="ubicacion" required>
-        <option value="">Seleccione...</option>
-        <option value="dentro">Dentro de la UAM</option>
-        <option value="fuera">Fuera de la UAM</option>
-      </select><br><br>
+          <!-- Slide 1: Condiciones fisiológicas 1 -->
+          <div class="slide next" data-index="1">
+            <div class="slide-inner">
+              <h3>Condiciones Fisiológicas</h3>
+              <label for="altura">Altura (cm):</label>
+              <input type="number" id="altura" name="altura" required>
+              <label for="peso">Peso (kg):</label>
+              <input type="number" id="peso" name="peso" required>
+              <label for="usaLentes">¿Usa lentes?</label>
+              <select id="usaLentes" name="usaLentes" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+              <label for="problemasVision">¿Tiene problemas de visión?</label>
+              <select id="problemasVision" name="problemasVision" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+              <label for="problemasAuditivos">¿Tiene problemas auditivos?</label>
+              <select id="problemasAuditivos" name="problemasAuditivos" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+          </div>
 
-      <label for="piso">¿En qué piso te encuentras?</label>
-      <select id="piso" name="piso" required>
-        <option value="">Seleccione...</option>
-        <option value="G">G</option>
-        <option value="8">8</option>
-        <option value="7">7</option>
-        <option value="6">6</option>
-        <option value="5">5</option>
-        <option value="4">4</option>
-        <option value="B3">B3</option>
-        <option value="B2">B2</option>
-        <option value="B1">B1</option>
-      </select><br><br>
+          <!-- Slide 2: Condiciones fisiológicas 2 -->
+          <div class="slide" data-index="2">
+            <div class="slide-inner">
 
-      <label for="partePiso">¿En qué parte del piso estás?</label>
-      <select id="partePiso" name="partePiso" required>
-        <option value="">Seleccione...</option>
-        <option value="SI">Superior Izquierda</option>
-        <option value="SC">Superior Central</option>
-        <option value="SD">Superior Derecha</option>
-        <option value="CI">Central Izquierda</option>
-        <option value="CC">Central Central</option>
-        <option value="CD">Central Derecha</option>
-        <option value="II">Inferior Izquierda</option>
-        <option value="IC">Inferior Central</option>
-        <option value="ID">Inferior Derecha</option>
-      </select><br><br>
+              <label for="problemasMovilidad">¿Tiene problemas de movilidad?</label>
+              <select id="problemasMovilidad" name="problemasMovilidad" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+              <label for="sillaRuedas">¿Usa silla de ruedas?</label>
+              <select id="sillaRuedas" name="sillaRuedas" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+              <label for="enfermedades">¿Tiene alguna enfermedad crónica?</label>
+              <select id="enfermedades" name="enfermedades" required>
+                <option value="">Seleccione...</option>
+                <option value="diabetes">Diabetes</option>
+                <option value="hipertension">Hipertensión</option>
+                <option value="asma">Asma</option>
+                <option value="artritis">Artritis</option>
+                <option value="otra">Otra</option>
+                <option value="ninguna">Ninguna</option>
+              </select>
+              <label for="medicamentos">¿Está tomando algún medicamento?</label>
+              <select id="medicamentos" name="medicamentos" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+              <label for="alergias">¿Tiene alguna alergia?</label>
+              <select id="alergias" name="alergias" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+          </div>
 
-      <label for="alerta">¿Quieres activar el alertamiento sísmico?</label>
-      <select id="alerta" name="alerta" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
+          <!-- Slide 3: Condiciones emocionales -->
+          <div class="slide" data-index="3">
+            <div class="slide-inner">
+              <h3>Condiciones Emocionales</h3>
+              <label for="calma">¿Mantiene la calma durante un sismo?</label>
+              <select id="calma" name="calma" required>
+                <option value="">Seleccione...</option>
+                <option value="siempre">Siempre</option>
+                <option value="a_veces">A veces</option>
+                <option value="nunca">Nunca</option>
+              </select>
+              <label for="lider">¿Suele liderar a otras personas en situaciones de emergencia?</label>
+              <select id="lider" name="lider" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+              <label for="sigue">¿Prefiere seguir indicaciones en vez de liderar?</label>
+              <select id="sigue" name="sigue" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+              <label for="estres">¿Se estresa fácilmente en situaciones de crisis?</label>
+              <select id="estres" name="estres" required>
+                <option value="">Seleccione...</option>
+                <option value="siempre">Siempre</option>
+                <option value="a_veces">A veces</option>
+                <option value="nunca">Nunca</option>
+              </select>
+              <label for="decisiones">¿Puede tomar decisiones rápidas bajo presión?</label>
+              <select id="decisiones" name="decisiones" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+          </div>
 
-      <label for="modoSimulador">¿Qué modo prefieres?</label>
-      <select id="modoSimulador" name="modoSimulador" required>
-        <option value="">Seleccione...</option>
-        <option value="simulacion">Entrenamiento</option>
-        <option value="prueba">Prueba</option>
-      </select><br><br>
+          <!-- Slide 4: Configuracion del simulador 1-->
+          <div class="slide" data-index="4">
+            <div class="slide-inner">
+              <h3>Configuración de Simulador</h3>
+              <label for="ubicacion">¿Dónde te encuentras?</label>
+              <select id="ubicacion" name="ubicacion" required>
+                <option value="">Seleccione...</option>
+                <option value="dentro">Dentro de la UAM</option>
+                <option value="fuera">Fuera de la UAM</option>
+              </select>
+              <label for="piso">¿En qué piso te encuentras?</label>
+              <select id="piso" name="piso" required>
+                <option value="">Seleccione...</option>
+                <option value="G">G</option>
+                <option value="8">8</option>
+                <option value="7">7</option>
+                <option value="6">6</option>
+                <option value="5">5</option>
+                <option value="4">4</option>
+                <option value="B3">B3</option>
+                <option value="B2">B2</option>
+                <option value="B1">B1</option>
+              </select>
+              <label for="partePisoBtn">¿En qué parte del piso estás?</label>
+              <input type="hidden" id="partePiso" name="partePiso" value="">
+              <div style="display:flex; gap:8px; align-items:center;">
+                <button type="button" id="partePisoBtn" class="nav-btn" style="padding:8px 12px;"
+                  onclick="mostrarModalPartePiso(document.getElementById('piso').value || 'B1')">
+                  Seleccionar parte del piso
+                </button>
+                <div id="partePisoLabel" style="font-size:0.95rem; color:#444;">(no seleccionada)</div>
+              </div>
+              <label for="alerta">¿Quieres activar el alertamiento sísmico?</label>
+              <select id="alerta" name="alerta" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+              <label for="modoSimulador">¿Qué modo prefieres?</label>
+              <select id="modoSimulador" name="modoSimulador" required>
+                <option value="">Seleccione...</option>
+                <option value="simulacion">Entrenamiento</option>
+                <option value="prueba">Prueba</option>
+              </select>
+            </div>
+          </div>
 
-      <label for="tiempoVR">¿Cuánto tiempo necesitas para colocarte el dispositivo VR?</label>
-      <select id="tiempoVR" name="tiempoVR" required>
-        <option value="">Seleccione...</option>
-        <option value="30">30 segundos</option>
-        <option value="45">45 segundos</option>
-        <option value="60">60 segundos</option>
-      </select><br><br>
+          <!-- Slide 5: Configuracion del simulador 2 -->
+          <div class="slide" data-index="5">
+            <div class="slide-inner">
+              <label for="tiempoVR">¿Cuánto tiempo necesitas para colocarte el dispositivo VR?</label>
+              <select id="tiempoVR" name="tiempoVR" required>
+                <option value="">Seleccione...</option>
+                <option value="30">30 segundos</option>
+                <option value="45">45 segundos</option>
+                <option value="60">60 segundos</option>
+              </select>
+              <label for="distractores">¿Quieres activar distractores durante la simulación?</label>
+              <select id="distractores" name="distractores" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+              <label for="camara">¿Prefieres usar la cámara trasera o frontal?</label>
+              <select id="camara" name="camara" required>
+                <option value="">Seleccione...</option>
+                <option value="trasera">Trasera</option>
+                <option value="frontal">Frontal</option>
+              </select>
+              <label for="sonido">¿Quieres activar el sonido?</label>
+              <select id="sonido" name="sonido" required>
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+          </div>
 
-      <label for="distractores">¿Quieres activar distractores durante la simulación?</label>
-      <select id="distractores" name="distractores" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
+          <!-- Slide 6: resumen / finalizar -->
+          <div class="slide" data-index="6">
+            <div class="slide-inner">
+              <h3>Revisar y Enviar</h3>
+              <p>Avanza para ver recomendaciones y exportar la configuración.</p>
+              <input type="submit" value="Enviar" style="width:100%; margin-top:12px;">
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <label for="camara">¿Prefieres usar la cámara trasera o frontal?</label>
-      <select id="camara" name="camara" required>
-        <option value="">Seleccione...</option>
-        <option value="trasera">Trasera</option>
-        <option value="frontal">Frontal</option>
-      </select><br><br>
-
-      <label for="sonido">¿Quieres activar el sonido?</label>
-      <select id="sonido" name="sonido" required>
-        <option value="">Seleccione...</option>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select><br><br>
-      <input type="submit" value="Enviar">
+      <div class="nav-row">
+        <button type="button" class="nav-btn" id="btnPrev" disabled>←</button>
+        <div class="progress-dots" id="progressDots" aria-hidden="true">
+        </div>
+        <button type="button" class="nav-btn" id="btnNext">→</button>
+      </div>
     </form>
+
     <h2>Resultados y Recomendaciones</h2>
     <div id="resultados"></div>
     <button class="export-button" id="exportarIni" style="display:none;">Exportar configuración</button>
@@ -334,6 +558,21 @@
       <a href="./../inicio/formulario.html"><button class="redirect-button">Regresar</button></a>
     </div>
   </div>
+
+  <div id="modalPartePiso" aria-hidden="true">
+    <div class="modal-inner">
+      <h2>¿En qué parte del piso estás?</h2>
+      <div style="position:relative; width:100%; max-height:320px; margin-bottom:12px;">
+        <img id="imagenPisoParte" src="" alt="Plano del piso">
+        <div id="resaltadoPartePiso"></div>
+        <div id="hoverPartePiso"></div>
+      </div>
+      <div style="text-align:center; margin-top:8px;">
+        <button type="button" onclick="cerrarModalPartePiso()" class="nav-btn">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const form = document.getElementById('formularioConjunto');
     const resultadosDiv = document.getElementById('resultados');
@@ -489,7 +728,6 @@
     });
 
     document.getElementById('exportarIni').addEventListener('click', function () {
-      // Obtener la primera palabra del nombre
       const nombreValor = document.getElementById('nombre').value.trim();
       const primeraPalabra = nombreValor.split(' ')[0] || 'Usuario';
       let filename = `Configuracion - ${primeraPalabra}.ini`;
@@ -564,15 +802,266 @@
     }
     ubicacionSelect.addEventListener('change', actualizarCamposUbicacion);
 
-    document.getElementById('fileImportIni').addEventListener('change', function (event) {
-      campos.forEach(id => {
-        if (values.hasOwnProperty(id)) {
-          const el = document.getElementById(id);
-          if (el) el.value = values[id];
+    (function () {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const btnNext = document.getElementById('btnNext');
+      const btnPrev = document.getElementById('btnPrev');
+      const dotsContainer = document.getElementById('progressDots');
+      let current = 0;
+
+      function renderClasses() {
+        slides.forEach((s, i) => {
+          s.classList.remove('active', 'prev', 'next');
+          if (i === current) s.classList.add('active');
+          else if (i === current + 1) s.classList.add('next');
+          else if (i === current - 1) s.classList.add('prev');
+        });
+
+        btnPrev.disabled = current === 0;
+        btnNext.disabled = current === slides.length - 1;
+
+        Array.from(dotsContainer.children).forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => { current = i; renderClasses(); });
+        dotsContainer.appendChild(dot);
+      });
+
+      btnNext.addEventListener('click', () => {
+        if (current < slides.length - 1) {
+          current++;
+          renderClasses();
+          const first = slides[current].querySelector('input, select, textarea, button[type="button"]');
+          if (first) first.focus();
         }
       });
-      actualizarCamposUbicacion();
-    });
+      btnPrev.addEventListener('click', () => {
+        if (current > 0) {
+          current--;
+          renderClasses();
+          const first = slides[current].querySelector('input, select, textarea, button[type="button"]');
+          if (first) first.focus();
+        }
+      });
+
+      document.getElementById('formularioConjunto').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+
+          const activeSlide = slides[current];
+          if (activeSlide && current < slides.length - 1) {
+            e.preventDefault();
+            btnNext.click();
+          }
+        }
+      });
+
+      renderClasses();
+    })();
+
+    const coordenadasPorPiso = {
+      B1: [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 136, 158] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [138, 0, 273, 159] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [276, 1, 400, 159] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 158, 137, 317] },
+        { parte: 'CC', nombre: 'Central Central', coords: [138, 159, 273, 316] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [274, 160, 400, 315] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 318, 135, 464] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [136, 317, 273, 465] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [274, 316, 400, 464] }
+      ],
+      B2: [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 142, 125] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [143, 0, 264, 125] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [265, 1, 395, 125] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 126, 142, 262] },
+        { parte: 'CC', nombre: 'Central Central', coords: [143, 126, 266, 261] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [265, 126, 396, 261] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 263, 142, 417] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [143, 262, 266, 417] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [266, 262, 395, 417] }
+      ],
+      B3: [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 214, 236] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [214, 2, 439, 235] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [440, 0, 654, 206] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 236, 213, 476] },
+        { parte: 'CC', nombre: 'Central Central', coords: [213, 237, 436, 476] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [437, 237, 653, 476] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 477, 214, 690] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [215, 477, 435, 690] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [436, 475, 653, 689] }
+      ],
+      '4': [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 141, 149] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [142, 0, 285, 148] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [286, 2, 426, 147] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 148, 139, 293] },
+        { parte: 'CC', nombre: 'Central Central', coords: [140, 148, 286, 292] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [286, 147, 428, 292] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 294, 143, 439] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [143, 293, 284, 440] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [284, 293, 428, 441] }
+      ],
+      '5': [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [1, 0, 257, 255] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [258, 4, 499, 256] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [499, 1, 738, 256] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [1, 256, 248, 504] },
+        { parte: 'CC', nombre: 'Central Central', coords: [253, 257, 499, 505] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [500, 258, 737, 505] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 506, 253, 772] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [254, 507, 498, 772] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [498, 505, 738, 771] }
+      ],
+      '6': [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [1, 2, 161, 166] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [161, 2, 327, 166] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [325, 1, 492, 165] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 167, 163, 326] },
+        { parte: 'CC', nombre: 'Central Central', coords: [164, 166, 325, 327] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [326, 166, 491, 326] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 327, 162, 497] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [172, 326, 328, 498] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [329, 326, 492, 498] }
+      ],
+      '7': [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 221, 260] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [223, 0, 456, 260] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [458, 0, 673, 262] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 261, 223, 486] },
+        { parte: 'CC', nombre: 'Central Central', coords: [223, 261, 454, 485] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [456, 262, 676, 484] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 487, 222, 697] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [223, 486, 452, 701] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [453, 484, 674, 700] }
+      ],
+      '8': [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 238, 260] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [238, 0, 452, 259] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [454, 49, 682, 260] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 260, 236, 480] },
+        { parte: 'CC', nombre: 'Central Central', coords: [237, 259, 453, 480] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [454, 261, 682, 479] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 482, 236, 722] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [237, 481, 453, 721] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [454, 479, 681, 722] }
+      ],
+      G: [
+        { parte: 'SI', nombre: 'Superior Izquierda', coords: [0, 0, 135, 145] },
+        { parte: 'SC', nombre: 'Superior Central', coords: [136, 0, 273, 145] },
+        { parte: 'SD', nombre: 'Superior Derecha', coords: [274, 0, 416, 146] },
+        { parte: 'CI', nombre: 'Central Izquierda', coords: [0, 146, 134, 280] },
+        { parte: 'CC', nombre: 'Central Central', coords: [134, 147, 274, 280] },
+        { parte: 'CD', nombre: 'Central Derecha', coords: [274, 147, 416, 280] },
+        { parte: 'II', nombre: 'Inferior Izquierda', coords: [0, 281, 133, 427] },
+        { parte: 'IC', nombre: 'Inferior Central', coords: [134, 281, 275, 427] },
+        { parte: 'ID', nombre: 'Inferior Derecha', coords: [274, 281, 415, 427] }
+      ]
+    };
+
+    function mostrarModalPartePiso(piso) {
+      partePiso = null;
+      const modal = document.getElementById('modalPartePiso');
+      const img = document.getElementById('imagenPisoParte');
+      const resaltado = document.getElementById('resaltadoPartePiso');
+      if (!modal || !img) return;
+      img.src = 'mapas/png/' + (piso || 'B1') + '.png';
+      img.alt = 'Plano del piso ' + (piso || 'B1');
+      modal.style.display = 'flex';
+
+      const zonas = coordenadasPorPiso[piso] || [];
+      img.onmousemove = function (e) {
+        const rect = img.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const w = rect.width;
+        const h = rect.height;
+        let zona = null;
+        for (const z of zonas) {
+          const [x1, y1, x2, y2] = z.coords;
+          const scaleX = w / img.naturalWidth || 1;
+          const scaleY = h / img.naturalHeight || 1;
+          const sx1 = x1 * scaleX;
+          const sy1 = y1 * scaleY;
+          const sx2 = x2 * scaleX;
+          const sy2 = y2 * scaleY;
+          if (x >= sx1 && x <= sx2 && y >= sy1 && y <= sy2) {
+            zona = z;
+            if (resaltado) {
+              resaltado.style.display = 'block';
+              resaltado.style.left = sx1 + 'px';
+              resaltado.style.top = sy1 + 'px';
+              resaltado.style.width = (sx2 - sx1) + 'px';
+              resaltado.style.height = (sy2 - sy1) + 'px';
+            }
+            break;
+          }
+        }
+        if (!zona && resaltado) resaltado.style.display = 'none';
+        const hover = document.getElementById('hoverPartePiso');
+        if (zona) {
+          hover.style.display = 'block';
+          hover.textContent = zona.nombre + ' (' + zona.parte + ')';
+          hover.style.left = (e.clientX + 10) + 'px';
+          hover.style.top = (e.clientY + 10) + 'px';
+        } else {
+          hover.style.display = 'none';
+        }
+      };
+      img.onmouseleave = function () {
+        const hover = document.getElementById('hoverPartePiso');
+        if (hover) hover.style.display = 'none';
+        if (resaltado) resaltado.style.display = 'none';
+      };
+      img.onclick = function (e) {
+        const rect = img.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const w = rect.width;
+        const h = rect.height;
+        let zona = null;
+        for (const z of zonas) {
+          const [x1, y1, x2, y2] = z.coords;
+          const scaleX = w / img.naturalWidth || 1;
+          const scaleY = h / img.naturalHeight || 1;
+          const sx1 = x1 * scaleX;
+          const sy1 = y1 * scaleY;
+          const sx2 = x2 * scaleX;
+          const sy2 = y2 * scaleY;
+          if (x >= sx1 && x <= sx2 && y >= sy1 && y <= sy2) {
+            zona = z;
+            break;
+          }
+        }
+        if (zona) {
+          seleccionarPartePiso(zona.parte);
+        }
+      };
+    }
+
+    function seleccionarPartePiso(parte) {
+      const input = document.getElementById('partePiso');
+      const label = document.getElementById('partePisoLabel');
+      if (input) input.value = parte;
+      if (label) {
+        const map = {
+          SI: 'Superior Izquierda', SC: 'Superior Central', SD: 'Superior Derecha',
+          CI: 'Central Izquierda', CC: 'Central Central', CD: 'Central Derecha',
+          II: 'Inferior Izquierda', IC: 'Inferior Central', ID: 'Inferior Derecha'
+        };
+        label.textContent = map[parte] ? map[parte] + ` (${parte})` : parte;
+      }
+      cerrarModalPartePiso();
+    }
+    function cerrarModalPartePiso() {
+      const modal = document.getElementById('modalPartePiso');
+      if (modal) modal.style.display = 'none';
+    }
+
   </script>
 </body>
 
